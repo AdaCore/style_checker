@@ -1,0 +1,55 @@
+# The general principle for this config file is the following:
+#
+#     Our configuration file is composed of one entry per module,
+#     with the key being the module name. We also have one special
+#     entry where we store the default configuration used for all
+#     module. The default configuration is stored under the special
+#     module named '*'.
+#
+#     When looking for a specific configuration, we first
+#     look at the entry in the module's section. If not found,
+#     then we take the default configuration instead.
+#
+#     Next, we look in the module's section for an entry whose name
+#     is the name of the configuration with a '+' at the front.
+#     Eg, if we are looking for the "copyright" configuration
+#     for that module, search also for "+copyright". Unlike
+#     the entry with the option name, this entry does not
+#     override the default option, it adds to it.
+
+# Default configuration, applying to all modules by default.
+
+'*':
+    copyright:
+        - AdaCore
+        - Altran Praxis
+        - Altran UK Limited
+        - Free Software Foundation, Inc.
+        - AdaCore, Altran Praxis
+        - AdaCore and Altran UK Limited
+        - AdaCore, Altran UK Limited
+        - AdaCore and Altran UK
+        - AdaCore, Altran UK
+
+# Module-specific configuration.  This configuration is applied
+# on top of the default configuration.
+
+'binutils':
+    style_checks:
+        - -copyright
+
+'erb':
+    +copyright:
+        - The European Space Agency
+
+'examples':
+    style_checks:
+        - -copyright
+
+'java':
+    style_checks:
+        - gnatx
+
+'marte':
+    +copyright:
+        - Universidad de Cantabria, SPAIN

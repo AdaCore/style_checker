@@ -1,0 +1,2 @@
+class FileCheckerError(Exception):
+    pass

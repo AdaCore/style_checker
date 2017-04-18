@@ -1,0 +1,345 @@
+#!/bin/sh
+
+# First include necessary functions
+additional_patch=$1
+
+. $dir/script/build-utils
+
+# Check for the necessary env vars so that build does not run with null vars
+exit_when_vars_not_set "$GNAT_SRC_PKG" "$GCC_SRC_PKG" "$GNAT_BUILD_DIR" \
+  "$DEFAULT_PREFIX"
+
+# Get local directory
+build_dir=$GNAT_BUILD_DIR
+binutils_bdir=$build_dir/binutils
+
+# Set log and result directory
+MODULE_LOG_DIR=$build_dir/tmp
+MODULE_REPORT_DIR=$build_dir/etc
+
+# Clean build directory and creates necessary ones
+if [ "$build_dir" = "" ]; then
+   exit 1
+fi
+/bin/rm -rf "$build_dir"/*
+mkdir -p $build_dir
+mkdir -p $build_dir/tmp
+mkdir -p $build_dir/obj
+mkdir -p $build_dir/tar
+mkdir -p $build_dir/etc
+
+# Clean report and result files
+echo "No result yet" > $MODULE_REPORT_DIR/result
+echo "No report yet" > $MODULE_REPORT_DIR/report
+
+# we build in a subshell
+
+(
+
+# build with a specific 'tmp' to avoid clashes of temporary files that
+# are so frequent with gcc
+
+TMPDIR=$build_dir/tmp
+export TMPDIR
+
+# Set some local variables
+gcc_sources_dir=$build_dir/src/gcc
+gcc_obj_dir=$build_dir/obj/gcc
+
+########################
+# Sources installation #
+########################
+
+module_log "Uncompacting GCC and GNAT sources"
+install_pkg $GCC_SRC_PKG $build_dir/tar
+install_pkg $GNAT_SRC_PKG $build_dir/tar
+
+module_log "Moving sources directories"
+mv $build_dir/tar/gcc* $build_dir/src > $build_dir/tmp/mvgcc.out 2>&1
+exit_when_error $? "Move of gcc sources failed" $build_dir/tmp/mvgcc.out
+
+# If the GCC source package contains an ada directory remove to put our 
+# Ada sources instead. (this can in the future be disabled if we want to
+# have complete FSF builds.
+ if [ -d $gcc_sources_dir/ada ]; then
+   rm -rf $gcc_sources_dir/ada
+fi
+
+# move the GNAT sources to a directory called gnat. this will allow us to avoid
+# using filename expansion which is sometimes problematic when this directory is
+# referenced afterwards
+(mv $build_dir/tar/gnat* $build_dir/tar/gnat &&
+ mv $build_dir/tar/gnat/src/ada $gcc_sources_dir) > $build_dir/tmp/mvgnat.out 2>&1
+exit_when_error $? "Move of gnat sources failed" $build_dir/tmp/mvgnat.out
+
+# If we find a patch for the GCC used, apply it, else do nothing
+module_log "Apply GCC patch $GCC_DEFAULT_PATCH"
+try_apply_patch $build_dir/tar/gnat*/src/$GCC_DEFAULT_PATCH $build_dir/src
+
+# Touch cstamp.h.in so that autoconf is not called
+cd $build_dir/src && touch cstamp-h.in
+
+# Apply system specific patches (for cross we can have one for the target
+#  and one for the host)
+for f in $GNAT_SYSTEM_PATCH; do
+   if [ -f $build_dir/tar/gnat*/src/$f ]; then
+      module_log "Apply system specific patch $f"
+      try_apply_patch $build_dir/tar/gnat*/src/$f $gcc_sources_dir
+   fi
+done
+
+if [ "$additional_patch" != "" ]; then
+   module_log "Apply user patch $additional_patch"
+   try_apply_patch $additional_patch $gcc_sources_dir/ada
+fi
+
+# Build binutils if necessary in the native case
+if [ "$GNAT_INSTALL_BINUTILS" = "true" ]; then
+   if [ "$IS_CROSS" = "true" ]; then
+      module_log "Binutils $BINUTILS_VERSION target=$GCC_TARGET"
+      cron-binutils-bin $dir $BINUTILS_VERSION $GCC_TARGET
+   elif [ "$GCC_HOST" != "$GCC_BUILD" ]; then
+      module_log "Binutils $BINUTILS_VERSION host=$GCC_HOST"
+      cron-binutils-bin $dir $BINUTILS_VERSION "" $GCC_HOST
+   else
+      module_log "Binutils $BINUTILS_VERSION"
+      cron-binutils-bin $dir $BINUTILS_VERSION
+   fi
+fi
+
+cd $build_dir/obj
+
+if [ $HOST_OS_NAME = "IRIX64" ]; then 
+   # Copy the so_locations file in the ada directory so
+   # that it can be updated by the gcc -shared command
+   mkdir -p $gcc_obj_dir/ada
+   cp /usr/lib/so_locations $gcc_obj_dir/ada
+   chmod +w $gcc_obj_dir/ada/so_locations
+fi
+
+# Add copy of binutils if necessary
+(
+mkdir -p $gcc_obj_dir
+
+# First calculate the as and ld real name and location
+as_name="as"
+ld_name="ld"
+objdump_name="objdump"
+
+if [ "$GNAT_INSTALL_BINUTILS" = "true" ]; then
+   binutils_loc="$binutils_bdir/ins/bin"
+
+   if [ "$IS_CROSS" = "true" ]; then
+      as_name="${GCC_TARGET}-as"
+      ld_name="${GCC_TARGET}-ld"
+      ar_name="${GCC_TARGET}-ar"
+      nm_name="${GCC_TARGET}-nm"
+      ranlib_name="${GCC_TARGET}-ranlib"
+   fi
+else
+   binutils_loc="$PACK_DIR/target/$ARCHIVE_SYSTEM"
+   if [ "$IS_CROSS" = "true" ]; then
+      binutils_loc="$binutils_loc/$HOST_OS_NAME"
+   fi
+   binutils_loc="$binutils_loc/bin"
+fi
+
+
+if [ "$IS_BAREBOARD" = "true" ]; then
+   # For bareboard targets binutils are packages unconditionnaly
+   cp -p $binutils_loc/$as_name$EXE_EXT $gcc_obj_dir/as$EXE_EXT && 
+   cp -p $binutils_loc/$ld_name$EXE_EXT $gcc_obj_dir/ld$EXE_EXT &&
+   cp -p $binutils_loc/$ld_name$EXE_EXT $gcc_obj_dir/collect-ld$EXE_EXT &&
+   cp -p $binutils_loc/$ar_name$EXE_EXT $GNAT_INSTALL_DIR/bin &&
+   cp -p $binutils_loc/$nm_name$EXE_EXT $GNAT_INSTALL_DIR/bin &&
+   cp -p $binutils_loc/$ranlib_name$EXE_EXT $GNAT_INSTALL_DIR/bin
+else
+   # For other targets as and ld are packaged only if they are in the 
+   # PRECOMPILED_BINARIES list.
+
+   # Check if we package as
+   if echo "$PRECOMPILED_BINARIES" | grep as >/dev/null; then
+     cp -p $binutils_loc/${as_name}$EXE_EXT $gcc_obj_dir/as$EXE_EXT &&
+
+     # The following is needed by GCC 4.2 and above
+     cp -p $binutils_loc/${as_name}$EXE_EXT $build_dir/obj/as$EXE_EXT
+   fi &&
+   
+   # Check if we package ld
+   if echo "$PRECOMPILED_BINARIES" | grep ld >/dev/null; then
+     cp -p $binutils_loc/${ld_name}$EXE_EXT $gcc_obj_dir/ld$EXE_EXT &&
+     cp -p $binutils_loc/${ld_name}$EXE_EXT $gcc_obj_dir/collect-ld$EXE_EXT &&
+
+     # The following is needed by GCC 4.2 and above
+     cp -p $binutils_loc/${ld_name}$EXE_EXT $build_dir/obj/ld$EXE_EXT &&
+     cp -p $binutils_loc/${ld_name}$EXE_EXT $build_dir/obj/collect-ld$EXE_EXT
+   fi
+
+   # Check if we package objdump
+   if echo "$PRECOMPILED_BINARIES" | grep objdump >/dev/null; then
+     cp -p $binutils_loc/${objdump_name}$EXE_EXT $gcc_obj_dir/objdump$EXE_EXT &&
+
+     # The following is needed by GCC 4.2 and above
+     cp -p $binutils_loc/${objdump_name}$EXE_EXT $build_dir/obj/objdump$EXE_EXT &&
+   fi
+fi
+) > $build_dir/tmp/binutils-cp.out 2>&1
+exit_when_error $? "Copy of binutils failed" $build_dir/tmp/binutils-cp.out
+
+#############
+# CONFIGURE #
+#############
+
+# Need to set --with-build-time to get the right binutils with GCC 4.2 and 
+# above. This cannot be done in CONFIG as the build directory is used.
+case $GCC_VERSION in
+   3.*|4.1.*) ;;
+   *) CONFIGURE_PARAMS="--with-build-time-tools=$build_dir/obj $CONFIGURE_PARAMS";;
+esac
+
+module_log "$build_dir/src/configure --prefix=$DEFAULT_PREFIX \
+  $CONFIGURE_PARAMS > $build_dir/tmp/configure.out 2>&1"
+
+# It is highly recommended on Solaris to use bash instead of Sun sh version
+case $HOST_OS_NAME in
+  SunOS) CONFIG_SHELL="/bin/bash"; export CONFIG_SHELL;;
+      *) CONFIG_SHELL="";;
+esac
+$CONFIG_SHELL $build_dir/src/configure --prefix=$DEFAULT_PREFIX \
+  $CONFIGURE_PARAMS > $build_dir/tmp/configure.out 2>&1
+exit_when_error $? "Configure of GCC failed" $build_dir/tmp/configure.out
+
+#############
+# GCC Build #
+#############
+
+make_flags=""
+
+if [ "$BUILD_SETUP" != "GNATX" ]; then
+  case $machine in
+    cardhu|lot|mad|red|ziz) make_flags="-j 4" ;;
+    nova) make_flags="-j 16" ;;
+    black|congo|ibiza|merced|ob|taff) make_flags="-j 4" ;;
+  esac
+fi
+
+if [ $IS_CROSS = "false" ]; then
+   module_log "make bootstrap"
+   make $make_flags CC=gcc \
+        BOOT_ADAFLAGS="$GNAT_ADAFLAGS" \
+        CFLAGS="$GCC_FLAGS" \
+        STAGE1_CFLAGS="$GCC_FLAGS -O0 -g" \
+        BOOT_CFLAGS="$GCC_FLAGS" \
+        CXXFLAGS="$GCC_FLAGS" \
+        BOOT_LDFLAGS="$GCC_BOOT_LDFLAGS" bootstrap \
+	> $build_dir/tmp/boot.out 2>&1
+   exit_when_error $? "Bootstrap failed" $build_dir/tmp/boot.out
+else
+   module_log "make (cross)"
+   make CC=gcc \
+        ADAFLAGS="$GNAT_ADAFLAGS" \
+        CFLAGS="$GCC_FLAGS -g" \
+        LDFLAGS="$GCC_LD_FLAGS" \
+        MAKE="make ADAFLAGS=\"$GNAT_ADAFLAGS\"" > $build_dir/tmp/make.out 2>&1
+   exit_when_error $? "Make failed" $build_dir/tmp/make.out
+fi
+
+##################
+# Runtimes build #
+##################
+
+module_log "Build default GNAT library ($GNATLIB_TYPE)"
+cd $gcc_obj_dir
+
+if [ $IS_CROSS = "true" ]; then
+   TMP_ADA_INCLUDE_PATH=$ADA_INCLUDE_PATH
+   ADA_INCLUDE_PATH=
+   export ADA_INCLUDE_PATH
+fi
+
+libversion=`grep ' Library_Version :' $gcc_sources_dir/ada/gnatvsn.ads | \
+            sed -e 's/.*"\(.*\)".*/\1/'`
+
+for lib in $GNAT_DEFAULT_RTS $GNAT_PACKAGED_RTS $GNAT_BUILT_RTS; do
+   module_log "Build GNAT runtime: $lib"
+   cd $gcc_obj_dir
+   rm -f stamp-gnatlib1
+
+   make $make_flags CC=gcc \
+     GNATLIBFLAGS="$GNATLIBFLAGS" \
+     GNATLIBCFLAGS="`rts_info $lib cflags`" \
+     THREAD_KIND="`rts_info $lib threadkind`" \
+     `rts_info $lib target` \
+     `rts_info $lib extra` \
+   > $build_dir/tmp/lib-$lib.out 2>&1
+   exit_when_error $? "Make rts $lib failed" $build_dir/tmp/lib-$lib.out
+   if [ -d ada/rts ]; then 
+      mv ada/rts ada/rts-`rts_info $lib installname`; 
+   fi
+done
+
+####################
+# Build GNAT Tools #
+####################
+
+# tools need to be built after the runtime and needs "rts" to be present
+
+if [ $IS_CROSS = "true" ]; then
+   ADA_INCLUDE_PATH=$TMP_ADA_INCLUDE_PATH
+   export ADA_INCLUDE_PATH
+fi
+
+module_log "Build GNAT Tools"
+cd $gcc_obj_dir
+
+if [ "$IS_CROSS" = "false" ]; then
+   if [ $HOST_OS_NAME = "Windows_NT" ]; then
+      mv ada/rts-`rts_info $GNAT_DEFAULT_RTS installname` ada/rts
+   else
+      ln -s rts-`rts_info $GNAT_DEFAULT_RTS installname` ada/rts
+   fi
+fi
+
+if [ $IS_CROSS != "true" ]; then
+   make $make_flags CC=gcc CFLAGS="$GCC_FLAGS" ADAFLAGS="$GNAT_ADAFLAGS" \
+     gnattools > $build_dir/tmp/tools.out 2>&1
+   exit_when_error $? "Build of tools failed" $build_dir/tmp/tools.out
+else
+   make CC=gcc CFLAGS="$GCC_FLAGS" ADAFLAGS="$GNAT_ADAFLAGS" \
+     cross-gnattools > $build_dir/tmp/tools.out 2>&1
+   exit_when_error $? "Build of crosstools failed" $build_dir/tmp/tools.out
+   make ada.all.cross > $build/tmp/cross-tools.out 2>&1
+   exit_when_error $? "Build of crosstools (ada.all.cross) failed" \
+     $build_dir/tmp/cross-tools.out
+fi
+
+if [ ! -d $gcc_obj_dir/ada/bldtools ]; then
+   mkdir $gcc_obj_dir/ada/bldtools
+fi
+
+# remove the "rts" link in order to avoid packaging problems
+if [ "$IS_CROSS" = "false" ]; then
+   if [ $HOST_OS_NAME = "Windows_NT" ]; then
+      mv ada/rts ada/rts-`rts_info $GNAT_DEFAULT_RTS installname`
+   else
+      rm -f ada/rts
+   fi
+fi
+
+exit 0
+)
+
+result=$?
+if [ $result -eq 0 ]; then
+   module_log "build success"
+   echo "build succeeded" > $MODULE_REPORT_DIR/result
+   echo "GNAT build succeeded" > $MODULE_REPORT_DIR/report
+   exit 0
+elif [ $result -eq 1 ]; then
+   module_log "build failure"
+   exit 1
+else
+   # if error is different from 1 or 0 we are not sure that all vars are defined
+   # so we cannnot write in log file...
+   exit $result
+fi

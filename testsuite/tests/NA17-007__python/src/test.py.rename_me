@@ -1,0 +1,13 @@
+import GPS
+from GPS_Support import *
+
+# Finding the enclosing subprogram rather than block
+# This subprogram checks that GPS is not disturbed by named Ada blocks
+# in cross-references
+
+f = GPS.File("p1.adb")
+f.compile()
+gps_assert(GPS.Entity("a", f).called_by(),
+           {GPS.Entity("b", f, 5, 14): GPS.FileLocation(f, 8, 10)},
+           "Incorrect handling of named Ada blocks")
+GPS.exit()

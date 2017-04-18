@@ -1,0 +1,36 @@
+#! /bin/sh
+
+# Copy uploaded files from the customer web server
+# to the master bug database host.
+# $Id$
+
+[ -x /bin/domainname ] && SITE=`/bin/domainname`
+
+DST=nile.gnat.com::custweb-upload
+
+if [ x"${SITE}" = x"gnat.com" ]; then
+  PWDFILE=/data/auth/rsync.custweb
+  SRC=/data/upload
+  DSTUSER=dart-custweb
+
+elif [ x"${SITE}" = x"act-europe.fr" ]; then
+  PWDFILE=/paris.d/web/auth/rsync.custweb
+  SRC=/paris.d/web/services/gnattracker/upload
+  DSTUSER=paris-custweb
+
+else
+  echo "Unrecognized site ${SITE}."
+  exit 1
+fi
+
+set -e
+cd ${SRC}
+files="`echo *`"
+if [ "${files}" = "*" ]; then
+  exit 0
+fi
+
+for f in *; do
+  rsync -Stur --password-file "${PWDFILE}" "${f}" ${DSTUSER}@${DST}/ \
+    && rm -fr "${f}"
+done

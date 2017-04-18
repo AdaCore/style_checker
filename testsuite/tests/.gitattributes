@@ -1,0 +1,4 @@
+# This is where the tests are, so no need to provide pre-commit checks.
+# We know we'll want to have files that fail the style checks, precisely
+# to test those conditions...
+*    no-precommit-check

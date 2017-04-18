@@ -1,0 +1,1 @@
+I am a text file, and therefore should be checked at all.

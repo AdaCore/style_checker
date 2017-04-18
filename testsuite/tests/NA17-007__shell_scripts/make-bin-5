@@ -1,0 +1,575 @@
+#!/bin/sh
+###########################################################
+#                                                         #
+#             I M P O R T A N T   N O T E                 # 
+#                                                         #
+# Any change to the packaging of Gnat must be reflected   #
+# in the scripts used to generate the release Install     #
+# Shields. If you don't know what to do, contact Vasiliy. #
+#                                                         #
+#                                                         #
+###########################################################
+
+. $dir/script/build-utils
+
+build_dir=$GNAT_BUILD_DIR
+MODULE_LOG_DIR=$build_dir/tmp
+MODULE_REPORT_DIR=$build_dir/etc
+
+(
+
+# Initialize local variables
+prefix=$build_dir/gnat-bin
+source=$build_dir/tar/gnat*
+libexecsubdir=libexec/gcc/$GCC_TARGET/$GCC_VERSION
+libsubdir=lib/gcc/$GCC_TARGET/$GCC_VERSION
+gcc_sources_dir=$build_dir/src/gcc
+gcc_obj_dir=$build_dir/obj/gcc
+pack_target_dir=$PACK_DIR/target/$ARCHIVE_SYSTEM
+binutils_bdir="$build_dir/binutils"
+
+if [ "$IS_CROSS" = "true" ]; then
+   pack_target_dir="$pack_target_dir/$HOST_OS_NAME"
+fi
+
+# objects from the gnat rts that should be packaged independently
+objects="g-trasym.o"
+
+# Log misc info in packaging.log
+log_misc ()
+{
+  echo "`date`: $@" >> $MODULE_REPORT_DIR/packaging.log
+}
+
+# Append contents of file $1 to packaging.out, and remove $1
+append_log ()
+{
+  cat $MODULE_LOG_DIR/$1 >> $MODULE_LOG_DIR/packaging.out
+  rm $MODULE_LOG_DIR/$1
+}
+
+# Initialize distribution directory
+log_misc "create $prefix"
+(
+ cd $build_dir &&
+ (rm -rf gnat-bin gnat-bin.tar || true) &&
+ mkdir gnat-bin) > $MODULE_LOG_DIR/init_distrib_dir.out 2>&1
+exit_when_error $? "Cannot create $build_dir/gnat-bin" init_distrib_dir.out
+append_log init_distrib_dir.out
+
+# INSTALL_SCRIPT variable need to be explicitly redefined because its default
+# value is the value of INSTALL_PROGRAM. Setting INSTALL_PROGRAM to
+# "${INSTALL} -s" leads to errors if we do not redefine INSTALL_SCRIPT
+# (stripping script does not work).
+# This bug is specific to GCC version >= 3.4
+log_misc "make install"
+(
+ cd $build_dir/obj &&
+ make ${GCC_MAKE_INSTALL_TARGET} \
+    GNATLIBCFLAGS_FOR_C="-MMD" \
+    prefix=$prefix INSTALL_PROGRAM="\${INSTALL} -s" INSTALL_SCRIPT="\${INSTALL}"
+) > $MODULE_LOG_DIR/make-install.out 2>&1
+exit_when_error $? "Make $GCC_MAKE_INSTALL_TARGET failed" $MODULE_LOG_DIR/make-install.out
+
+cd $build_dir/gnat-bin
+
+##################################
+# Install freshly built binutils #
+##################################
+
+if [ "$GNAT_INSTALL_BINUTILS" = "true" -a "$IS_BAREBOARD" = "true" ]; then
+  log_misc "install binutils"
+  (
+   binutils_bdir=$build_dir/binutils
+   rm -f $binutils_bdir/obj/binutils/addr2line.o &&
+   make prefix=`pwd` -C $binutils_bdir/obj install &&
+   rm -f lib/libiberty.a
+  ) > $MODULE_LOG_DIR/install-binutils.out 2>&1
+  exit_when_error $? "Installation of binutils for $GCC_TARGET failed" \
+    $MODULE_LOG_DIR/install-binutils.out
+fi
+
+if [ "$GNAT_INSTALL_NEWLIB" = "true" ]; then
+  log_misc "install newlib"
+  (
+   newlib_bdir=`getdir $NEWLIB_BUILD_DIR`
+   make-newlib $dir $GCC_TARGET 1.12.0 "" "$prefix" &&
+   make prefix=$build_dir/gnat-bin -C $newlib_bdir/obj install-target-newlib
+  ) > $MODULE_LOG_DIR/install-newlib.out 2>&1
+  exit_when_error $? "Installation of newlib for $GCC_TARGET failed" \
+    $MODULE_LOG_DIR/install-newlib.out
+fi
+
+if [ "$GNAT_INSTALL_BARE_BOARD" = "true" ]; then
+  log_misc "install bare board"
+  (
+   bare_board_bdir=`getdir $BARE_BOARD_BUILD_DIR`
+   make-bare_board $dir $GCC_TARGET "$prefix" &&
+   make TARGET=$GCC_TARGET BARE_BOARD_INSTALL_DIR=$build_dir/gnat-bin -C \
+     $bare_board_bdir/src install
+  ) > $MODULE_LOG_DIR/install-bare-board.out 2>&1
+  exit_when_error $? \
+    "Installation of bare board package for $GCC_TARGET failed" \
+    $MODULE_LOG_DIR/install-bare-board.out
+fi
+
+# For cross platforms retrieve ASIS binaries from the native package
+if [ "$IS_CROSS" = "true" ]; then
+  log_misc "asis binaries for cross: $ASIS_BINARIES"
+  (
+   for f in $ASIS_BINARIES; do
+      cp -p $build_dir/../gnat-bin/bin/$f$EXE_EXT bin/$GCC_TARGET-$f$EXE_EXT
+   done
+  ) > $MODULE_LOG_DIR/asis-packaging.out 2>&1
+  exit_when_error $? "Asis tools packaging for $GCC_TARGET failed" \
+    $MODULE_LOG_DIR/asis-packaging.out
+  append_log asis-packaging.out
+fi
+
+##################################################
+# Remove uneeded files installed by make install #
+##################################################
+
+log_misc "remove unneeded files"
+(
+ if [ -d include/c++ ]; then
+    mv include/c++ include-c++ &&
+    rm -rf include info man lib/libiberty.a &&
+    mkdir include &&
+    mv include-c++ include/c++
+ else
+    rm -rf include info man lib/libiberty.a
+ fi &&
+ rm -rf $libsubdir/adalib &&
+ rm -rf $libsubdir/adainclude
+
+ # On cross targets gcov is no use so remove it.
+ # Remove also vxaddr2line and reinstall it if necessary with the right name
+ if [ "$IS_CROSS" = "true" ]; then
+    rm -f bin/$GCC_TARGET-gcov$EXE_EXT
+    rm -f bin/vxaddr2line$EXE_EXT
+    if [ "$ENABLE_VXADDR2LINE" = "true" ]; then
+       cp -p $gcc_obj_dir/vxaddr2line$EXE_EXT bin/$GCC_TARGET-vxaddr2line$EXE_EXT
+       strip bin/$GCC_TARGET-vxaddr2line$EXE_EXT
+    fi
+ fi
+) > $MODULE_LOG_DIR/remove-unneeded-files.out 2>&1
+exit_when_error $? "Remove of uneeded files failed" \
+  $MODULE_LOG_DIR/remove-unneeded-files.out
+append_log remove-unneeded-files.out
+
+####################
+# Package runtimes #
+####################
+
+log_misc "run-times"
+(
+
+ for rtsdir in $gcc_obj_dir/ada/rts*; do
+   if [ -d $rtsdir ]; then
+      brtsdir=$libsubdir/`basename $rtsdir` &&
+      mkdir $brtsdir &&
+      mkdir $brtsdir/adainclude &&
+      mkdir $brtsdir/adalib &&
+      chmod u+w $brtsdir $brtsdir/adainclude $brtsdir/adalib &&
+      for i in $rtsdir/*.ads $rtsdir/*.adb; do
+        cp -p $i $brtsdir/adainclude 
+      done &&
+      (cp -p $rtsdir/*.c $brtsdir/adainclude || true ) &&
+      (cp -p $rtsdir/*.h $brtsdir/adainclude || true ) &&
+      (cp -p $rtsdir/Makefile.adalib $brtsdir/adalib || true ) &&
+      if [ -r $gcc_obj_dir/ada/so_locations ]; then
+         cp -p $gcc_obj_dir/ada/so_locations $brtsdir/adalib
+      fi &&
+      for i in $rtsdir/*.ali; do
+        cp -p $i $brtsdir/adalib
+      done &&
+      (cd $rtsdir; tar cf - *.a *$SHLIB_EXT*) 2>/dev/null | \
+      (cd $brtsdir/adalib; tar xf -) &&
+      (PATH=`pwd`/bin:$PATH; export PATH; 
+       $gcc_obj_dir/ada/bldtools/create_ada_runtime_project \
+           $brtsdir/adainclude) &&
+      for o in $objects; do
+        cp $rtsdir/$o $brtsdir/adalib
+      done
+   fi
+ done
+) > $MODULE_LOG_DIR/run-time-packaging.out 2>&1
+exit_when_error $? "Packaging of the runtimes failed" \
+  $MODULE_LOG_DIR/run-time-packaging.out
+append_log run-time-packaging.out
+
+log_misc "examples"
+(
+ mkdir -p share/examples/gnat
+ cp -p -r $source/examples/* share/examples/gnat
+) > $MODULE_LOG_DIR/examples-packaging.out 2>&1
+exit_when_error $? "Packaging of examples failed" \
+  $MODULE_LOG_DIR/examples-packaging.out
+append_log examples-packaging.out
+
+# Package COPYING,gnathtml taken from source directory
+log_misc "copy files from $gcc_sources_dir"
+(
+ cp -p -r $gcc_sources_dir/COPYING . &&
+ cp -p $gcc_sources_dir/ada/gnathtml.pl bin &&
+ chmod +wx bin/gnathtml.pl 
+) > $MODULE_LOG_DIR/files-packaging.out 2>&1
+exit_when_error $? "Packaging of files from $gcc_sources_dir failed" \
+                $MODULE_LOG_DIR/files-packaging.out
+append_log files-packaging.out
+
+# Package the precompiled files binaries and libraries
+log_misc "precompiled binaries and libraries"
+(
+ if [ "$HOST_OS_NAME" = "Windows_NT" ]; then
+   cp $source/README.GNAT.NT README.txt && unix2dos readme.txt &&
+   cp $PACK_DIR/target/$GCC_HOST/bin/gnaticons.dll bin
+ else
+   cp -p $source/README.bin-dist README &&
+ fi &&
+ cp -p $source/$GNAT_MAKEFILE_TMPLT Makefile &&
+ cp -p $source/doinstall . &&
+
+ for f in $PRECOMPILED_BINARIES; do
+    if [ -f $binutils_bdir/ins/bin/$f ]; then
+       cp -p $binutils_bdir/ins/bin/$f bin
+    elif [ -f $binutils_bdir/ins/bin/$GCC_TARGET-$f ]; then
+       cp -p $binutils_bdir/ins/bin/$GCC_TARGET-$f bin/$f
+    else
+       cp -p $pack_target_dir/bin/$f bin
+    fi &&
+    chmod 755 bin/$f || break 0 2>/dev/null
+ done &&
+ 
+ for f in bin/as$EXE_EXT bin/ld$EXE_EXT; do
+    if [ -f $f ]; then
+       if [ "$TARGET_OS_NAME" = "Windows_NT" ]; then
+          # On Windows as and ld must be in bin because tools like dlltools 
+          # are looking for them in this location
+          cp -p $f $libexecsubdir
+       else
+          mv $f $libexecsubdir/
+       fi
+    fi || break 0 2>/dev/null
+ done &&
+
+ for f in $PRECOMPILED_LIBRARIES; do
+    if [ -f $binutils_bdir/ins/lib/$f ]; then
+      cp -p $binutils_bdir/ins/lib/$f $libsubdir/$f
+    else
+      cp -p $pack_target_dir/lib/$f $libsubdir/$f
+    fi &&
+    chmod 755 $libsubdir/$f || break 0 2>/dev/null
+ done &&
+
+ if [ "$TARGET_OS_NAME" = "Windows_NT" ]; then
+    # On Windows, copy precompiled binutils doc
+    cp -p -r $pack_target_dir/share .
+ fi
+
+) > $MODULE_LOG_DIR/precompiled-packaging.out 2>&1
+exit_when_error $? "Packaging of precompiled binaries/libraries failed" \
+                $MODULE_LOG_DIR/precompiled-packaging.out
+append_log precompiled-packaging.out
+
+# The following extracts the correct fixincludes set up from the GCC 3 tree
+if [ "$IS_CROSS" = "false" ]; then
+  log_misc "fixincludes"
+  case $GCC_VERSION in
+    3.*)
+    (
+     cp $gcc_obj_dir/fixinc.sh . &&
+     mkdir fixinc &&
+     if [ -f "$gcc_obj_dir/fixinc/fixincl" ]; then cp $gcc_obj_dir/fixinc/fixincl fixinc; fi &&
+     fixinc_list=`ls $gcc_sources_dir/fixinc/fixinc.* 2>/dev/null || true` &&
+     if [ "$fixinc_list" != "" ]; then
+        for i in $fixinc_list; do
+           cp $i fixinc
+        done
+     fi
+    ) > $MODULE_LOG_DIR/fixincludes-packaging.out 2>&1
+    exit_when_error $? "Packaging of fixinc files failed" \
+      $MODULE_LOG_DIR/fixincludes-packaging.out 2>&1
+    ;;
+
+   4.*)
+    (
+     cp $build_dir/obj/fixincludes/fixinc.sh . &&
+     if [ -f "$build_dir/obj/fixincludes/fixincl" ]; then cp $build_dir/obj/fixincludes/fixincl .; fi &&
+     cp $gcc_obj_dir/macro_list .
+    ) > $MODULE_LOG_DIR/fixincludes-packaging.out 2>&1
+    exit_when_error $? "Packaging of fixinc files failed" \
+      $MODULE_LOG_DIR/fixincludes-packaging.out 2>&1
+    ;;
+  esac
+
+  append_log fixincludes-packaging.out
+fi
+
+install=$DEFAULT_PREFIX
+doc_platform=unw
+
+libname=`rts_info $GNAT_DEFAULT_RTS installname`
+if [ "$IS_CROSS" = "true" ]; then
+   echo rts-$libname/adainclude > $libsubdir/ada_source_path
+   echo rts-$libname/adalib     > $libsubdir/ada_object_path
+else
+   if [ "$HOST_OS_NAME" = "Windows_NT" ]; then 
+      mv $libsubdir/rts-$libname/adainclude $libsubdir/rts-$libname/adalib $libsubdir
+      mv $libsubdir/rts-$libname/ada_runtime.gpr $libsubdir
+      rm -r $libsubdir/$libname
+   else
+      ln -s rts-$libname/adainclude $libsubdir/adainclude
+      ln -s rts-$libname/adalib $libsubdir/adalib
+      ln -s rts-$libname/ada_runtime.gpr $libsubdir/ada_runtime.gpr
+   fi
+fi
+
+if [ "$TARGET_OS_NAME" = "Windows_NT" ]; then
+   cp -p $libsubdir/adalib/*.dll bin
+   cp -p lib/*.dll bin
+   
+   # Get also the Mingw and W32api stuffs
+   for d in $GNAT_MINGW $GNAT_W32API; do
+     cp -p $pack_target_dir/$d/bin/* bin
+     if [ ! -d $GCC_TARGET/include ]; then 
+        mkdir -p $GCC_TARGET/include;
+     fi
+     cp -p -r $pack_target_dir/$d/include/* $GCC_TARGET/include
+     cp -p $pack_target_dir/$d/lib/* $libsubdir
+   done
+fi
+
+if [ "$HOST_OS_NAME" = "Windows_NT" ]; then
+      cp -p `which cygwin1.dll` bin/cyggnat.dll
+fi
+
+# vxworksae specific section
+if [ "$GCC_TARGET" = "powerpc-wrs-vxworksae" \
+  -o "$GCC_TARGET" = "i586-wrs-vxworksae" ]
+then
+(
+   log_misc "arinc bindings"
+   # we should be in this dir, but is better to add the "cd"
+   cd $build_dir/gnat-bin/
+
+   # Unpack the apex bindings; the vx653 directory is created
+   gzip -dc $dir/src/arinc_binding-src.tgz | tar xf -
+   exit_when_error $? "Failed to unpack the arinc bindings"
+
+   # Define these directories for simplicity
+   bindings_dir="$build_dir/gnat-bin/vx653"
+   runtimes_dir="$build_dir/gnat-bin/$libsubdir"
+   compiler="$gcc_obj_dir/xgcc -B$gcc_obj_dir/"
+
+   # List of bindings to copy
+   bindings="apex apex_95 apex_minimal apex_zfp"
+
+   # List of runtimes to modify
+   runtimes="cert kernel full zfp"
+
+   # Create the directory to hold the arinc bindings
+   if [ ! -d lib/gnat ]; then
+      mkdir -p lib/gnat
+      exit_when_error $?
+   fi
+
+   # Copy the bindings to lib/gnat
+   for b in $bindings environment.gpr; do
+      cp -r $bindings_dir/$b lib/gnat
+      exit_when_error $?
+   done
+
+   # for PPC we want to pre-compile the cert runtime (no support for
+   # vxsim yet), which means we'll need a different ada_object_path
+   # in rts-cert
+   ada_object_path="ada_object_path_ppc"
+   echo `date`": compiling the apex binding for the cert runtime"
+   (
+   cd lib/gnat/apex/src
+   mkdir -p ../obj/cert
+   exit_when_error $?
+
+   for f in *ads *adb; do
+      echo "$compiler -c -I$gcc_obj_dir/ada/rts-cert $f"
+      $compiler -c -I$gcc_obj_dir/ada/rts-cert $f
+   done
+    
+   mv *.ali *.o ../obj/cert
+   chmod a-w ../obj/cert/*.ali
+   )
+
+   # Copy the ada_*_path files to the appropriate directories
+   # This effectively sets the default runtime for 653 to be the
+   # rts-full (aka vthreads) runtime!!
+   cd $runtimes_dir
+   cp $bindings_dir/ada_*_path .
+   exit_when_error $?
+
+   for rts in $runtimes ; do
+      if [ "x$rts" = "xcert" ]; then
+         cp $bindings_dir/rts-$rts/$ada_object_path rts-$rts/ada_object_path
+      fi
+      cp $bindings_dir/rts-$rts/ada_*_path rts-$rts
+      exit_when_error $?
+   done
+
+   rm -rf $bindings_dir
+) > $MODULE_LOG_DIR/arinc-bindings.out 2>&1
+fi
+
+# Copy the gcc include files from the source distribution
+log_misc "includes"
+(
+ default_lib_name=`rts_info $GNAT_DEFAULT_RTS installname`
+ source_dir=`cd $gcc_sources_dir/.. ; pwd`
+ rts_source_dir=`cd $gcc_obj_dir/ada/rts-$default_lib_name ; pwd`
+
+ mkdir -p $libsubdir/gcc-include
+      
+ for a in `cat $rts_source_dir/*.d` ; do
+    echo $a ;
+ done | sort | uniq | fgrep ".h" > include_files_list
+	
+ for a in `cat include_files_list` ; do
+    dirname $a ;
+ done | sort | uniq | fgrep "$source_dir" > include_dirs_list
+
+ temp1=`echo $source_dir | sed 's/\//\\\\\//g'`
+ temp2=`echo $libsubdir/gcc-include | sed 's/\//\\\\\//g'`
+ echo s/$temp1/$temp2/g > sed_script
+      
+ for a in ` sed -f sed_script include_dirs_list ` ; do
+   mkdir -p $a
+ done
+
+ for a in ` cat include_files_list | fgrep "$source_dir"` ; do
+   cp $a `echo $a | sed -f sed_script`
+ done
+
+ for a in ` cat include_files_list | grep -v -F "$source_dir"` ; do 
+   if [ `dirname $a | cut -b 1-1 ` = "/" ] ; then
+     cp $a $libsubdir/gcc-include
+   else
+     cp $rts_source_dir/$a $libsubdir/gcc-include
+   fi
+ done
+
+ cp $source_dir/gcc/*.h $libsubdir/gcc-include
+ cp $gcc_obj_dir/tconfig.h $libsubdir/gcc-include
+ cp $rts_source_dir/*.h $libsubdir/gcc-include
+ rm include_files_list include_dirs_list sed_script
+) > $MODULE_LOG_DIR/includes-packaging.out 2>&1
+exit_when_error $? "Packaging of includes files failed" \
+  $MODULE_LOG_DIR/includes-packaging.out
+append_log includes-packaging.out
+
+# Package config.guess doinstall and Makefile
+
+log_misc "install scripts"
+(
+ echo echo $GCC_TARGET > config.guess &&
+ for f in Makefile doinstall; do
+    sed -e "s'/usr/local/gnat'$install'" \
+        -e "s/ext=/ext=$EXE_EXT/" \
+        -e "s/^basever.*=.*/basever=$GCC_VERSION/" \
+        -e "s/^gnatver.*=.*/gnatver=$GNAT_VERSION/" \
+        -e "s/^gcc_lib.*=.*/gcc_lib=gcc/" \
+        -e "s/^version.*=.*/version=$GCC_VERSION/" \
+        -e "s/^machine.*=.*/machine=$GCC_TARGET/" $f > $f.tmp
+    mv -f $f.tmp $f
+ done &&
+ chmod +x doinstall config.guess
+) > $MODULE_LOG_DIR/install-scripts-packaging.out 2>&1
+exit_when_error $? "Install Scripts packaging failed" \
+  $MODULE_LOG_DIR/install-scripts-packaging.out
+append_log install-scripts-packaging.out
+
+# Set files attributes
+chmod -R go-w *
+
+# Copy to a doc area the text and html versions of GNAT users guide and 
+# reference manual, features and known-problems since these are most likely 
+# to change frequently with wavefronts.
+
+if [ "$GNAT_ENABLE_DOC" = "true" ]; then
+   log_misc "documentation"
+   (
+    mkdir -p $GNAT_DOC_DIR &&
+    mkdir -p $GNAT_DOC_DIR/info $GNAT_DOC_DIR/html &&
+
+    cp -p $source/features-* $GNAT_DOC_DIR  &&
+    cp -p $source/known-problems-* $GNAT_DOC_DIR &&
+    
+    # Before copying documentation, first go to the docs directory
+    # so that when we are doing the cp the expanded list of files
+    # does not trigger shell limitation (by including for each file
+    # the complete path to documentation). This issue appeared on AIX
+    cd $dir/src/gnat-$GNAT_VERSION-$doc_platform-docs &&
+    
+    cp -p info/gnat_rm.info   $build_dir/gnat-bin/$GNAT_DOC_DIR/info &&
+    cp -p html/gnat_rm*.html  $build_dir/gnat-bin/$GNAT_DOC_DIR/html &&
+    cp -p info/gnat_ugn.info  $build_dir/gnat-bin/$GNAT_DOC_DIR/info &&
+    cp -p html/gnat_ugn*.html $build_dir/gnat-bin/$GNAT_DOC_DIR/html &&
+    cp -p info/gcc.info       $build_dir/gnat-bin/$GNAT_DOC_DIR/info &&
+    cp -p html/gcc*.html      $build_dir/gnat-bin/$GNAT_DOC_DIR/html &&
+    cp -p info/gdb*.info      $build_dir/gnat-bin/$GNAT_DOC_DIR/info &&
+    cp -p html/gdb*.html      $build_dir/gnat-bin/$GNAT_DOC_DIR/html &&
+    case BUILD_SETUP in
+        GPL)
+	    cp -p html/arm05*.html html/*.gif \
+		$build_dir/gnat-bin/$GNAT_DOC_DIR/html
+	    ;;	    
+	*)
+	    cp -p html/arm*.html html/*.gif \
+		$build_dir/gnat-bin/$GNAT_DOC_DIR/html
+	    ;;	    
+    esac &&
+    
+    # return to the previous directory
+    cd $build_dir/gnat-bin &&
+
+    # For cross targets package extra documentation
+    if [ "$IS_CROSS" = "true" ]; then
+       mkdir -p ${GNAT_DOC_DIR}-cross/info
+       mkdir -p ${GNAT_DOC_DIR}-cross/html
+       cp $dir/src/gnat-$GNAT_VERSION-cross-docs/info/gnat_ugx.info \
+         ${GNAT_DOC_DIR}-cross/info &&
+       cp $dir/src/gnat-$GNAT_VERSION-cross-docs/html/gnat_ugx*.html \
+         ${GNAT_DOC_DIR}-cross/html
+       if [ "$IS_HIE" = "true" ]; then
+            cp $dir/src/gnat-$GNAT_VERSION-hie-docs/info/gnathie_ug.info \
+               ${GNAT_DOC_DIR}-cross/info &&
+            cp $dir/src/gnat-$GNAT_VERSION-hie-docs/html/gnathie_ug*.html \
+               ${GNAT_DOC_DIR}-cross/html
+       fi
+    fi
+   ) > $MODULE_LOG_DIR/doc-packaging.out 2>&1
+   warn_when_error $? "Packaging of documentation Failed" \
+     $MODULE_LOG_DIR/doc-packaging.out
+   append_log doc-packaging.out
+fi
+
+# Need to use the system tar rather than GNU tar, otherwise this archive may
+# not be readable by tools other than GNU tar.
+cd ..
+/usr/bin/tar cf gnat-bin.tar gnat-bin > $MODULE_LOG_DIR/tar.out 2>&1
+exit_when_error $? "Tar of gnat-bin directory failed" $MODULE_LOG_DIR/tar.out
+append_log tar.out
+)
+
+result=$?
+if [ $result -eq 0 ]; then
+   module_log "packaging done"
+   echo "make-bin-5 succeeded" >> $MODULE_REPORT_DIR/result
+   echo "make-bin-5 succeeded" >> $MODULE_REPORT_DIR/report
+   exit 0
+elif [ $result -eq 1 ]; then
+   module_log "packaging failure"
+   exit 1
+else
+   # if error is different from 1 or 0 we are not sure that all vars are defined
+   # so we cannnot write in log file...
+   exit $result
+fi

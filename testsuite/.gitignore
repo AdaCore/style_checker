@@ -1,0 +1,5 @@
+# Artifact files generated during coverage analysis
+/.coverage*
+/coverage.rc
+/htmlcov
+/sitecustomize

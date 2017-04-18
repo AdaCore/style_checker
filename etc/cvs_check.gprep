@@ -1,0 +1,3 @@
+* -a -c
+--  Do not delete any conditional code, as we want to syntax check everything
+--  Retain directives as comments so as to not introduce extra blank lines
