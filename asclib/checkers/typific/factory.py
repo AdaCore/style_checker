@@ -17,8 +17,8 @@ def get_file_checker(filename, config):
         return CFileChecker(filename, config)
 
     if ext == '.java':
-        # Not supported yet!
-        return None
+        from asclib.checkers.typific.java import JavaFileChecker
+        return JavaFileChecker(filename, config)
 
     if ext == '.texi':
         from asclib.checkers.typific.texi import TexiFileChecker

@@ -1,0 +1,16 @@
+<!DOCTYPE module PUBLIC
+"-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+"http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<module name="Checker">
+        <property name="localeLanguage" value="en" />
+	<property name="basedir" value="${basedir}" />
+
+	<module name="TreeWalker">
+        <!--
+           imports clauses should designate a class, star imports are forbidden
+        -->
+        <module name="AvoidStarImport"/>
+
+        <module name="NeedBraces"/>
+    </module>
+</module>
