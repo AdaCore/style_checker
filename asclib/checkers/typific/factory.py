@@ -34,8 +34,8 @@ def get_file_checker(filename, config):
         return PythonFileChecker(filename, config)
 
     if ext == '.js':
-        # Not supported yet!
-        return None
+        from asclib.checkers.typific.javascript import JavascriptFileChecker
+        return JavascriptFileChecker(filename, config)
 
     if filename.startswith('known-problems-'):
         # Known problems files. These are now handled by impactdb.
