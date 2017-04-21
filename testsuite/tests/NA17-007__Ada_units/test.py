@@ -6,7 +6,7 @@ class TestRun(TestCase):
         """
         self.set_year(2006)
         p = self.run_style_checker('/paris.a/cvs/Dev/toto', 'ada05-ok-1.adb')
-	self.assertEqual(p.status, 0, p.image)
+        self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 
     def test_ada12_adb(self):
@@ -14,7 +14,7 @@ class TestRun(TestCase):
         """
         self.set_year(2006)
         p = self.run_style_checker('trunk/toto', 'ada12.adb')
-	self.assertEqual(p.status, 0, p.image)
+        self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 
     def test_gprep_check_ko_adb(self):
@@ -22,7 +22,7 @@ class TestRun(TestCase):
         """
         self.set_year(2006)
         p = self.run_style_checker('gnat', 'gprep_check-ko.adb')
-	self.assertNotEqual(p.status, 0, p.image)
+        self.assertNotEqual(p.status, 0, p.image)
         self.assertRunOutputEqual(p, """\
 gprep_check-ko.adb:9:16: (style) space not allowed
 gprep_check-ko.adb:11:21: (style) space not allowed
@@ -33,7 +33,7 @@ gprep_check-ko.adb:11:21: (style) space not allowed
         """
         self.set_year(2006)
         p = self.run_style_checker('gnat', 'hang-ok-1.ads')
-	self.assertEqual(p.status, 0, p.image)
+        self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 
     def test_hang_ok_2_ads(self):
@@ -41,7 +41,7 @@ gprep_check-ko.adb:11:21: (style) space not allowed
         """
         self.set_year(2006)
         p = self.run_style_checker('gnat', 'hang-ok-2.ads')
-	self.assertEqual(p.status, 0, p.image)
+        self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 
     def test_ipstack_adb(self):
@@ -49,7 +49,7 @@ gprep_check-ko.adb:11:21: (style) space not allowed
         """
         self.set_year(2012)
         p = self.run_style_checker('trunk/ipstack', 'ipstack.adb')
-	self.assertEqual(p.status, 0, p.image)
+        self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 
     def test_switch_c_adb(self):
@@ -57,7 +57,7 @@ gprep_check-ko.adb:11:21: (style) space not allowed
         """
         self.set_year(2006)
         p = self.run_style_checker('trunk/ipstack', 'switch-c.adb')
-	self.assertEqual(p.status, 0, p.image)
+        self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 
     def test_ada12_no_first_line_comment_adb(self):
