@@ -13,7 +13,7 @@ class TestRun(TestCase):
         """Style check test against ada12.adb
         """
         self.set_year(2006)
-        p = self.run_style_checker('trunk/toto', 'ada05-ok-1.adb')
+        p = self.run_style_checker('trunk/toto', 'ada12.adb')
 	self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 
