@@ -60,6 +60,17 @@ gprep_check-ko.adb:11:21: (style) space not allowed
 	self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 
+    def test_ada12_no_first_line_comment_adb(self):
+        """Style check test against ada12-no-first-line-comment.adb
+        """
+        self.set_year(2006)
+        p = self.run_style_checker('trunk/toto',
+                                   'ada12-no-first-line-comment.adb')
+        self.assertNotEqual(p.status, 0, p.image)
+        self.assertRunOutputEqual(p, """\
+ada12-no-first-line-comment.adb:1: First line must be comment markers only.
+""")
+
 
 if __name__ == '__main__':
     runtests()
