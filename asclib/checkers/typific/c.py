@@ -18,7 +18,7 @@ class CFileChecker(TypificChecker):
         }
 
     typific_info = TypificCheckerInfo(
-            comment_line_re='--*$',
+            comment_line_re=None,
             ada_RM_spec_p=False,
             copyright_box_r_edge_re=None)
 
