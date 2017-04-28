@@ -79,6 +79,20 @@ ada12-no-first-line-comment.adb:1: First line must be comment markers only.
         self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 
+    def test_ada_gnat05(self):
+        """Style check Ada unit with gnat05
+        """
+        p = self.run_style_checker(
+            '--config',
+            os.path.join(os.getcwd(), 'gnat05_config', 'alt_config.yaml'),
+            'examples', 'gnat05_config/pck.ads')
+        self.assertNotEqual(p.status, 0, p.image)
+        self.assertRunOutputEqual(p, """\
+pck.ads:1:04: (style) space required
+pck.ads:2:04: (style) space required
+pck.ads:3:04: (style) space required
+""")
+
 
 if __name__ == '__main__':
     runtests()

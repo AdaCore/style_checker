@@ -1,0 +1,9 @@
+'*':
+    copyright:
+        - AdaCore
+
+'examples':
+    style_checks:
+        - gnat05
+        - -copyright
+
