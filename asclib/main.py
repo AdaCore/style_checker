@@ -24,12 +24,11 @@ def style_checker(argv=None):
             log_error("Error: `%s' is not a valid filename." % filename)
             continue
 
-        checker = get_file_checker(filename, config)
-        if checker is None:
-            # No checks for this kind of file.
-            continue
-
         try:
+            checker = get_file_checker(filename, config)
+            if checker is None:
+                # No checks for this kind of file.
+                continue
             checker.check_file()
         except FileCheckerError as e:
             has_errors = True
