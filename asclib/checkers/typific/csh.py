@@ -28,5 +28,8 @@ class CshFileChecker(TypificChecker):
             p = Run(['/bin/csh', '-n', self.filename])
             if p.status != 0:
                 return p.out
-        except OSError as e:
+        except OSError as e:  # pragma: no cover (see below)
+            # Can only really happen if csh is not installed on the host
+            # machine. Fairly low probability, but we keep this handler
+            # so as to generate an error message rather than a traceback.
             return 'Failed to run csh: %s' % e

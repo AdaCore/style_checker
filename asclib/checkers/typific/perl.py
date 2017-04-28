@@ -28,5 +28,8 @@ class PerlFileChecker(TypificChecker):
             p = Run(['/usr/bin/perl', '-c', self.filename])
             if p.status != 0:
                 return p.out
-        except OSError as e:
+        except OSError as e:  # pragma: no cover (see below)
+            # Can only really happen if perl is not installed on the host
+            # machine. Fairly low probability, but we keep this handler
+            # so as to generate an error message rather than a traceback.
             return 'Failed to run perl: %s' % e
