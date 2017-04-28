@@ -85,6 +85,16 @@ bash-ko.sh: line 4: syntax error: unexpected end of file
 if: Expression Syntax.
 """)
 
+    def test_bad_perl_pl(self):
+        """Run checker against bad_perl.pl
+        """
+        p = self.run_style_checker('unimportant', 'bad_perl.pl')
+	self.assertNotEqual(p.status, 0, p.image)
+        self.assertRunOutputEqual(p, """\
+syntax error at bad_perl.pl line 3, near "my;"
+bad_perl.pl had compilation errors.
+""")
+
 
 if __name__ == '__main__':
     runtests()
