@@ -76,5 +76,15 @@ bash-ko.sh: line 3: unexpected EOF while looking for matching `}'
 bash-ko.sh: line 4: syntax error: unexpected end of file
 """)
 
+    def test_csh_ko(self):
+        """Run checker against bash-ko.sh
+        """
+        p = self.run_style_checker('unimportant', 'csh-ko.csh')
+	self.assertNotEqual(p.status, 0, p.image)
+        self.assertRunOutputEqual(p, """\
+if: Expression Syntax.
+""")
+
+
 if __name__ == '__main__':
     runtests()
