@@ -86,6 +86,6 @@ def get_file_type(filename):
                                                p.status),
                 p.out)
     except OSError as e:
-        return "Failed to run `file %s': %s" % (filename, e)
+        raise FileCheckerError("Failed to run `file %s': %s" % (filename, e))
 
     return p.out
