@@ -66,5 +66,15 @@ make-bin-5: 230: make-bin-5: Syntax error: "fi" unexpected
 	self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 
+    def test_bash_ko_sh(self):
+        """Run checker against bash-ko.sh
+        """
+        p = self.run_style_checker('unimportant', 'bash-ko.sh')
+	self.assertNotEqual(p.status, 0, p.image)
+        self.assertRunOutputEqual(p, """\
+bash-ko.sh: line 3: unexpected EOF while looking for matching `}'
+bash-ko.sh: line 4: syntax error: unexpected end of file
+""")
+
 if __name__ == '__main__':
     runtests()
