@@ -1,0 +1,4 @@
+#! /usr/bin/env bash
+
+echo "Error: $1: Cannot determine file type." >& 2
+exit 1

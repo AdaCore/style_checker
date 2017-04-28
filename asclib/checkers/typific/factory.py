@@ -82,7 +82,7 @@ def get_file_type(filename):
         p = Run(['file', filename])
         if p.status != 0:
             raise FileCheckerError(
-                '%s returned nonzero (%d):' % (p.command_line_image,
+                '%s returned nonzero (%d):' % (p.command_line_image(),
                                                p.status),
                 p.out)
     except OSError as e:
