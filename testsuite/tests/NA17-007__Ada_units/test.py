@@ -71,6 +71,14 @@ gprep_check-ko.adb:11:21: (style) space not allowed
 ada12-no-first-line-comment.adb:1: First line must be comment markers only.
 """)
 
+    def test_ada_gnatx(self):
+        """Style check Ada unit in repository that uses the gnatx config
+        """
+        self.set_year(2006)
+        p = self.run_style_checker('java', 'switch-c.adb')
+        self.assertEqual(p.status, 0, p.image)
+        self.assertRunOutputEmpty(p)
+
 
 if __name__ == '__main__':
     runtests()
