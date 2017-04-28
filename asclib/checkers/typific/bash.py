@@ -28,5 +28,8 @@ class BashFileChecker(TypificChecker):
             p = Run(['/bin/bash', '-n', self.filename])
             if p.status != 0:
                 return p.out
-        except OSError as e:
+        except OSError as e:  # pragma: no cover (see below)
+            # Can only really happen if bash is not installed on the host
+            # machine. Near-zero probability, but we keep this handler
+            # so as to generate an error message rather than a traceback.
             return 'Failed to run bash: %s' % e
