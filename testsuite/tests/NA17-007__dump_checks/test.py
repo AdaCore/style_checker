@@ -20,7 +20,7 @@ BASH                       -             -      -      -      -      -      X   
 CSH                        -             -      -      -      -      -      X      X      X      -      X      -
 PYTHON                     -             -      -      -      -      -      X      X      X      -      X      -
 PERL                       -             -      -      -      -      -      X      X      X      -      X      -
-JAVASCRIPT                 -             -      -      -      -      -      X      X      -      -      X      -
+JAVASCRIPT                 -             -      -      -      -      -      X      X      X      -      X      -
 """)
 
 
