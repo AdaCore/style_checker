@@ -18,7 +18,7 @@ TEXI                       -             X      X      X      X      -      X   
 SH                         -             -      -      -      -      -      X      X      X      -      X      -
 BASH                       -             -      -      -      -      -      X      X      X      -      X      -
 CSH                        -             -      -      -      -      -      X      X      X      -      X      -
-PYTHON                     -             -      -      -      -      -      X      X      -      -      X      -
+PYTHON                     -             -      -      -      -      -      X      X      X      -      X      -
 PERL                       -             -      -      -      -      -      X      X      X      -      X      -
 JAVASCRIPT                 -             -      -      -      -      -      X      X      -      -      X      -
 """)

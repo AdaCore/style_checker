@@ -11,7 +11,7 @@ class PythonFileChecker(TypificChecker):
         'first_line_comment': False,
         'max_line_length': False,
         'no_dos_eol': True,
-        'no_last_eol': False,
+        'no_last_eol': True,
         'no_rcs_keywords': False,
         'no_trailing_space': True,
         }
