@@ -1,8 +1,16 @@
-from argparse import ArgumentParser
+from argparse import Action, ArgumentParser
 import datetime
 import re
+import sys
 
 from asclib import get_config_default_filename
+from asclib.checkers.typific.factory import dump_check_for_all_file_types
+
+
+class DumpChecksAction(Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        dump_check_for_all_file_types()
+        sys.exit(1)
 
 
 def parse_cmdline(argv=None):
@@ -25,6 +33,9 @@ def parse_cmdline(argv=None):
                        help=('Option to pretend today is a different year'
                              ' than it really is (used mostly to simplify'
                              ' testing'))
+    debug.add_argument('--dump-checks', nargs=0, action=DumpChecksAction,
+                       help=('Dump the list of checks performed for each'
+                             ' kind of file.'))
 
     args = parser.parse_args(argv)
 

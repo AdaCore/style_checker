@@ -89,3 +89,43 @@ def get_file_type(filename):
         raise FileCheckerError("Failed to run `file %s': %s" % (filename, e))
 
     return p.out
+
+
+def dump_check_for_all_file_types():
+    from asclib import get_config_default_filename
+    from asclib.config import Config
+    config = Config(get_config_default_filename(), 'nothing', 2006)
+    gnat_config = Config(get_config_default_filename(), 'gnat', 2006)
+
+    from asclib.checkers.typific.ada import AdaFileChecker
+    AdaFileChecker('a.ads', config).dump_checks('STD_ADA', print_header=True)
+    AdaFileChecker('a-a.ads', gnat_config).dump_checks('RT_SPEC')
+    AdaFileChecker('a-a.adb', gnat_config).dump_checks('RT_BODY')
+    AdaFileChecker('bla.adb', gnat_config).dump_checks('COMPILER_CORE')
+
+    from asclib.checkers.typific.c import CFileChecker
+    CFileChecker('c.h', config).dump_checks('C')
+
+    from asclib.checkers.typific.java import JavaFileChecker
+    JavaFileChecker('j.java', config).dump_checks('JAVA')
+
+    from asclib.checkers.typific.texi import TexiFileChecker
+    TexiFileChecker('h.texi', config).dump_checks('TEXI')
+
+    from asclib.checkers.typific.sh import ShFileChecker
+    ShFileChecker('s', config).dump_checks('SH')
+
+    from asclib.checkers.typific.bash import BashFileChecker
+    BashFileChecker('b', config).dump_checks('BASH')
+
+    from asclib.checkers.typific.csh import CshFileChecker
+    CshFileChecker('c', config).dump_checks('CSH')
+
+    from asclib.checkers.typific.python import PythonFileChecker
+    PythonFileChecker('p.py', config).dump_checks('PYTHON')
+
+    from asclib.checkers.typific.perl import PerlFileChecker
+    PerlFileChecker('p.pl', config).dump_checks('PERL')
+
+    from asclib.checkers.typific.javascript import JavascriptFileChecker
+    JavascriptFileChecker('j.js', config).dump_checks('JAVASCRIPT')

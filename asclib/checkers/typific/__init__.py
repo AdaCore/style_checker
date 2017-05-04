@@ -89,6 +89,56 @@ class TypificChecker(object):
         if err_msgs:
             raise FileCheckerError(*err_msgs)
 
+    def dump_checks(self, cvs_check_file_type, print_header=False):
+        """Dump the rulific_decision_map to stdout.
+
+        The purpose is to be able to compare the rulific_decision_map
+        against the same map from cvs_check, so as to make sure they
+        are the same.  So we need to print them in the same order as
+        cvs_check.
+        """
+        # The way the output is displayed isn't expected to change much
+        # in the foreseeable future, so it's good enough to print it
+        # the "dumb" way.
+        if print_header:
+            print('           STYLE  FEATUR START_ START_ COPYRI COPYRI'
+                  ' COPYRI COPYRI ADA_RM  EOL   NO_DOS NO_LAS LENGTH'
+                  ' TRAILI  REV')
+
+        checks_status = []
+        for (cvs_check_name, rulific_name) in (
+                ('STYLE', None),
+                ('FEATURES', None),
+                ('START_COMMENT', 'first_line_comment'),
+                ('START_BANG', None),
+                # Note: All COPYRIGHT_* rules either always true,
+                # or always false, so all implemented using the same
+                # rulific decision.
+                ('COPYRIGHT_PRESENT', 'copyright'),
+                ('COPYRIGHT_WELLFORMED', 'copyright'),
+                ('COPYRIGHT_YEAR', 'copyright'),
+                ('COPYRIGHT_HOLDER', 'copyright'),
+                ('ADA_RM_SPEC', None),
+                ('EOL', 'eol'),
+                ('NO_DOS_EOL', 'no_dos_eol'),
+                ('NO_LAST_EOL', 'no_last_eol'),
+                ('LENGTH', 'max_line_length'),
+                ('TRAILING', 'no_trailing_space'),
+                ('REV', 'no_rcs_keywords')):
+            if cvs_check_name == 'ADA_RM_SPEC':
+                # Special case, where we have to to dig into
+                # the typific_info rather than the rulific_decision_map.
+                checks_status.append('X' if self.typific_info.ada_RM_spec_p
+                                     else '-')
+            elif rulific_name is None:
+                checks_status.append(' ')
+            else:
+                checks_status.append(
+                    'X' if self.rulific_decision_map[rulific_name]
+                    else '-')
+        print('{:10.10}   {}'.format(cvs_check_file_type,
+                                     '      '.join(checks_status)))
+
     ######################################################################
     #  Abstract methods/attributes/properties:
     #
