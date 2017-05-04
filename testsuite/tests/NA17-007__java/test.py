@@ -8,6 +8,7 @@ class TestRun(TestCase):
                                    'test1.java')
 	self.assertNotEqual(p.status, 0, p.image)
         self.assertRunOutputEqual(p, """\
+test1.java:1: First line must start with a comment (regexp: (/\*|//).*)
 test1.java: Copyright notice missing, must occur before line 24
 """)
 
