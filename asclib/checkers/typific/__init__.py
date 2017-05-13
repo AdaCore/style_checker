@@ -5,7 +5,22 @@ from asclib.logging import log_info
 
 
 class TypificChecker(object):
+    """The style checker for a given file type.
+
+    :ivar filename: The name of the file to check.
+    :ivar config: A Config object.
+    :iver my_rulific_checkers: The list of rulific checkers this
+        typific checker will be using, in the same order as in
+        ALL_RULIFIC_CHECKERS.
+    """
     def __init__(self, filename, config):
+        """The constructor.
+
+        :param filename: Same as the attribute.
+        :type filename: str
+        :param config: Same as the attribute.
+        :type config: Config
+        """
         self.filename = filename
         self.config = config
 
@@ -40,6 +55,13 @@ class TypificChecker(object):
             self.file_type
 
     def check_file(self):
+        """Perform all necessary checks on our file (including rulific ones).
+
+        Raise FileCheckerError if an error is detected.
+
+        :return: None.
+        :rtype: None
+        """
         log_info("Checking style of `%s' (%s)"
                  % (self.filename, self.file_type))
 
@@ -90,12 +112,20 @@ class TypificChecker(object):
             raise FileCheckerError(*err_msgs)
 
     def dump_checks(self, cvs_check_file_type, print_header=False):
-        """Dump the rulific_decision_map to stdout.
+        """Dump to stdout the rulific_decision_map for our type of file.
 
         The purpose is to be able to compare the rulific_decision_map
         against the same map from cvs_check, so as to make sure they
         are the same.  So we need to print them in the same order as
         cvs_check.
+
+        :param cvs_check_file_type: The file type as described by
+            cvs_check (the legacy style checker this tool is replacing)
+            equivalent to this object's file type.
+        :type cvs_check_file_type: str
+        :param print_header: If True, then print a table header displaying
+            the name of each rulific checker.
+        :type print_header: bool
         """
         # The way the output is displayed isn't expected to change much
         # in the foreseeable future, so it's good enough to print it
@@ -170,6 +200,8 @@ class TypificChecker(object):
         is checked (Eg: with Ada, the compiler units typically have
         some extra checks).  As such, a class attribute would not have
         worked in this context.
+
+        :rtype: str
         """
         raise FileCheckerError(
             'abstract TypificChecker.file_type property unexpectedly called.')
@@ -177,12 +209,13 @@ class TypificChecker(object):
     def run_external_checker(self):
         """Run an external program to check the contents of the file.
 
-        Return a string with the corresponding error message if
-        the checker discovered some issues, None otherwise.
-
         This is typically a tool which will perform some kind of
         language-specific check, making sure the file compiles,
         follows the proper coding style, etc.
+
+        :return: A string with the corresponding error message if
+            the checker discovered some issues, None otherwise.
+        :rtype: str | None
         """
         raise FileCheckerError(
             'abstract TypificChecker.run_external_checker method'
@@ -192,21 +225,28 @@ class TypificChecker(object):
 class TypificCheckerInfo(object):
     """Some info about the type of file a given TypificChecker handles.
 
-    ATTRIBUTES
-        comment_line_re: A regexp (string) which matches a line
-            made of comment markers only (Eg: for Ada, it would
-            be a line of dashes; for scripts, it would be a line
-            of '#' characters). None if checkers should not worry
-            about that aspect.
-        ada_RM_spec_p: True if the file to be checked is an Ada RM
-            spec, False otherwise.
-        copyright_box_r_edge_re: If this type of file has copyright
-            notices enclosed inside an ascii-art box, this attribute
-            should be a regexp (string) matching the right edge of
-            that box. None otherwise.
+    :ivar comment_line_re: A regexp (string) which matches a line
+        made of comment markers only (Eg: for Ada, it would be a line
+        of dashes; for scripts, it would be a line of '#' characters).
+        None if checkers should not worry about that aspect.
+    :ivar ada_RM_spec_p: True if the file to be checked is an Ada RM
+        spec, False otherwise.
+    :ivar copyright_box_r_edge_re: If this type of file has copyright
+        notices enclosed inside an ascii-art box, this attribute should
+        be a regexp (string) matching the right edge of that box.
+        None otherwise.
     """
     def __init__(self, comment_line_re, ada_RM_spec_p,
                  copyright_box_r_edge_re):
+        """The constructor.
+
+        :param comment_line_re: Same as the attribute.
+        :type comment_line_re: str | None
+        :param ada_RM_spec_p: Same as the attribute.
+        :type ada_RM_spec_p: bool
+        :param copyright_box_r_edge_re: Same as the attribute.
+        :type copyright_box_r_edge_re: str | None
+        """
         self.comment_line_re = comment_line_re
         self.ada_RM_spec_p = ada_RM_spec_p
         self.copyright_box_r_edge_re = copyright_box_r_edge_re

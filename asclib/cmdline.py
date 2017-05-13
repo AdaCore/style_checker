@@ -8,12 +8,25 @@ from asclib.checkers.typific.factory import dump_check_for_all_file_types
 
 
 class DumpChecksAction(Action):
+    """The class used to implement the --dump-checks switch.
+
+    We use this class, because the behavior of the switch is
+    similar to the --help switch, where the switch causes
+    some information to be printed before we exit. We also
+    want the switch to work even if some mandatory positional
+    arguments or switches are missing.
+    """
     def __call__(self, parser, namespace, values, option_string=None):
         dump_check_for_all_file_types()
         sys.exit(1)
 
 
 def parse_cmdline(argv=None):
+    """Parse the given command-line
+
+    :param argv: Same as argparse.ArgumentParser.parse_args.
+    :type argv: list | None
+    """
     parser = ArgumentParser(description='The AdaCore Style Checker')
     parser.add_argument('module_name',
                         help=('The name of module/repository where'

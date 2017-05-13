@@ -1,3 +1,5 @@
+"""The typific file checker factory...
+"""
 import os
 
 from gnatpython.ex import Run
@@ -6,6 +8,13 @@ from asclib.checkers import FileCheckerError
 
 
 def get_file_checker(filename, config):
+    """Return the TypificChecker for the given filename.
+
+    :param filename: The name of the file to be checking.
+    :type filename: str
+    :param config: a Config object.
+    :type config: Config
+    """
     _, ext = os.path.splitext(filename)
 
     if ext in ('.ads', '.adb', '.ada'):
@@ -77,6 +86,10 @@ def get_file_checker(filename, config):
 
 def get_file_type(filename):
     """Run `file' on filename and return its output.
+
+    :param filename: The name of the file on which to run the `file'
+        command.
+    :type filename: str
     """
     try:
         p = Run(['file', filename])
@@ -92,6 +105,10 @@ def get_file_type(filename):
 
 
 def dump_check_for_all_file_types():
+    """Implement the --dump-checks command-line switch.
+
+    :rtype: None
+    """
     from asclib import get_config_default_filename
     from asclib.config import Config
     config = Config(get_config_default_filename(), 'nothing', 2006)

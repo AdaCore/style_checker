@@ -1,3 +1,5 @@
+"""The main subprogram for our style checker.
+"""
 import os
 
 from asclib.cmdline import parse_cmdline
@@ -9,6 +11,11 @@ from asclib.logging import log_error
 
 
 def style_checker(argv=None):
+    """Run the style checker with the given command-line arguments.
+
+    :param argv: Same as in parse_cmdline.
+    :type argv: list[str] | None
+    """
     args = parse_cmdline(argv)
     asclib.logging.logging_level = args.verbose_level
 
