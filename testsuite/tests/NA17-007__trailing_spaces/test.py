@@ -22,6 +22,16 @@ trailing-ko-2.c:173: Trailing spaces are not allowed
 trailing-ko-2.c:9: Copyright notice must include current year (found 2005, expected 2006)
 """)
 
+    def test_trailing_tab(self):
+        """Style check test against trailing-tab.c
+        """
+        self.set_year(2006)
+        p = self.run_style_checker('trunk/gnat', 'trailing-tab.c')
+	self.assertNotEqual(p.status, 0, p.image)
+        self.assertRunOutputEqual(p, """\
+trailing-tab.c:30: Trailing spaces are not allowed
+""")
+
 
 if __name__ == '__main__':
     runtests()
