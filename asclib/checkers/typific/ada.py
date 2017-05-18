@@ -1,4 +1,5 @@
 from gnatpython.ex import command_line_image, Run
+import os
 import re
 
 from asclib.checkers.typific import TypificChecker, TypificCheckerInfo
@@ -110,16 +111,16 @@ class AdaFileChecker(TypificChecker):
 
         cmd.append(self.filename)
 
-        # Unset some critical environment variables.
-        for var in ('GCC_EXEC_PREFIX', 'GCC_INSTALL_DIRECTORY',
-                    'GCC_INCLUDE_DIR',
-                    'GCC_ROOT', 'GNAT_ROOT', 'BINUTILS_ROOT'):
-            # ???
-            pass
+        # Run GCC with some some critical environment variables unset.
+        BANNED_ENV_VARS = ('GCC_EXEC_PREFIX', 'GCC_INSTALL_DIRECTORY',
+                           'GCC_INCLUDE_DIR',
+                           'GCC_ROOT', 'GNAT_ROOT', 'BINUTILS_ROOT')
+        gcc_env = {var_name: value for var_name, value in os.environ.items()
+                   if var_name not in BANNED_ENV_VARS}
 
         try:
             log_info('Running: %s' % command_line_image(cmd), 2)
-            p = Run(cmd)
+            p = Run(cmd, env=gcc_env)
             if p.status != 0 or p.out:
                 return p.out
         except OSError as e:

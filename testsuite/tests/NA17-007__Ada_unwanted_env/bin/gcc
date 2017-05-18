@@ -1,0 +1,14 @@
+#! /usr/bin/env python
+
+import os
+
+BANNED_VAR_NAMES = ('GCC_EXEC_PREFIX', 'GCC_INSTALL_DIRECTORY',
+                    'GCC_INCLUDE_DIR',
+                    'GCC_ROOT', 'GNAT_ROOT', 'BINUTILS_ROOT')
+
+print "--- Checking all banned environment variables..."
+for var_name in BANNED_VAR_NAMES:
+    if var_name in os.environ:
+        print "*** Error: %s should not be defined (%s)" % (
+            var_name, os.environ[var_name])
+print "--- Done!"
