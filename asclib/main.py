@@ -21,24 +21,23 @@ def style_checker(argv=None):
 
     config = Config(args.config, args.module_name, args.forced_year)
 
-    has_errors = False
+    n_files_with_errors = 0
     for filename in args.filenames:
-        # Before even trying to launch the style checker, first verify
-        # that the file exists, and if it doesn't then report the error,
-        # and look at the next file to check...
-        if not os.path.isfile(filename):
-            has_errors = True
-            log_error("Error: `%s' is not a valid filename." % filename)
-            continue
-
         try:
+            # Before even trying to launch the style checker, first verify
+            # that the file exists, and if it doesn't then report the error,
+            # and look at the next file to check...
+            if not os.path.isfile(filename):
+                raise FileCheckerError("Error: `%s' is not a valid filename."
+                                       % filename)
+
             checker = get_file_checker(filename, config)
             if checker is None:
                 # No checks for this kind of file.
                 continue
             checker.check_file()
         except FileCheckerError as e:
-            has_errors = True
+            n_files_with_errors += 1
             log_error(e)
 
-    return not has_errors
+    return n_files_with_errors == 0
