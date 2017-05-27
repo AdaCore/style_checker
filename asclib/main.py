@@ -38,6 +38,10 @@ def style_checker(argv=None):
             checker.check_file()
         except FileCheckerError as e:
             n_files_with_errors += 1
-            log_error(e)
+            if n_files_with_errors > args.max_files_with_errors:
+                log_error("[other files with style violations were found]")
+                break
+            else:
+                log_error(e)
 
     return n_files_with_errors == 0
