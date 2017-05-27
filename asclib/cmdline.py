@@ -33,8 +33,14 @@ def parse_cmdline(argv=None):
     parser.add_argument('module_name',
                         help=('The name of module/repository where'
                               ' the file to be checked lives.'))
-    parser.add_argument('filenames', metavar='filename', nargs='+',
-                        help=('The names of the files to be checked.'))
+    parser.add_argument('filenames', metavar='filename', nargs='*',
+                        help=('The names of the files to be checked.'
+                              ' If no filename is provided, then read'
+                              ' the list of files to check from standard'
+                              ' input (one file per line). Passing'
+                              ' the filenames via standard input allows'
+                              ' bypassing potential limitations regarding'
+                              ' command-line maximum lengths.'))
     parser.add_argument('-config', '--config', metavar='CONFIG_FILENAME',
                         default=get_config_default_filename(),
                         help='The config file to use (default: %(default)s)')

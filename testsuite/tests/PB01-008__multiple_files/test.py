@@ -16,6 +16,21 @@ gprep_check-ko.adb:9:16: (style) space not allowed
 gprep_check-ko.adb:11:21: (style) space not allowed
 """)
 
+    def test_stdin_bad_and_bad(self):
+        """Style check test against bad + bad (via stdin)
+        """
+        self.set_year(2006)
+        stdin_buf = '\n'.join(['ada12-no-first-line-comment.adb',
+                               'gprep_check-ko.adb'])
+        p = self.run_style_checker('hello',
+                                   input='|' + stdin_buf)
+        self.assertNotEqual(p.status, 0, p.image)
+        self.assertRunOutputEqual(p, """\
+ada12-no-first-line-comment.adb:1: First line must be comment markers only.
+gprep_check-ko.adb:9:16: (style) space not allowed
+gprep_check-ko.adb:11:21: (style) space not allowed
+""")
+
     def test_bad_good_bad_max_failures_1(self):
         """Style check test --max-files-with-failures=1 against
         bad + good + bad
@@ -26,6 +41,25 @@ gprep_check-ko.adb:11:21: (style) space not allowed
                                    'gprep_check-ko.adb',
                                    'ada12.adb',
                                    'ada12-no-first-line-comment.adb')
+        self.assertNotEqual(p.status, 0, p.image)
+        self.assertRunOutputEqual(p, """\
+gprep_check-ko.adb:9:16: (style) space not allowed
+gprep_check-ko.adb:11:21: (style) space not allowed
+[other files with style violations were found]
+""")
+
+    def test_stdin_bad_good_bad_max_failures_1(self):
+        """Style check test --max-files-with-failures=1 against
+        bad + good + bad (stdin)
+        """
+        self.set_year(2006)
+        stdin_buf = '\n'.join(['gprep_check-ko.adb',
+                               'ada12.adb',
+                               'ada12-no-first-line-comment.adb',
+                               'gprep_check-ko.adb'])
+        p = self.run_style_checker('--max-files-with-errors=1',
+                                   'hello',
+                                   input='|' + stdin_buf)
         self.assertNotEqual(p.status, 0, p.image)
         self.assertRunOutputEqual(p, """\
 gprep_check-ko.adb:9:16: (style) space not allowed
@@ -48,6 +82,22 @@ gprep_check-ko.adb:11:21: (style) space not allowed
 ada12-no-first-line-comment.adb:1: First line must be comment markers only.
 """)
 
+    def test_stdin_bad_good_bad(self):
+        """Style check test against bad + good + bad (stdin)
+        """
+        self.set_year(2006)
+        stdin_buf = '\n'.join(['gprep_check-ko.adb',
+                               'ada12.adb',
+                               'ada12-no-first-line-comment.adb'])
+        p = self.run_style_checker('hello',
+                                   input='|' + stdin_buf)
+        self.assertNotEqual(p.status, 0, p.image)
+        self.assertRunOutputEqual(p, """\
+gprep_check-ko.adb:9:16: (style) space not allowed
+gprep_check-ko.adb:11:21: (style) space not allowed
+ada12-no-first-line-comment.adb:1: First line must be comment markers only.
+""")
+
     def test_bad_bad_good_bad(self):
         """Style check test against bad + bad + good + bad
         """
@@ -57,6 +107,24 @@ ada12-no-first-line-comment.adb:1: First line must be comment markers only.
                                    'empty.adb',
                                    'ada12.adb',
                                    'ada12-no-first-line-comment.adb')
+        self.assertNotEqual(p.status, 0, p.image)
+        self.assertRunOutputEqual(p, """\
+gprep_check-ko.adb:9:16: (style) space not allowed
+gprep_check-ko.adb:11:21: (style) space not allowed
+empty.adb:1:01: warning: file contains no compilation units
+ada12-no-first-line-comment.adb:1: First line must be comment markers only.
+""")
+
+    def test_stdin_bad_bad_good_bad(self):
+        """Style check test against bad + bad + good + bad (stdin)
+        """
+        self.set_year(2006)
+        stdin_buf = '\n'.join(['gprep_check-ko.adb',
+                               'empty.adb',
+                               'ada12.adb',
+                               'ada12-no-first-line-comment.adb'])
+        p = self.run_style_checker('hello',
+                                   input='|' + stdin_buf)
         self.assertNotEqual(p.status, 0, p.image)
         self.assertRunOutputEqual(p, """\
 gprep_check-ko.adb:9:16: (style) space not allowed
@@ -123,6 +191,65 @@ gprep_check-ko.adb:11:21: (style) space not allowed
 empty.adb:1:01: warning: file contains no compilation units
 ada12-no-first-line-comment.adb:1: First line must be comment markers only.
 [other files with style violations were found]
+""")
+
+    def test_stdin_one_good(self):
+        """Style check test against good (via stdin)
+        """
+        self.set_year(2006)
+        stdin_buf = '\n'.join(['ada12.adb'])
+        p = self.run_style_checker('hello',
+                                   input='|' + stdin_buf)
+        self.assertEqual(p.status, 0, p.image)
+        self.assertRunOutputEmpty(p)
+
+    def test_stdin_one_bad(self):
+        """Style check test against bad (via stdin)
+        """
+        self.set_year(2006)
+        stdin_buf = '\n'.join(['ada12-no-first-line-comment.adb'])
+        p = self.run_style_checker('hello',
+                                   input='|' + stdin_buf)
+        self.assertNotEqual(p.status, 0, p.image)
+        self.assertRunOutputEqual(p, """\
+ada12-no-first-line-comment.adb:1: First line must be comment markers only.
+""")
+
+    def test_stdin_bad_empty_and_bad(self):
+        """Style check test against bad + emtpy entry + bad (via stdin)
+
+        The empty entry is to test our defensive programing of this case
+        (which otherwise is not expected to happen)
+        """
+        self.set_year(2006)
+        stdin_buf = '\n'.join(['ada12-no-first-line-comment.adb',
+                               'gprep_check-ko.adb'])
+        p = self.run_style_checker('hello',
+                                   input='|' + stdin_buf)
+        self.assertNotEqual(p.status, 0, p.image)
+        self.assertRunOutputEqual(p, """\
+ada12-no-first-line-comment.adb:1: First line must be comment markers only.
+gprep_check-ko.adb:9:16: (style) space not allowed
+gprep_check-ko.adb:11:21: (style) space not allowed
+""")
+
+    def test_stdin_bad_and_bad_with_terminating_newline(self):
+        """Style check test against bad + bad (via stdin, where last has \n)
+
+        The empty entry is to test our defensive programing of this case
+        (which otherwise is not expected to happen)
+        """
+        self.set_year(2006)
+        stdin_buf = ('\n'.join(['ada12-no-first-line-comment.adb',
+                               'gprep_check-ko.adb']) +
+                     '\n')
+        p = self.run_style_checker('hello',
+                                   input='|' + stdin_buf)
+        self.assertNotEqual(p.status, 0, p.image)
+        self.assertRunOutputEqual(p, """\
+ada12-no-first-line-comment.adb:1: First line must be comment markers only.
+gprep_check-ko.adb:9:16: (style) space not allowed
+gprep_check-ko.adb:11:21: (style) space not allowed
 """)
 
 if __name__ == '__main__':

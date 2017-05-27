@@ -1,6 +1,7 @@
 """The main subprogram for our style checker.
 """
 import os
+import sys
 
 from asclib.cmdline import parse_cmdline
 from asclib.checkers import FileCheckerError
@@ -18,6 +19,13 @@ def style_checker(argv=None):
     """
     args = parse_cmdline(argv)
     asclib.logging.logging_level = args.verbose_level
+
+    if not args.filenames:
+        # No filename provided, which means the user wants us to
+        # read the list of filesnames from standard input.
+        args.filenames = [filename
+                          for filename in sys.stdin.read().splitlines()
+                          if filename]
 
     config = Config(args.config, args.module_name, args.forced_year)
 
