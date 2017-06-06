@@ -46,6 +46,10 @@ def get_file_checker(filename, config):
         from asclib.checkers.typific.javascript import JavascriptFileChecker
         return JavascriptFileChecker(filename, config)
 
+    if ext == '.yaml':
+        from asclib.checkers.typific.yaml_files import YamlFileChecker
+        return YamlFileChecker(filename, config)
+
     if filename.startswith('known-problems-'):
         # Known problems files. These are now handled by impactdb.
         # So no need for us to provide a style-checker anymore.

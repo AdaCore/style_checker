@@ -1,0 +1,26 @@
+setup: gnat-7.4-sustained
+process: gnat-7.4-sustained
+
+sandbox_kind: 'build'
+is_release: True
+
+branch_startdate: '2017-03-01'
+
+empty_default: &EMPTY
+    native: []
+    cross_linux: []
+    cross_windows: []
+    cross_solaris: []
+    cross_darwin: []
+
+
+platforms:
+    <<: *EMPTY
+    native: &native
+         - x86-linux
+
+    cross_linux:
+        - leon3-elf-linux
+
+    prod_only:
+        <<: *EMPTY
