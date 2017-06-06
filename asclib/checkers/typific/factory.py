@@ -38,7 +38,7 @@ def get_file_checker(filename, config):
         # Binary file, for which no checking is done.
         return None
 
-    if ext == '.py':
+    if ext in ('.py', '.anod'):
         from asclib.checkers.typific.python import PythonFileChecker
         return PythonFileChecker(filename, config)
 
