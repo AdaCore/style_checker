@@ -25,7 +25,7 @@ class PythonFileChecker(TypificChecker):
         return 'Python script'
 
     def run_external_checker(self):
-        # PEP8 checks are disabled for this file is we find a specific
+        # Style checks are disabled for this file is we find a specific
         # string in the first 2 lines of the file...
         with open(self.filename) as f:
             for lineno in (1, 2):
@@ -42,3 +42,10 @@ class PythonFileChecker(TypificChecker):
                 return p.out
         except OSError as e:
             return 'Failed to run pep8: %s' % e
+
+        try:
+            p = Run(['pyflakes', self.filename])
+            if p.status != 0 or p.out:
+                return p.out
+        except OSError as e:
+            return 'Failed to run pyflakes: %s' % e
