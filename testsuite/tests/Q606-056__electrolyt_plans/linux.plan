@@ -1,0 +1,14 @@
+def sil():
+    """x86-linux"""
+    install_native(addons=False)
+    test_cross('leon3-elf', test_gnatcoverage=True)
+
+
+def yatton():
+    """x86-linux RedHat 5.x
+    This this a critical build machine, please don't add test !
+    """
+    build_native(addons=False, codepeer=True)
+    anod_build('gnatemulator')
+
+    build_cross(target='leon3-elf', include_windows=True)

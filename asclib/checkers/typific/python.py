@@ -3,6 +3,9 @@ import re
 
 from asclib.checkers.typific import TypificChecker, TypificCheckerInfo
 
+PYTHON_FILE_TYPE = 'Python script'
+PLAN_FILE_TYPE = 'Electrolyt plan'
+
 
 class PythonFileChecker(TypificChecker):
     rulific_decision_map = {
@@ -22,7 +25,10 @@ class PythonFileChecker(TypificChecker):
 
     @property
     def file_type(self):
-        return 'Python script'
+        if self.filename.endswith('.plan'):
+            return PLAN_FILE_TYPE
+        else:
+            return PYTHON_FILE_TYPE
 
     def run_external_checker(self):
         # Style checks are disabled for this file is we find a specific
@@ -43,9 +49,17 @@ class PythonFileChecker(TypificChecker):
         except OSError as e:
             return 'Failed to run pep8: %s' % e
 
-        try:
-            p = Run(['pyflakes', self.filename])
-            if p.status != 0 or p.out:
-                return p.out
-        except OSError as e:
-            return 'Failed to run pyflakes: %s' % e
+        if self.__run_pyflakes():
+            try:
+                p = Run(['pyflakes', self.filename])
+                if p.status != 0 or p.out:
+                    return p.out
+            except OSError as e:
+                return 'Failed to run pyflakes: %s' % e
+
+    def __run_pyflakes(self):
+        """Return True iff we should run pyflakes to validate our file.
+        """
+        # Run pyflakes on every files except .plan files, for which we
+        # know legitimate scripts would still fail this checker.
+        return self.file_type != PLAN_FILE_TYPE
