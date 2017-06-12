@@ -44,11 +44,12 @@ class AdaFileChecker(TypificChecker):
     @property
     def file_type(self):
         if self.__is_GNAT_module():
-            if re.match(RT_SPEC_PATTERN, self.filename) is not None:
+            basename = os.path.basename(self.filename)
+            if re.match(RT_SPEC_PATTERN, basename) is not None:
                 return RT_SPEC
-            elif re.match(ADA83_RT_SPEC_PATTERN, self.filename) is not None:
+            elif re.match(ADA83_RT_SPEC_PATTERN, basename) is not None:
                 return RT_SPEC
-            elif re.match(RT_BODY_PATTERN, self.filename) is not None:
+            elif re.match(RT_BODY_PATTERN, basename) is not None:
                 return RT_BODY
             else:
                 return COMPILER_CORE
