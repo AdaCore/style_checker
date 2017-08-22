@@ -11,8 +11,8 @@ RT_BODY = 'Ada Runtime body'
 COMPILER_CORE = 'compiler Ada file'
 STD_ADA = 'regular Ada file'
 
-RT_SPEC_PATTERN = r'^[agis]-[a-z0-9-]+\.ads$'
-RT_BODY_PATTERN = r'^[agis]-[a-z0-9-]+\.adb$'
+RT_SPEC_PATTERN = r'^[agis]-[a-z0-9-_]+\.ads$'
+RT_BODY_PATTERN = r'^[agis]-[a-z0-9-_]+\.adb$'
 ADA83_RT_SPEC_PATTERN = ('^(' +
                          '|'.join(['unch(conv|deal)',
                                    '(sequen|direct|text_)io',

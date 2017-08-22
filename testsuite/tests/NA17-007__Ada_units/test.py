@@ -93,6 +93,14 @@ pck.ads:2:04: (style) space required
 pck.ads:3:04: (style) space required
 """)
 
+    def test_s_taprop__linux_adb(self):
+        """Make sure we check s-taprop__linux.adb with -gnat12
+        """
+        self.set_year(2017)
+        p = self.run_style_checker('gnat', 'libgnarl/s-taprop__linux.adb')
+        self.assertEqual(p.status, 0, p.image)
+        self.assertRunOutputEmpty(p)
+
 
 if __name__ == '__main__':
     runtests()
