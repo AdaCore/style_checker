@@ -145,13 +145,7 @@ class TypificChecker(object):
             ('FEATURES', None),
             ('START_COMMENT', FirstLineCommentRuleChecker),
             ('START_BANG', None),
-            # Note: All COPYRIGHT_* rules either always true,
-            # or always false, so all implemented using the same
-            # rulific decision.
-            ('COPYRIGHT_PRESENT', CopyrightRuleChecker),
-            ('COPYRIGHT_WELLFORMED', CopyrightRuleChecker),
-            ('COPYRIGHT_YEAR', CopyrightRuleChecker),
-            ('COPYRIGHT_HOLDER', CopyrightRuleChecker),
+            ('COPYRIGHT', CopyrightRuleChecker),
             ('ADA_RM_SPEC', None),
             ('EOL', EolConsistencyRuleChecker),
             ('NO_DOS_EOL', DosEolRuleChecker),
