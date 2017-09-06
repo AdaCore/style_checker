@@ -111,7 +111,8 @@ class TypificChecker(object):
         if err_msgs:
             raise FileCheckerError(*err_msgs)
 
-    def dump_checks(self, cvs_check_file_type, print_header=False):
+    def dump_checks(self, cvs_check_file_type, print_header=False,
+                    print_footer=False):
         """Dump to stdout the rulific_decision_map for our type of file.
 
         The purpose is to be able to compare the rulific_decision_map
@@ -175,6 +176,15 @@ class TypificChecker(object):
                     else '-')
         print('{:10.10}   {}'.format(cvs_check_file_type,
                                      '      '.join(checks_status)))
+
+        if print_footer:
+            print('\nLegend:')
+            print('-------')
+            for cvs_check_name, rulific_checker in RULES_LIST:
+                if rulific_checker is None:
+                    continue
+                print('  %s: %s' % (cvs_check_name,
+                                    rulific_checker.RULE_DESCRIPTION))
 
     ######################################################################
     #  Abstract methods/attributes/properties:

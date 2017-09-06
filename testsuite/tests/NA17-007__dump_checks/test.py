@@ -22,6 +22,17 @@ PYTHON                     -             -      -      X      X      X      -   
 PERL                       -             -      -      X      X      X      -      X      -
 JAVASCRIPT                 -             -      -      X      X      X      -      X      -
 REST                       -             -      -      X      X      X      -      -      -
+
+Legend:
+-------
+  START_COMMENT: check that the first line is a comment
+  COPYRIGHT: check that file has a well formed copyright notice
+  EOL: check that the end of lines are consistent
+  NO_DOS_EOL: check that we do not have DOS end-of-line sequences
+  NO_LAST_EOL: check that the last line as a line-ending
+  LENGTH: check that lines are not too long (79 characters)
+  TRAILING: check that we have no trailing whitespaces
+  REV: check that we do not have old RCS keywords
 """)
 
 

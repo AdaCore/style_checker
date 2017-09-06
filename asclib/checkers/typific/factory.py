@@ -156,4 +156,4 @@ def dump_check_for_all_file_types():
     JavascriptFileChecker('j.js', config).dump_checks('JAVASCRIPT')
 
     from asclib.checkers.typific.rst import RstFileChecker
-    RstFileChecker('a.rst', config).dump_checks('REST')
+    RstFileChecker('a.rst', config).dump_checks('REST', print_footer=True)
