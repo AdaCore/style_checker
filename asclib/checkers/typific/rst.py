@@ -65,6 +65,9 @@ class RstFileChecker(TypificChecker):
                 if m.group(1).startswith('_'):
                     # This is a hyperlink target, not a directive.
                     continue
+                if m.group(1).lower() == '--comment:':
+                    # Convention at AdaCore for provinding comments.
+                    continue
                 if '::' in m.group(1):
                     # This line has a directive, and the syntax looks correct.
                     continue
