@@ -29,6 +29,14 @@ bad_directives.rst:25: invalid directive syntax (':' should be '::')
         self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 
+    def test_the_gnat_configurable_run_time_facility(self):
+        """Style check test against the_gnat_configurable_run_time_facility.rst
+        """
+        p = self.run_style_checker(
+            'gnat', 'the_gnat_configurable_run_time_facility.rst')
+        self.assertEqual(p.status, 0, p.image)
+        self.assertRunOutputEmpty(p)
+
 
 if __name__ == '__main__':
     runtests()

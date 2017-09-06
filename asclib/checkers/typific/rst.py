@@ -62,6 +62,9 @@ class RstFileChecker(TypificChecker):
                 if m is None:
                     # This line does not have a directive
                     continue
+                if m.group(1).startswith('_'):
+                    # This is a hyperlink target, not a directive.
+                    continue
                 if '::' in m.group(1):
                     # This line has a directive, and the syntax looks correct.
                     continue
