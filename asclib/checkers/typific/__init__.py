@@ -127,42 +127,55 @@ class TypificChecker(object):
             the name of each rulific checker.
         :type print_header: bool
         """
-        # The way the output is displayed isn't expected to change much
-        # in the foreseeable future, so it's good enough to print it
-        # the "dumb" way.
+        from asclib.checkers.rulific.copyright import CopyrightRuleChecker
+        from asclib.checkers.rulific.rcs_keywords import RCSKeywordsRuleChecker
+        from asclib.checkers.rulific.dos_eol import DosEolRuleChecker
+        from asclib.checkers.rulific.eol_consistency \
+            import EolConsistencyRuleChecker
+        from asclib.checkers.rulific.first_line_comment \
+            import FirstLineCommentRuleChecker
+        from asclib.checkers.rulific.last_line_eol \
+            import LastLineEOLRuleChecker
+        from asclib.checkers.rulific.line_length import LineLengthRuleChecker
+        from asclib.checkers.rulific.trailing_spaces \
+            import TrailingSpaceRuleChecker
+
+        RULES_LIST = (
+            ('STYLE', None),
+            ('FEATURES', None),
+            ('START_COMMENT', FirstLineCommentRuleChecker),
+            ('START_BANG', None),
+            # Note: All COPYRIGHT_* rules either always true,
+            # or always false, so all implemented using the same
+            # rulific decision.
+            ('COPYRIGHT_PRESENT', CopyrightRuleChecker),
+            ('COPYRIGHT_WELLFORMED', CopyrightRuleChecker),
+            ('COPYRIGHT_YEAR', CopyrightRuleChecker),
+            ('COPYRIGHT_HOLDER', CopyrightRuleChecker),
+            ('ADA_RM_SPEC', None),
+            ('EOL', EolConsistencyRuleChecker),
+            ('NO_DOS_EOL', DosEolRuleChecker),
+            ('NO_LAST_EOL', LastLineEOLRuleChecker),
+            ('LENGTH', LineLengthRuleChecker),
+            ('TRAILING', TrailingSpaceRuleChecker),
+            ('REV', RCSKeywordsRuleChecker))
+
         if print_header:
-            print('           STYLE  FEATUR START_ START_ COPYRI COPYRI'
-                  ' COPYRI COPYRI ADA_RM  EOL   NO_DOS NO_LAS LENGTH'
-                  ' TRAILI  REV')
+            print(' ' * 11 +
+                  ' '.join(['{:^6}'.format(cvs_check_name[:6])
+                            for (cvs_check_name, _) in RULES_LIST]).rstrip())
 
         checks_status = []
-        for (cvs_check_name, rulific_name) in (
-                ('STYLE', None),
-                ('FEATURES', None),
-                ('START_COMMENT', 'first_line_comment'),
-                ('START_BANG', None),
-                # Note: All COPYRIGHT_* rules either always true,
-                # or always false, so all implemented using the same
-                # rulific decision.
-                ('COPYRIGHT_PRESENT', 'copyright'),
-                ('COPYRIGHT_WELLFORMED', 'copyright'),
-                ('COPYRIGHT_YEAR', 'copyright'),
-                ('COPYRIGHT_HOLDER', 'copyright'),
-                ('ADA_RM_SPEC', None),
-                ('EOL', 'eol'),
-                ('NO_DOS_EOL', 'no_dos_eol'),
-                ('NO_LAST_EOL', 'no_last_eol'),
-                ('LENGTH', 'max_line_length'),
-                ('TRAILING', 'no_trailing_space'),
-                ('REV', 'no_rcs_keywords')):
+        for cvs_check_name, rulific_checker in RULES_LIST:
             if cvs_check_name == 'ADA_RM_SPEC':
                 # Special case, where we have to to dig into
                 # the typific_info rather than the rulific_decision_map.
                 checks_status.append('X' if self.typific_info.ada_RM_spec_p
                                      else '-')
-            elif rulific_name is None:
+            elif rulific_checker is None:
                 checks_status.append(' ')
             else:
+                rulific_name = rulific_checker.RULE_CONFIG_NAME
                 checks_status.append(
                     'X' if self.rulific_decision_map[rulific_name]
                     else '-')
