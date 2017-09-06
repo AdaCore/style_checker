@@ -142,10 +142,7 @@ class TypificChecker(object):
             import TrailingSpaceRuleChecker
 
         RULES_LIST = (
-            ('STYLE', None),
-            ('FEATURES', None),
             ('START_COMMENT', FirstLineCommentRuleChecker),
-            ('START_BANG', None),
             ('COPYRIGHT', CopyrightRuleChecker),
             ('ADA_RM_SPEC', None),
             ('EOL', EolConsistencyRuleChecker),
