@@ -21,6 +21,7 @@ CSH                        -             -      -      -      -      -      X   
 PYTHON                     -             -      -      -      -      -      X      X      X      -      X      -
 PERL                       -             -      -      -      -      -      X      X      X      -      X      -
 JAVASCRIPT                 -             -      -      -      -      -      X      X      X      -      X      -
+REST                       -             -      -      -      -      -      X      X      X      -      -      -
 """)
 
 

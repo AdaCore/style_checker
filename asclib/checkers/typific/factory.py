@@ -50,6 +50,10 @@ def get_file_checker(filename, config):
         from asclib.checkers.typific.yaml_files import YamlFileChecker
         return YamlFileChecker(filename, config)
 
+    if ext == '.rst':
+        from asclib.checkers.typific.rst import RstFileChecker
+        return RstFileChecker(filename, config)
+
     if filename.startswith('known-problems-'):
         # Known problems files. These are now handled by impactdb.
         # So no need for us to provide a style-checker anymore.
@@ -150,3 +154,6 @@ def dump_check_for_all_file_types():
 
     from asclib.checkers.typific.javascript import JavascriptFileChecker
     JavascriptFileChecker('j.js', config).dump_checks('JAVASCRIPT')
+
+    from asclib.checkers.typific.rst import RstFileChecker
+    RstFileChecker('a.rst', config).dump_checks('REST')
