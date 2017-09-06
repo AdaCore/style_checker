@@ -183,6 +183,17 @@ class TypificChecker(object):
                 print('  %s: %s' % (cvs_check_name,
                                     rulific_checker.RULE_DESCRIPTION))
 
+            # Sanity-check: Make sure we haven't forgotten any rulific checker
+            # in our RULES_LIST.  Do it only when printing the footer,
+            # as it allows us to dump the information we already have,
+            # which can be useful already.
+            missed_checkers = [checker.RULE_CONFIG_NAME
+                               for checker in ALL_RULIFIC_CHECKERS
+                               if checker not in [c for _, c in RULES_LIST]]
+            assert not missed_checkers, (
+                'The following rules are missing from the dump above: ' +
+                ', '.join(missed_checkers))
+
     ######################################################################
     #  Abstract methods/attributes/properties:
     #
