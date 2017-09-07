@@ -42,8 +42,12 @@ bad_directives.rst:25: invalid directive syntax (':' should be '::')
         """
         p = self.run_style_checker(
             'gnat', 'the_gnat_compilation_model.rst')
-        self.assertEqual(p.status, 0, p.image)
-        self.assertRunOutputEmpty(p)
+        self.assertNotEqual(p.status, 0, p.image)
+        self.assertRunOutputEqual(p, """\
+the_gnat_compilation_model.rst:1577: invalid directive syntax (':' should be '::')
+                                     .. --Comment:
+                                                 ^
+""")
 
 
 if __name__ == '__main__':

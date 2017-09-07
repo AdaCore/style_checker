@@ -1569,7 +1569,13 @@ depend on a file that no longer exists. Such tools include
 If you are using project file, a separate mechanism is provided using
 project attributes.
 
+.. --Comment
+   This is a valid comment block.
+   See :ref:`Specifying_Configuration_Pragmas` for more details.
+
+
 .. --Comment:
+   This is a suspicious comment block.
    See :ref:`Specifying_Configuration_Pragmas` for more details.
 
 
