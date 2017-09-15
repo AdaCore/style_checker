@@ -1,7 +1,7 @@
-from gnatpython.ex import Run
 import re
 
 from asclib.checkers.typific import TypificChecker, TypificCheckerInfo
+from asclib.ex import Run
 
 
 class JavascriptFileChecker(TypificChecker):

@@ -20,7 +20,7 @@ class TestRun(TestCase):
                      '/trunk/module', 'src/simple.py'])
             self.assertNotEqual(p.status, 0, p.image)
             self.assertRunOutputEqual(p, """\
-Failed to run pep8: [Errno 2] No such file or directory, pep8 not found
+Failed to run pep8: [Errno 2] No such file or directory
 """)
         finally:
             os.environ['PATH'] = saved_path

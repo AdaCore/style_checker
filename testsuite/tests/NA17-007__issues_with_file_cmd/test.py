@@ -15,7 +15,7 @@ class TestRun(TestCase):
                      'nothing', 'hello.sh'])
             self.assertNotEqual(p.status, 0, p.image)
             self.assertRunOutputEqual(p, """\
-Failed to run `file hello.sh': [Errno 2] No such file or directory, file not found
+Failed to run `file hello.sh': [Errno 2] No such file or directory
 """)
         finally:
             os.environ['PATH'] = saved_path

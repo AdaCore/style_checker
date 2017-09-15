@@ -1,7 +1,7 @@
-from gnatpython.ex import Run
 import re
 
 from asclib.checkers.typific import TypificChecker, TypificCheckerInfo
+from asclib.ex import Run
 
 PYTHON_FILE_TYPE = 'Python script'
 PLAN_FILE_TYPE = 'Electrolyt plan'

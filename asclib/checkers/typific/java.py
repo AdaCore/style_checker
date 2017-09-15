@@ -1,9 +1,9 @@
-from gnatpython.ex import Run
 import os
 import re
 from tempfile import mkstemp
 
 from asclib.checkers.typific import TypificChecker, TypificCheckerInfo
+from asclib.ex import Run
 
 
 class JavaFileChecker(TypificChecker):

@@ -15,7 +15,7 @@ class TestRun(TestCase):
                      'notimportant', 'empty.js'])
             self.assertNotEqual(p.status, 0, p.image)
             self.assertRunOutputEqual(p, """\
-Failed to run gjslint: [Errno 2] No such file or directory, gjslint not found
+Failed to run gjslint: [Errno 2] No such file or directory
 """)
         finally:
             os.environ['PATH'] = saved_path

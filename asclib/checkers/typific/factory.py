@@ -2,9 +2,8 @@
 """
 import os
 
-from gnatpython.ex import Run
-
 from asclib.checkers import FileCheckerError
+from asclib.ex import Run
 
 
 def get_file_checker(filename, config):

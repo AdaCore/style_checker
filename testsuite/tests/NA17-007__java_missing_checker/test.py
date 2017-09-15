@@ -16,7 +16,7 @@ class TestRun(TestCase):
                      'notimportant', 'empty.java'])
             self.assertNotEqual(p.status, 0, p.image)
             self.assertRunOutputEqual(p, """\
-Failed to run checkstyle: [Errno 2] No such file or directory, checkstyle not found
+Failed to run checkstyle: [Errno 2] No such file or directory
 """)
         finally:
             os.environ['PATH'] = saved_path

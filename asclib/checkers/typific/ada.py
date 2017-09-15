@@ -1,8 +1,8 @@
-from gnatpython.ex import command_line_image, Run
 import os
 import re
 
 from asclib.checkers.typific import TypificChecker, TypificCheckerInfo
+from asclib.ex import command_line_image, Run
 from asclib.logging import log_info
 
 
