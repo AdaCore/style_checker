@@ -164,8 +164,6 @@ class TypificChecker(object):
                 # the typific_info rather than the rulific_decision_map.
                 checks_status.append('X' if self.typific_info.ada_RM_spec_p
                                      else '-')
-            elif rulific_checker is None:
-                checks_status.append(' ')
             else:
                 rulific_name = rulific_checker.RULE_CONFIG_NAME
                 checks_status.append(
