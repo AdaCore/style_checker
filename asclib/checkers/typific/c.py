@@ -1,8 +1,4 @@
-from gnatpython.ex import command_line_image, Run
-import re
-
 from asclib.checkers.typific import TypificChecker, TypificCheckerInfo
-from asclib.logging import log_info
 
 
 class CFileChecker(TypificChecker):
@@ -18,9 +14,9 @@ class CFileChecker(TypificChecker):
         }
 
     typific_info = TypificCheckerInfo(
-            comment_line_re=None,
-            ada_RM_spec_p=False,
-            copyright_box_r_edge_re=None)
+        comment_line_re=None,
+        ada_RM_spec_p=False,
+        copyright_box_r_edge_re=None)
 
     @property
     def file_type(self):
