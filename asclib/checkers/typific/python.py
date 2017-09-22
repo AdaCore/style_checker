@@ -4,6 +4,7 @@ from asclib.checkers.typific import TypificChecker, TypificCheckerInfo
 from asclib.ex import Run
 
 PYTHON_FILE_TYPE = 'Python script'
+PYTHON_FRAGMENT_FILE_TYPE = 'Python fragment'
 PLAN_FILE_TYPE = 'Electrolyt plan'
 
 
@@ -27,18 +28,25 @@ class PythonFileChecker(TypificChecker):
     def file_type(self):
         if self.filename.endswith('.plan'):
             return PLAN_FILE_TYPE
+        elif self.filename.endswith('.frag.py'):
+            return PYTHON_FRAGMENT_FILE_TYPE
         else:
             return PYTHON_FILE_TYPE
 
     def run_external_checker(self):
-        # Style checks are disabled for this file is we find a specific
-        # string in the first 2 lines of the file...
+        # Check the first two lines of the file, and scan for certain
+        # specific keywords indicating possible special treatment for
+        # this file.
+        python_fragment_p = False
         with open(self.filename) as f:
             for lineno in (1, 2):
                 line = f.readline()
                 if line and re.match('^# No_Style_Check$', line) is not None:
                     # ??? VERBOSE...
                     return
+                elif line and re.match('^# Style_Check:Python_Fragment',
+                                       line, re.I) is not None:
+                    python_fragment_p = True
 
         try:
             p = Run(['pep8', '-r',
@@ -49,7 +57,7 @@ class PythonFileChecker(TypificChecker):
         except OSError as e:
             return 'Failed to run pep8: %s' % e
 
-        if self.__run_pyflakes():
+        if not python_fragment_p and self.__run_pyflakes():
             try:
                 p = Run(['pyflakes', self.filename])
                 if p.status != 0 or p.out:
@@ -60,6 +68,8 @@ class PythonFileChecker(TypificChecker):
     def __run_pyflakes(self):
         """Return True iff we should run pyflakes to validate our file.
         """
-        # Run pyflakes on every files except .plan files, for which we
-        # know legitimate scripts would still fail this checker.
-        return self.file_type != PLAN_FILE_TYPE
+        # We want to run pyflakes on every file, except that there are
+        # kinds of file that legitimately fail this checker. Exclude
+        # those.
+        return self.file_type not in (PYTHON_FRAGMENT_FILE_TYPE,
+                                      PLAN_FILE_TYPE)
