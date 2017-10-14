@@ -91,7 +91,7 @@ class TypificChecker(object):
 
         # Merge all the result of the line-by-line checking, currently
         # stored in each rulific checker, into a combined dictionary,
-        # where# keys are still line numbers, but the value is a list
+        # where keys are still line numbers, but the value is a list
         # of error messages applying to that line number.
         all_linenos = sorted(
             set().union(*(rulific_checker.errors_found.keys()
