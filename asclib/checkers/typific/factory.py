@@ -53,6 +53,10 @@ def get_file_checker(filename, config):
         from asclib.checkers.typific.rst import RstFileChecker
         return RstFileChecker(filename, config)
 
+    if ext == '.mtl':
+        from asclib.checkers.typific.acceleo import AcceleoFileChecker
+        return AcceleoFileChecker(filename, config)
+
     if filename.startswith('known-problems-'):
         # Known problems files. These are now handled by impactdb.
         # So no need for us to provide a style-checker anymore.
@@ -153,6 +157,9 @@ def dump_check_for_all_file_types():
 
     from asclib.checkers.typific.javascript import JavascriptFileChecker
     JavascriptFileChecker('j.js', config).dump_checks('JAVASCRIPT')
+
+    from asclib.checkers.typific.acceleo import AcceleoFileChecker
+    AcceleoFileChecker('a.mtl', config).dump_checks('ACCELEO')
 
     from asclib.checkers.typific.rst import RstFileChecker
     RstFileChecker('a.rst', config).dump_checks('REST', print_footer=True)

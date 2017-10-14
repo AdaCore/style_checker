@@ -21,6 +21,7 @@ CSH          -      -      -      -      X      X      X      -      X      -
 PYTHON       -      -      -      -      X      X      X      -      X      -
 PERL         -      -      -      -      X      X      X      -      X      -
 JAVASCRIPT   -      -      -      -      X      X      X      -      X      -
+ACCELEO      -      X      -      X      X      X      X      -      X      -
 REST         -      -      -      -      X      X      X      -      -      -
 
 Legend:

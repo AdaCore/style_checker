@@ -1,0 +1,4 @@
+ * Copyright (C) 2006, AdaCore
+
+Hello	World
+A very long line that exceeds the 80 characters, to verify that the style checker does not trip it
