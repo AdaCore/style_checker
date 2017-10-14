@@ -138,6 +138,8 @@ class TypificChecker(object):
         from asclib.checkers.rulific.last_line_eol \
             import LastLineEOLRuleChecker
         from asclib.checkers.rulific.line_length import LineLengthRuleChecker
+        from asclib.checkers.rulific.no_tab_indentation \
+            import NoTabIndentationRuleChecker
         from asclib.checkers.rulific.trailing_spaces \
             import TrailingSpaceRuleChecker
 
@@ -145,6 +147,7 @@ class TypificChecker(object):
             ('START_COMMENT', FirstLineCommentRuleChecker),
             ('COPYRIGHT', CopyrightRuleChecker),
             ('ADA_RM_SPEC', None),
+            ('NO_TAB_IDENT', NoTabIndentationRuleChecker),
             ('EOL', EolConsistencyRuleChecker),
             ('NO_DOS_EOL', DosEolRuleChecker),
             ('NO_LAST_EOL', LastLineEOLRuleChecker),

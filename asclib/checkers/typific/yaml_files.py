@@ -12,6 +12,7 @@ class YamlFileChecker(TypificChecker):
         'no_dos_eol': False,
         'no_last_eol': False,
         'no_rcs_keywords': False,
+        'no_tab_indent': False,
         'no_trailing_space': False,
         }
 

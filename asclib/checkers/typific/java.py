@@ -15,6 +15,7 @@ class JavaFileChecker(TypificChecker):
         'no_dos_eol': True,
         'no_last_eol': True,
         'no_rcs_keywords': True,
+        'no_tab_indent': True,
         'no_trailing_space': True,
         }
 

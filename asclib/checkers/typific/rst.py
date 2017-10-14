@@ -12,6 +12,7 @@ class RstFileChecker(TypificChecker):
         'no_dos_eol': True,
         'no_last_eol': True,
         'no_rcs_keywords': False,
+        'no_tab_indent': False,
         'no_trailing_space': False,
         }
 
