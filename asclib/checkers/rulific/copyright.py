@@ -8,7 +8,7 @@ ADA_RM_SPEC_IDENTIFIER = \
 COPYRIGHT_PRESENT_REGEX = r'copyright.*[0-9][0-9][0-9][0-9]'
 
 COPYRIGHT_REGEX = (
-    r' *(--|\*|//|@c)? *(Copyright) \(C\) '
+    r' *(--|\*|//|@c|%)? *(Copyright) \(C\) '
     r'([0-9][0-9][0-9][0-9]-)?([0-9][0-9][0-9][0-9]),'
     r' (.*[^ */-])'
     )
