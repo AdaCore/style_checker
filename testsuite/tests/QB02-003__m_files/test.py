@@ -17,6 +17,14 @@ class TestRun(TestCase):
 	self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 
+    def test_iqgen_write_log(self):
+        """Style check test against iqgen_write_log.m
+        """
+        self.set_year(2017)
+        p = self.run_style_checker('whatever', 'iqgen_write_log.m')
+	self.assertEqual(p.status, 0, p.image)
+        self.assertRunOutputEmpty(p)
+
     def test_nok_dos(self):
         """Style check test against nok-dos.m
         """

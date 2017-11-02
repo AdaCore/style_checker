@@ -16,7 +16,7 @@ class MFileChecker(TypificChecker):
 
     typific_info = TypificCheckerInfo(comment_line_re=None,
                                       ada_RM_spec_p=False,
-                                      copyright_box_r_edge_re=None)
+                                      copyright_box_r_edge_re='%')
 
     @property
     def file_type(self):
