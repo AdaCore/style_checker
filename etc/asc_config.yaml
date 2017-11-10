@@ -46,6 +46,15 @@
     style_checks:
         - -copyright
 
+'qgen':
+    copyright:
+        - AdaCore
+        - IB Krates
+        - AdaCore and IB Krates
+        - IB Krates and AdaCore
+        - Obeo
+        - Obeo and AdaCore
+
 'java':
     style_checks:
         - gnatx
