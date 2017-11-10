@@ -9,8 +9,8 @@ COPYRIGHT_PRESENT_REGEX = r'copyright.*[0-9][0-9][0-9][0-9]'
 
 COPYRIGHT_REGEX = (
     r' *(--|\*|//|@c|%)? *(Copyright) \(C\) '
-    r'([0-9][0-9][0-9][0-9]-)?([0-9][0-9][0-9][0-9]),'
-    r' (.*[^ */-])'
+    r'([0-9][0-9][0-9][0-9]-)?(?P<year>[0-9][0-9][0-9][0-9]),'
+    r' (?P<holder>.*[^ */-])'
     )
 
 MAX_LINES_FOR_COPYRIGHT_NOTICE = 24
@@ -98,7 +98,7 @@ class CopyrightRuleChecker(AbstractRuleChecker):
                 self.context_has_improperly_formatted = True
             return
 
-        actual_holder = m.group(5)
+        actual_holder = m.group('holder')
 
         if self.typific_info.copyright_box_r_edge_re is not None:
             # Usually we identify the end of the copyright holder
@@ -129,7 +129,7 @@ class CopyrightRuleChecker(AbstractRuleChecker):
                  for holder in self.config.copyright_holders])
             return
 
-        copyright_year = m.group(4)
+        copyright_year = m.group('year')
         if copyright_year != str(self.config.current_year):
             self.context_copyright_notice_err_msg.append(
                 '%s:%d: Copyright notice must include current year'
