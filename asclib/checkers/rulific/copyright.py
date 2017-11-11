@@ -5,16 +5,6 @@ from asclib.checkers.rulific import AbstractRuleChecker
 ADA_RM_SPEC_IDENTIFIER = \
     'This specification is derived from the Ada Reference Manual'
 
-COPYRIGHT_PRESENT_REGEX = r'copyright.*[0-9][0-9][0-9][0-9]'
-
-COPYRIGHT_REGEX = (
-    r' *(--|\*|//|@c|%)? *(Copyright) \(C\) '
-    r'([0-9][0-9][0-9][0-9]-)?(?P<year>[0-9][0-9][0-9][0-9]),'
-    r' (?P<holder>.*[^ */-])'
-    )
-
-MAX_LINES_FOR_COPYRIGHT_NOTICE = 24
-
 
 class CopyrightRuleChecker(AbstractRuleChecker):
     RULE_CONFIG_NAME = 'copyright'
@@ -48,19 +38,29 @@ class CopyrightRuleChecker(AbstractRuleChecker):
         # Have we found one incorrectly formatted copyright line?
         self.context_has_improperly_formatted = False
 
+        # Some other attributes that are not strictly state variables
+        # that we need to preserve, but will just act as shortcuts
+        # to some configuration variables, hopefully making the code
+        # shorter and easier to understand.
+        cinfo = self.config.copyright_header_info
+        self.max_lines_for_copyright_notice = cinfo['max_lines']
+        self.format_help = cinfo['format_help']
+        self.present_re = cinfo['present_re']
+        self.copyright_re = cinfo['copyright_re']
+
     def check_rule(self, lineno, line, eol):
         if self.context_has_valid_copyright_p:
             # We have already seen and processed a valid copyright notice.
             # No need to look at any line beyond this line anymore.
             return
 
-        if lineno <= MAX_LINES_FOR_COPYRIGHT_NOTICE and \
+        if lineno <= self.max_lines_for_copyright_notice and \
                 self.typific_info.ada_RM_spec_p and \
                 ADA_RM_SPEC_IDENTIFIER in line:
             self.context_has_valid_ada_RM_spec_id = True
             return
 
-        if lineno > MAX_LINES_FOR_COPYRIGHT_NOTICE and \
+        if lineno > self.max_lines_for_copyright_notice and \
                 self.context_copyright_notice_lineno > 0:
             # We're now past the portion of the file where we expect
             # to find a valid copyright file. Since we did find one
@@ -72,14 +72,14 @@ class CopyrightRuleChecker(AbstractRuleChecker):
         # Check to see if we have a copyright line...
         # If we do, and it's the first copyright line we've seen,
         # record that line number.
-        m = re.search(COPYRIGHT_PRESENT_REGEX, line, re.I)
+        m = re.search(self.present_re, line, re.I)
         if m is None:
             return
         if self.context_copyright_notice_lineno == 0:
             self.context_copyright_notice_lineno = lineno
 
         # Make sure our copyright line is correctly formatted.
-        m = re.match(COPYRIGHT_REGEX, line)
+        m = re.match(self.copyright_re, line)
         if m is None:
             # We only emit the error message for the first improperly
             # copyright line we've seen (this seems like a sensible
@@ -91,8 +91,9 @@ class CopyrightRuleChecker(AbstractRuleChecker):
                     % (self.filename, lineno),
                     'It must look like...',
                     '',
-                    '    Copyright (C) 1992-%d, <copyright holder>'
-                    % self.config.current_year,
+                    '    %s<copyright holder>' % (
+                        self.format_help
+                        % {'year': self.config.current_year}),
                     '',
                     '... where <copyright holder> can be any of:'] +
                     ["    - `%s'" % holder
@@ -140,7 +141,7 @@ class CopyrightRuleChecker(AbstractRuleChecker):
                    self.config.current_year))
             return
 
-        if lineno <= MAX_LINES_FOR_COPYRIGHT_NOTICE:
+        if lineno <= self.max_lines_for_copyright_notice:
             # This copyright line answers all the requirements, and thus
             # is declared as valid.
             self.context_has_valid_copyright_p = True
@@ -162,10 +163,10 @@ class CopyrightRuleChecker(AbstractRuleChecker):
             self.context_copyright_notice_err_msg.insert(
                 0,
                 '%s: Copyright notice missing, must occur before line %d'
-                % (self.filename, MAX_LINES_FOR_COPYRIGHT_NOTICE))
+                % (self.filename, self.max_lines_for_copyright_notice))
 
         elif self.context_copyright_notice_lineno > \
-                MAX_LINES_FOR_COPYRIGHT_NOTICE:
+                self.max_lines_for_copyright_notice:
             # The legacy style checker (cvs_check) doesn't show
             # any formatting errors we might have found on the format
             # of the copyright notice if that copyright line was found
@@ -174,6 +175,6 @@ class CopyrightRuleChecker(AbstractRuleChecker):
             self.context_copyright_notice_err_msg = [
                 '%s:%d: Copyright notice must occur before line %d'
                 % (self.filename, self.context_copyright_notice_lineno,
-                   MAX_LINES_FOR_COPYRIGHT_NOTICE)]
+                   self.max_lines_for_copyright_notice)]
 
         return '\n'.join(self.context_copyright_notice_err_msg)

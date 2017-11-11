@@ -31,6 +31,53 @@
         - AdaCore and Altran UK
         - AdaCore, Altran UK
 
+    # A description of how copyright headers are expected to be.
+    # Repository-specific configurations can override part or
+    # all of this config.
+    copyright_header_info:
+        # The maximum number of lines the tool will be scanning until
+        # it finds a copyright line.
+        max_lines: 24
+
+        # A template telling the user which format the copyright line
+        # should follow. This string is there to help the user write
+        # a correctly formed copyright holder by providing a template
+        # of what it should look like. The style_checker will just print
+        # this string followed by a '<copyright holder>' placeholder.
+        #
+        # This string must include a '%(year)d' placeholder that
+        # the style_checker will replace with the current year.
+        format_help: 'Copyright (C) 1992-%(year)d, '
+
+        # A regular expression which detects what looks like a copyright
+        # line. That copyright line may or may not be correctly formed
+        # however.
+        present_re: 'copyright.*[0-9][0-9][0-9][0-9]'
+
+        # A regular expression which matches a correctly formed copyright
+        # line.
+        #
+        # In addition to validating a copyright line as being correctly
+        # formed, the regular expressions needs to define two groups
+        # that need to be accessible by name. These groups are:
+        #
+        #   - 'year': A group that matches the copyright end year.
+        #         For instance, if the copyright year range was 2014-2016,
+        #         then the 'year' group would match '2016'.
+        #   - 'holder': The string containing the copyright holder.
+        #         For instance, if the copyright line looked like this...
+        #
+        #             Copyright (C) 2014-2016, Free Software Foundation
+        #
+        #         ... then the 'holder' group would be matching the string
+        #         'Free Software Foundation'
+        #
+        #         Note that, should the copyright header be "boxed"
+        #         (with comment markers both at the start and the end
+        #         of the line), this regular expression does not need
+        #         to worry about excluding the closing edge of the box.
+        copyright_re: ' *(--|\*|//|@c|%)? *(Copyright) \(C\) ([0-9][0-9][0-9][0-9]-)?(?P<year>[0-9][0-9][0-9][0-9]), (?P<holder>.*[^ */-])'
+
 # Module-specific configuration.  This configuration is applied
 # on top of the default configuration.
 

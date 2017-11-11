@@ -53,6 +53,7 @@ class Config(object):
         self.module_name = module_name
         self.current_year = current_year
         self.copyright_holders = []
+        self.copyright_header_info = {}
         self.options = []
 
         self.__read_config_file(config_filename)
@@ -87,3 +88,12 @@ class Config(object):
             # to append to the config, rather than to override it.
             if self.module_name in c and '+' + opt_name in c[self.module_name]:
                 opt_list.extend(c[self.module_name]['+' + opt_name])
+
+        self.copyright_header_info = \
+            c[ANY_MODULE_NAME]['copyright_header_info']
+        if self.module_name in c and \
+                'copyright_header_info' in c[self.module_name]:
+            # Override part or all of the default configuration with
+            # the repository-specific config.
+            self.copyright_header_info.update(
+                c[self.module_name]['copyright_header_info'])
