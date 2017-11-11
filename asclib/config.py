@@ -97,3 +97,12 @@ class Config(object):
             # the repository-specific config.
             self.copyright_header_info.update(
                 c[self.module_name]['copyright_header_info'])
+            # Also, because yaml does not provide automatic merging
+            # for lists (only dictionaries), so we provide an alternative
+            # way to do so where keys whose name start with a '+' means
+            # append the list to the list from the key without the '+'.
+            for key in self.copyright_header_info.keys():
+                if key.startswith('+'):
+                    self.copyright_header_info[key[1:]].extend(
+                        self.copyright_header_info[key])
+                    del self.copyright_header_info[key]

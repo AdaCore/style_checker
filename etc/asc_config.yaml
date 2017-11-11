@@ -34,31 +34,43 @@
     # A description of how copyright headers are expected to be.
     # Repository-specific configurations can override part or
     # all of this config.
+    #
+    # Repositories wishing to augment one or more of the entries
+    # providing data as a list (rather than completely override it)
+    # can do so by providing a "+<key>" entry where "<key>" is
+    # the name of the key to be augmented.
     copyright_header_info:
         # The maximum number of lines the tool will be scanning until
         # it finds a copyright line.
         max_lines: 24
 
-        # A template telling the user which format the copyright line
-        # should follow. This string is there to help the user write
-        # a correctly formed copyright holder by providing a template
-        # of what it should look like. The style_checker will just print
-        # this string followed by a '<copyright holder>' placeholder.
+        # A list of template strings telling the user what format
+        # the copyright line should follow. This strings are there
+        # to help the user write a correctly formed copyright holder
+        # by providing templates of what the copyright line should
+        # look like. The style_checker will just print each string
+        # followed by a '<copyright holder>' placeholder.
         #
-        # This string must include a '%(year)d' placeholder that
+        # Each string must include a '%(year)d' placeholder that
         # the style_checker will replace with the current year.
-        format_help: 'Copyright (C) 1992-%(year)d, '
+        format_help:
+            - 'Copyright (C) 1992-%(year)d, '
 
-        # A regular expression which detects what looks like a copyright
-        # line. That copyright line may or may not be correctly formed
-        # however.
-        present_re: 'copyright.*[0-9][0-9][0-9][0-9]'
+        # A list of regular expressions detecting what looks like
+        # a copyright line. That copyright line may or may not be
+        # correctly formed however.
+        #
+        # The purpose of having this as a list is to make it easier
+        # to provide multiple alternatives without to code those
+        # alternatives into one single regular expression.
+        present_re:
+            - 'copyright.*[0-9][0-9][0-9][0-9]'
 
-        # A regular expression which matches a correctly formed copyright
+        # A list of regular expressions matching a correctly formed copyright
         # line.
         #
         # In addition to validating a copyright line as being correctly
-        # formed, the regular expressions needs to define two groups
+        # formed, each regular expression needs to define two groups
         # that need to be accessible by name. These groups are:
         #
         #   - 'year': A group that matches the copyright end year.
@@ -76,7 +88,12 @@
         #         (with comment markers both at the start and the end
         #         of the line), this regular expression does not need
         #         to worry about excluding the closing edge of the box.
-        copyright_re: ' *(--|\*|//|@c|%)? *(Copyright) \(C\) ([0-9][0-9][0-9][0-9]-)?(?P<year>[0-9][0-9][0-9][0-9]), (?P<holder>.*[^ */-])'
+        #
+        # The purpose of having this as a list is to make it easier
+        # to provide multiple alternatives without to code those
+        # alternatives into one single regular expression.
+        copyright_re:
+            - ' *(--|\*|//|@c|%)? *(Copyright) \(C\) ([0-9][0-9][0-9][0-9]-)?(?P<year>[0-9][0-9][0-9][0-9]), (?P<holder>.*[^ */-])'
 
 # Module-specific configuration.  This configuration is applied
 # on top of the default configuration.

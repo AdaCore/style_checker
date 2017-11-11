@@ -72,30 +72,39 @@ class CopyrightRuleChecker(AbstractRuleChecker):
         # Check to see if we have a copyright line...
         # If we do, and it's the first copyright line we've seen,
         # record that line number.
-        m = re.search(self.present_re, line, re.I)
+        for present_re in self.present_re:
+            m = re.search(present_re, line, re.I)
+            if m is not None:
+                break
         if m is None:
+            # None of the "present_re" regular expressions matched.
+            # It must not be a copyright line.
             return
         if self.context_copyright_notice_lineno == 0:
             self.context_copyright_notice_lineno = lineno
 
         # Make sure our copyright line is correctly formatted.
-        m = re.match(self.copyright_re, line)
+        for copyright_re in self.copyright_re:
+            m = re.match(copyright_re, line)
+            if m is not None:
+                break
         if m is None:
             # We only emit the error message for the first improperly
             # copyright line we've seen (this seems like a sensible
             # behavior, but is also a behavior which we inherited from
             # cvs_check, the previous style checker).
             if not self.context_has_improperly_formatted:
-                self.context_copyright_notice_err_msg.extend([
-                    '%s:%d: Copyright notice is not correctly formatted'
-                    % (self.filename, lineno),
-                    'It must look like...',
-                    '',
-                    '    %s<copyright holder>' % (
-                        self.format_help
-                        % {'year': self.config.current_year}),
-                    '',
-                    '... where <copyright holder> can be any of:'] +
+                self.context_copyright_notice_err_msg.extend(
+                    ['%s:%d: Copyright notice is not correctly formatted'
+                     % (self.filename, lineno),
+                     'It must look like...',
+                     ''] +
+                    '\nor\n'.join(
+                        ['    %s<copyright holder>'
+                         % (format_help % {'year': self.config.current_year})
+                         for format_help in self.format_help]).splitlines() +
+                    ['',
+                     '... where <copyright holder> can be any of:'] +
                     ["    - `%s'" % holder
                      for holder in self.config.copyright_holders])
                 self.context_has_improperly_formatted = True
