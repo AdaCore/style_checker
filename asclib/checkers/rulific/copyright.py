@@ -89,12 +89,14 @@ class CopyrightRuleChecker(AbstractRuleChecker):
                 self.context_copyright_notice_err_msg.extend([
                     '%s:%d: Copyright notice is not correctly formatted'
                     % (self.filename, lineno),
-                    'It must look like:',
-                    '    Copyright (C) 1992-%d, Free Software Foundation, Inc.'
+                    'It must look like...',
+                    '',
+                    '    Copyright (C) 1992-%d, <copyright holder>'
                     % self.config.current_year,
-                    'or',
-                    '    Copyright (C) 2001-%d, AdaCore'
-                    % self.config.current_year])
+                    '',
+                    '... where <copyright holder> can be any of:'] +
+                    ["    - `%s'" % holder
+                     for holder in self.config.copyright_holders])
                 self.context_has_improperly_formatted = True
             return
 

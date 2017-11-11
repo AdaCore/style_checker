@@ -15,10 +15,20 @@ class TestRun(TestCase):
         self.assertRunOutputEqual(p, """\
 asistant-funcenum.ads:765: no newline at end of file
 asistant-funcenum.ads:9: Copyright notice is not correctly formatted
-It must look like:
-    Copyright (C) 1992-2006, Free Software Foundation, Inc.
-or
-    Copyright (C) 2001-2006, AdaCore
+It must look like...
+
+    Copyright (C) 1992-2006, <copyright holder>
+
+... where <copyright holder> can be any of:
+    - `AdaCore'
+    - `Altran Praxis'
+    - `Altran UK Limited'
+    - `Free Software Foundation, Inc.'
+    - `AdaCore, Altran Praxis'
+    - `AdaCore and Altran UK Limited'
+    - `AdaCore, Altran UK Limited'
+    - `AdaCore and Altran UK'
+    - `AdaCore, Altran UK'
 """)
 
 
