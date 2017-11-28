@@ -70,6 +70,9 @@ class Config(object):
         with open(system_config_filename) as f:
             c = yaml.load(f)
 
+        system_config = c[ANY_MODULE_NAME] if ANY_MODULE_NAME in c else None
+        module_config = c[self.module_name] if self.module_name in c else None
+
         # Process all known options from the config file we just
         # loaded.
 
@@ -78,25 +81,25 @@ class Config(object):
                 (OPTIONS_CONFIG, self.options)):
             # Get the option value, giving priority to the module-specific
             # section.
-            if self.module_name in c and opt_name in c[self.module_name]:
-                opt_list[:] = c[self.module_name][opt_name]
-            elif ANY_MODULE_NAME in c and opt_name in c[ANY_MODULE_NAME]:
-                opt_list[:] = c[ANY_MODULE_NAME][opt_name]
+            if module_config is not None and opt_name in module_config:
+                opt_list[:] = module_config[opt_name]
+            elif system_config is not None and opt_name in system_config:
+                opt_list[:] = system_config[opt_name]
 
             # See if there an entry in the module-specific section whose
             # name is opt_name with a '+' ahead of it. Those are requests
             # to append to the config, rather than to override it.
-            if self.module_name in c and '+' + opt_name in c[self.module_name]:
-                opt_list.extend(c[self.module_name]['+' + opt_name])
+            if module_config is not None and '+' + opt_name in module_config:
+                opt_list.extend(module_config['+' + opt_name])
 
         self.copyright_header_info = \
-            c[ANY_MODULE_NAME]['copyright_header_info']
-        if self.module_name in c and \
-                'copyright_header_info' in c[self.module_name]:
+            system_config['copyright_header_info']
+        if module_config is not None and \
+                'copyright_header_info' in module_config:
             # Override part or all of the default configuration with
             # the repository-specific config.
             self.copyright_header_info.update(
-                c[self.module_name]['copyright_header_info'])
+                module_config['copyright_header_info'])
             # Also, because yaml does not provide automatic merging
             # for lists (only dictionaries), so we provide an alternative
             # way to do so where keys whose name start with a '+' means
