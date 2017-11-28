@@ -12,7 +12,7 @@ def get_prefix_dir():
     return root_dir
 
 
-def get_config_default_filename():
+def get_system_config_default_filename():
     """Return the full path of the default configuration file.
 
     :return: The fullpath of the defauld configuration file. This is

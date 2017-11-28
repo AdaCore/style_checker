@@ -38,11 +38,11 @@ class Config(object):
     :ivar options: A list of style_checks options obtained. They are
         mostly the result of parsing the config file.
     """
-    def __init__(self, config_filename, module_name, current_year):
+    def __init__(self, system_config_filename, module_name, current_year):
         """The constructor.
 
-        :param config_filename: The name of the config file.
-        :type config_filename: str
+        :param system_config_filename: The name of the system config file.
+        :type system_config_filename: str
         :param module_name: The name of the module holding the files
             we are performing the style checks on.
         :type module_name: str
@@ -56,18 +56,18 @@ class Config(object):
         self.copyright_header_info = {}
         self.options = []
 
-        self.__read_config_file(config_filename)
+        self.__read_config_file(system_config_filename)
 
-    def __read_config_file(self, config_filename):
+    def __read_config_file(self, system_config_filename):
         """Read the config file and update our config accordingly.
 
         See the config file itself for more info on how the file
         is structured (etc/asc_config.yaml).
 
-        :param config_filename: See __init__.
-        :type config_filename: str
+        :param system_config_filename: See __init__.
+        :type system_config_filename: str
         """
-        with open(config_filename) as f:
+        with open(system_config_filename) as f:
             c = yaml.load(f)
 
         # Process all known options from the config file we just

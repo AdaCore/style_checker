@@ -3,7 +3,7 @@ import datetime
 import re
 import sys
 
-from asclib import get_config_default_filename
+from asclib import get_system_config_default_filename
 from asclib.checkers.typific.factory import dump_check_for_all_file_types
 
 MAX_FILES_WITH_STYLE_FAILURES = 3
@@ -41,9 +41,10 @@ def parse_cmdline(argv=None):
                               ' the filenames via standard input allows'
                               ' bypassing potential limitations regarding'
                               ' command-line maximum lengths.'))
-    parser.add_argument('-config', '--config', metavar='CONFIG_FILENAME',
-                        default=get_config_default_filename(),
-                        help='The config file to use (default: %(default)s)')
+    parser.add_argument('--system-config', metavar='CONFIG_FILENAME',
+                        default=get_system_config_default_filename(),
+                        help=('The system config file to use'
+                              ' (default: %(default)s)'))
     parser.add_argument('--max-files-with-errors', metavar='N',
                         dest='max_files_with_errors',
                         type=int, default=MAX_FILES_WITH_STYLE_FAILURES,

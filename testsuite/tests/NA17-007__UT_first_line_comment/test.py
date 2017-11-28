@@ -9,14 +9,14 @@ class TestRun(TestCase):
         """
         self.enable_unit_test()
 
-        from asclib import get_config_default_filename
+        from asclib import get_system_config_default_filename
         from asclib.config import Config
         from asclib.checkers.typific.c import CFileChecker
         from asclib.checkers import FileCheckerError
 
         CFileChecker.typific_info.comment_line_re = r'/\**'
         CFileChecker.rulific_decision_map['first_line_comment'] = True
-        config = Config(get_config_default_filename(),
+        config = Config(get_system_config_default_filename(),
                         'supermod', 2006)
         c_checker = CFileChecker('hello-no-first-line-comment.c', config)
 

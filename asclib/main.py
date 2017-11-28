@@ -27,7 +27,7 @@ def style_checker(argv=None):
                           for filename in sys.stdin.read().splitlines()
                           if filename]
 
-    config = Config(args.config, args.module_name, args.forced_year)
+    config = Config(args.system_config, args.module_name, args.forced_year)
 
     n_files_with_errors = 0
     for filename in args.filenames:
