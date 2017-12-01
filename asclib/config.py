@@ -38,7 +38,8 @@ class Config(object):
     :ivar options: A list of style_checks options obtained. They are
         mostly the result of parsing the config file.
     """
-    def __init__(self, system_config_filename, module_name, current_year):
+    def __init__(self, system_config_filename, module_name,
+                 module_config_filename, current_year):
         """The constructor.
 
         :param system_config_filename: The name of the system config file.
@@ -46,6 +47,10 @@ class Config(object):
         :param module_name: The name of the module holding the files
             we are performing the style checks on.
         :type module_name: str
+        :param module_config_filename: The name of the configuration file
+            specific to our module. None if the module does not use an
+            additional configuration file.
+        :type module_config_filename: str | None
         :current_year: The current year.
         :type current_year: int
         """
@@ -56,9 +61,11 @@ class Config(object):
         self.copyright_header_info = {}
         self.options = []
 
-        self.__read_config_file(system_config_filename)
+        self.__read_config_file(system_config_filename,
+                                module_config_filename)
 
-    def __read_config_file(self, system_config_filename):
+    def __read_config_file(self, system_config_filename,
+                           module_config_filename):
         """Read the config file and update our config accordingly.
 
         See the config file itself for more info on how the file
@@ -66,12 +73,19 @@ class Config(object):
 
         :param system_config_filename: See __init__.
         :type system_config_filename: str
+        :param module_config_filename: See __init__.
+        :type module_config_filename: str
         """
         with open(system_config_filename) as f:
             c = yaml.load(f)
 
         system_config = c[ANY_MODULE_NAME] if ANY_MODULE_NAME in c else None
-        module_config = c[self.module_name] if self.module_name in c else None
+        if module_config_filename is not None:
+            with open(module_config_filename) as f:
+                module_config = yaml.load(f)
+        else:
+            module_config = (c[self.module_name] if self.module_name in c
+                             else None)
 
         # Process all known options from the config file we just
         # loaded.

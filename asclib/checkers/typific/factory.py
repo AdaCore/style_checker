@@ -126,8 +126,10 @@ def dump_check_for_all_file_types():
     """
     from asclib import get_system_config_default_filename
     from asclib.config import Config
-    config = Config(get_system_config_default_filename(), 'nothing', 2006)
-    gnat_config = Config(get_system_config_default_filename(), 'gnat', 2006)
+    config = Config(get_system_config_default_filename(), 'nothing',
+                    None, 2006)
+    gnat_config = Config(get_system_config_default_filename(), 'gnat',
+                         None, 2006)
 
     from asclib.checkers.typific.ada import AdaFileChecker
     AdaFileChecker('a.ads', config).dump_checks('STD_ADA', print_header=True)

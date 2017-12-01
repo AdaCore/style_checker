@@ -45,6 +45,10 @@ def parse_cmdline(argv=None):
                         default=get_system_config_default_filename(),
                         help=('The system config file to use'
                               ' (default: %(default)s)'))
+    parser.add_argument('--config', '-c', dest='module_config',
+                        metavar='CONFIG_FILENAME',
+                        help=('An additional configuration file providing'
+                              ' module-specific settings.'))
     parser.add_argument('--max-files-with-errors', metavar='N',
                         dest='max_files_with_errors',
                         type=int, default=MAX_FILES_WITH_STYLE_FAILURES,

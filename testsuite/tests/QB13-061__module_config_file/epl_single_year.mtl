@@ -1,0 +1,15 @@
+[**
+ * Copyright (c) 2017 Someone Inc
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     AdaCore - initial API and implementation
+ */]
+
+[comment encoding = UTF-8 /]
+[module doc('http://www.eclipse.org/emf/2002/Ecore')]
+
+[import com::adacore::hello /]

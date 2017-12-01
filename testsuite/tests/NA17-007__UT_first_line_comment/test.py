@@ -17,7 +17,7 @@ class TestRun(TestCase):
         CFileChecker.typific_info.comment_line_re = r'/\**'
         CFileChecker.rulific_decision_map['first_line_comment'] = True
         config = Config(get_system_config_default_filename(),
-                        'supermod', 2006)
+                        'supermod', None, 2006)
         c_checker = CFileChecker('hello-no-first-line-comment.c', config)
 
         with self.assertRaises(FileCheckerError) as cm:
