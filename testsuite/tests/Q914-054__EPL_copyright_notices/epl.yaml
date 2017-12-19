@@ -1,0 +1,16 @@
+copyright_header_info:
+    # Matlab makes an assumption about the first comment in a file
+    # which makes it tricky to put the copyright notice at the start
+    # of the file. The workaround is to put it right after the comment
+    # documenting the first entity, which can been quite deep in
+    # the file. So scan more lines for a copyright header.
+    max_lines: 100
+    +format_help:
+        # EPL with a single year...
+        - 'Copyright (c) %(year)d '
+        # EPL with a range of years year...
+        - 'Copyright (c) 2014, %(year)d '
+    +copyright_re:
+        # EPL copyright lines...
+        - ' *(--|\*|//|@c|%)? *(Copyright) \(c\) ([0-9][0-9][0-9][0-9], )?(?P<year>[0-9][0-9][0-9][0-9]) (?P<holder>.*[^ */-])'
+
