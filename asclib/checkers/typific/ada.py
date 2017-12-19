@@ -58,10 +58,6 @@ class AdaFileChecker(TypificChecker):
             return STD_ADA
 
     def run_external_checker(self):
-        if self.config.module_name == 'erb':
-            # Why are Ada checks disabled for "erb"???
-            return
-
         file_type = self.file_type
 
         cmd = ['gcc',

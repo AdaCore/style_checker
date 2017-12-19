@@ -98,10 +98,6 @@
 # Module-specific configuration.  This configuration is applied
 # on top of the default configuration.
 
-'erb':
-    +copyright:
-        - The European Space Agency
-
 'examples':
     style_checks:
         - -copyright
