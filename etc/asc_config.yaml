@@ -109,7 +109,3 @@
 'java':
     style_checks:
         - gnatx
-
-'marte':
-    +copyright:
-        - Universidad de Cantabria, SPAIN

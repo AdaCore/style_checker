@@ -159,7 +159,8 @@ It must look like...
         """Style check test against copyright-ok-8.adb
         """
         self.set_year(2006)
-        p = self.run_style_checker('marte', 'copyright-ok-8.adb')
+        p = self.run_style_checker('--config=marte.yaml',
+                                   'marte', 'copyright-ok-8.adb')
 	self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 
@@ -167,7 +168,8 @@ It must look like...
         """Style check test against copyright-ok-9.h
         """
         self.set_year(2006)
-        p = self.run_style_checker('marte', 'copyright-ok-9.h')
+        p = self.run_style_checker('--config=marte.yaml',
+                                   'marte', 'copyright-ok-9.h')
 	self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 
