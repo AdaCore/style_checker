@@ -86,7 +86,8 @@ Expected either of:
         """Style check test against copyright-ok-10.h
         """
         self.set_year(2006)
-        p = self.run_style_checker('binutils', 'copyright-ok-10.h')
+        p = self.run_style_checker('--config=binutils.yaml',
+                                   'binutils', 'copyright-ok-10.h')
 	self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 
