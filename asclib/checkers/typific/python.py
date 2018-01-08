@@ -59,7 +59,7 @@ class PythonFileChecker(TypificChecker):
             if p.status != 0 or p.out:
                 return p.out
         except OSError as e:
-            return 'Failed to run pep8: %s' % e
+            return 'Failed to run pycodestyle: %s' % e
 
         if not python_fragment_p and self.__run_pyflakes():
             try:
