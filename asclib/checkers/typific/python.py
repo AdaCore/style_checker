@@ -1,5 +1,7 @@
+import os
 import re
 
+from asclib import get_prefix_dir
 from asclib.checkers.typific import TypificChecker, TypificCheckerInfo
 from asclib.ex import Run
 
@@ -50,8 +52,9 @@ class PythonFileChecker(TypificChecker):
                     python_fragment_p = True
 
         try:
-            p = Run(['pep8', '-r',
-                     '--ignore=E121,E123,E126,E226,E24,E704,E402',
+            p = Run(['pycodestyle',
+                     '--config=' + os.path.join(get_prefix_dir(),
+                                                'etc', 'pycodestyle.cfg'),
                      self.filename])
             if p.status != 0 or p.out:
                 return p.out

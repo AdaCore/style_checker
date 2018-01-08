@@ -55,7 +55,7 @@ def get_gnat_version():
         try:
             with open(basever, 'rb') as fd:
                 return fd.read()
-        except:
+        except Exception as e:
             pass
 
     print 'cannot find GNAT version in gnatvsn.ads or in ' + basever
