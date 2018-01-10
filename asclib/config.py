@@ -90,9 +90,17 @@ class Config(object):
         # Process all known options from the config file we just
         # loaded.
 
-        for (opt_name, opt_list) in (
-                (COPYRIGHT_CONFIG, self.copyright_holders),
-                (OPTIONS_CONFIG, self.options)):
+        # A tuple of known top-level configuration options that we need
+        # to load. Each element is a tuple with the following items:
+        #   a. The name of the configuration option (a string);
+        #   b. The list where the contents of the option should be
+        #      stored.
+        OPTIONS_LOADING_MAP = (
+            (COPYRIGHT_CONFIG, self.copyright_holders),
+            (OPTIONS_CONFIG, self.options),
+        )
+
+        for (opt_name, opt_list) in OPTIONS_LOADING_MAP:
             # Get the option value, giving priority to the module-specific
             # section.
             if module_config is not None and opt_name in module_config:
