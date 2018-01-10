@@ -1,7 +1,7 @@
-copyright:
-    - Someone Inc
-    - Second Holder SARL
 copyright_header_info:
+    holders:
+        - Someone Inc
+        - Second Holder SARL
     # Matlab makes an assumption about the first comment in a file
     # which makes it tricky to put the copyright notice at the start
     # of the file. The workaround is to put it right after the comment

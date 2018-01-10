@@ -1,0 +1,6 @@
+'*':
+    style_checks:
+        - -copyright
+    # No need to provide any copyright_header_info data, as this check
+    # has been disabled entirely (via the "style_checks" section above).
+    copyright_header_info:

@@ -20,17 +20,6 @@
 # Default configuration, applying to all modules by default.
 
 '*':
-    copyright:
-        - AdaCore
-        - Altran Praxis
-        - Altran UK Limited
-        - Free Software Foundation, Inc.
-        - AdaCore, Altran Praxis
-        - AdaCore and Altran UK Limited
-        - AdaCore, Altran UK Limited
-        - AdaCore and Altran UK
-        - AdaCore, Altran UK
-
     # A description of how copyright headers are expected to be.
     # Repository-specific configurations can override part or
     # all of this config.
@@ -40,6 +29,19 @@
     # can do so by providing a "+<key>" entry where "<key>" is
     # the name of the key to be augmented.
     copyright_header_info:
+        # The list of valid copyright holders (a list of strings);
+        # One entry per valid copyright holder.
+        holders:
+            - AdaCore
+            - Altran Praxis
+            - Altran UK Limited
+            - Free Software Foundation, Inc.
+            - AdaCore, Altran Praxis
+            - AdaCore and Altran UK Limited
+            - AdaCore, Altran UK Limited
+            - AdaCore and Altran UK
+            - AdaCore, Altran UK
+
         # The maximum number of lines the tool will be scanning until
         # it finds a copyright line.
         max_lines: 24

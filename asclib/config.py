@@ -15,10 +15,6 @@ from asclib import get_ada_preprocessing_filename
 # and all module.
 ANY_MODULE_NAME = '*'
 
-# The name of the sub-section where the list of valid copyright holders
-# is specified.
-COPYRIGHT_HOLDERS_SECTION_NAME = 'copyright'
-
 # The name of the section specifying the list of checks that should be
 # enabled/disabled.
 STYLE_CHECKS_SECTION_NAME = 'style_checks'
@@ -33,8 +29,6 @@ class Config(object):
         the -gnatep switch.
     :ivar module_name: The name of the module.
     :ivar current_year: The current year.
-    :ivar copyright_holders: A list of strings, each string being
-        a regular expression matching a valid copyright holder name.
     :ivar style_checks_options: A list of style_checks options obtained.
         They are mostly the result of parsing the config file.
     """
@@ -57,7 +51,6 @@ class Config(object):
         self.ada_preprocessing_filename = get_ada_preprocessing_filename()
         self.module_name = module_name
         self.current_year = current_year
-        self.copyright_holders = []
         self.copyright_header_info = {}
         self.style_checks_options = []
 
@@ -96,7 +89,6 @@ class Config(object):
         #   b. The list where the contents of the option should be
         #      stored.
         OPTIONS_LOADING_MAP = (
-            (COPYRIGHT_HOLDERS_SECTION_NAME, self.copyright_holders),
             (STYLE_CHECKS_SECTION_NAME, self.style_checks_options),
         )
 

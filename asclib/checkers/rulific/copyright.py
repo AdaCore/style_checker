@@ -43,6 +43,7 @@ class CopyrightRuleChecker(AbstractRuleChecker):
         # to some configuration variables, hopefully making the code
         # shorter and easier to understand.
         cinfo = self.config.copyright_header_info
+        self.copyright_holders = cinfo['holders']
         self.max_lines_for_copyright_notice = cinfo['max_lines']
         self.format_help = cinfo['format_help']
         self.present_re = cinfo['present_re']
@@ -106,7 +107,7 @@ class CopyrightRuleChecker(AbstractRuleChecker):
                     ['',
                      '... where <copyright holder> can be any of:'] +
                     ["    - `%s'" % holder
-                     for holder in self.config.copyright_holders])
+                     for holder in self.copyright_holders])
                 self.context_has_improperly_formatted = True
             return
 
@@ -130,15 +131,15 @@ class CopyrightRuleChecker(AbstractRuleChecker):
 
         # If the module only allows a restricted list of possible
         # copyright holders, then check that list.
-        if self.config.copyright_holders and \
-                actual_holder not in self.config.copyright_holders:
+        if self.copyright_holders and \
+                actual_holder not in self.copyright_holders:
             self.context_copyright_notice_err_msg.extend(
                 ['%s:%d: Copyright notice has unexpected copyright holder:'
                  % (self.filename, lineno),
                  "      `%s'" % actual_holder,
                  'Expected either of:'] +
                 ["    - `%s'" % holder
-                 for holder in self.config.copyright_holders])
+                 for holder in self.copyright_holders])
             return
 
         copyright_year = m.group('year')
