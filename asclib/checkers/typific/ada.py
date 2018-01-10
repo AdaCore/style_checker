@@ -83,7 +83,7 @@ class AdaFileChecker(TypificChecker):
                         '-gnatw.g',
                         '-gnatwe'])
 
-        if 'gnatx' in self.config.options:
+        if 'gnatx' in self.config.style_checks_options:
             cmd.append('-gnatX')
 
         # Set language version: by default enable Ada 2012, except for
@@ -94,12 +94,13 @@ class AdaFileChecker(TypificChecker):
         if file_type in (RT_SPEC, RT_BODY):
             # Language version already set by -gnatg for runtime units
             pass
-        elif 'gnatx' in self.config.options:
+        elif 'gnatx' in self.config.style_checks_options:
             # Language version already set by -gnatX
             pass
-        elif file_type == COMPILER_CORE or 'gnat95' in self.config.options:
+        elif file_type == COMPILER_CORE or \
+                'gnat95' in self.config.style_checks_options:
             cmd.append('-gnat95')
-        elif 'gnat05' in self.config.options:
+        elif 'gnat05' in self.config.style_checks_options:
             cmd.append('-gnat05')
         else:
             cmd.append('-gnat12')

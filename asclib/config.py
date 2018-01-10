@@ -17,11 +17,11 @@ ANY_MODULE_NAME = '*'
 
 # The name of the sub-section where the list of valid copyright holders
 # is specified.
-COPYRIGHT_CONFIG = 'copyright'
+COPYRIGHT_HOLDERS_SECTION_NAME = 'copyright'
 
 # The name of the section specifying the list of checks that should be
 # enabled/disabled.
-OPTIONS_CONFIG = 'style_checks'
+STYLE_CHECKS_SECTION_NAME = 'style_checks'
 
 
 class Config(object):
@@ -35,8 +35,8 @@ class Config(object):
     :ivar current_year: The current year.
     :ivar copyright_holders: A list of strings, each string being
         a regular expression matching a valid copyright holder name.
-    :ivar options: A list of style_checks options obtained. They are
-        mostly the result of parsing the config file.
+    :ivar style_checks_options: A list of style_checks options obtained.
+        They are mostly the result of parsing the config file.
     """
     def __init__(self, system_config_filename, module_name,
                  module_config_filename, current_year):
@@ -59,7 +59,7 @@ class Config(object):
         self.current_year = current_year
         self.copyright_holders = []
         self.copyright_header_info = {}
-        self.options = []
+        self.style_checks_options = []
 
         self.__read_config_file(system_config_filename,
                                 module_config_filename)
@@ -96,8 +96,8 @@ class Config(object):
         #   b. The list where the contents of the option should be
         #      stored.
         OPTIONS_LOADING_MAP = (
-            (COPYRIGHT_CONFIG, self.copyright_holders),
-            (OPTIONS_CONFIG, self.options),
+            (COPYRIGHT_HOLDERS_SECTION_NAME, self.copyright_holders),
+            (STYLE_CHECKS_SECTION_NAME, self.style_checks_options),
         )
 
         for (opt_name, opt_list) in OPTIONS_LOADING_MAP:

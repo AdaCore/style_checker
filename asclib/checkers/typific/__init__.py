@@ -42,7 +42,7 @@ class TypificChecker(object):
             for rulific_checker in ALL_RULIFIC_CHECKERS
             if (self.rulific_decision_map[rulific_checker.RULE_CONFIG_NAME] and
                 '-' + rulific_checker.RULE_CONFIG_NAME not
-                in self.config.options)]
+                in self.config.style_checks_options)]
 
         # Initialize the various rulific checkers we selected.
         for rulific_checker in self.my_rulific_checkers:
