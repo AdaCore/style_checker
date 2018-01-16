@@ -21,6 +21,15 @@ src/test.py:2: 'from GPS_Support import *' used; unable to detect undefined name
         self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 
+    def test_add_token(self):
+        """Run checker against add-token
+        """
+        p = self.run_style_checker('dummy', 'src/add-token')
+        self.assertNotEqual(p.status, 0, p.image)
+        self.assertRunOutputEqual(p, """\
+src/add-token:4:19: E211 whitespace before '('
+""")
+
 
 if __name__ == '__main__':
     runtests()

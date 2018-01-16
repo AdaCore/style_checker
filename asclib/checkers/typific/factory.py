@@ -72,22 +72,22 @@ def get_file_checker(filename, config):
         return GNATInfoFileChecker(filename, config)
 
     # Run "file" to see if what kind of file this might be.
-    file_type = get_file_type(filename)
+    file_type = get_file_type(filename).lower()
 
-    if 'Bourne shell' in file_type or \
-            'POSIX shell' in file_type:
+    if 'bourne shell' in file_type or \
+            'posix shell' in file_type:
         from asclib.checkers.typific.sh import ShFileChecker
         return ShFileChecker(filename, config)
 
-    if 'Bourne-Again shell' in file_type:
+    if 'bourne-again shell' in file_type:
         from asclib.checkers.typific.bash import BashFileChecker
         return BashFileChecker(filename, config)
 
-    if 'C shell' in file_type:
+    if 'c shell' in file_type:
         from asclib.checkers.typific.csh import CshFileChecker
         return CshFileChecker(filename, config)
 
-    if 'Perl script' in file_type:
+    if 'perl script' in file_type:
         from asclib.checkers.typific.perl import PerlFileChecker
         return PerlFileChecker(filename, config)
 
