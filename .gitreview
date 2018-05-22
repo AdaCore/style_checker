@@ -1,0 +1,6 @@
+[gerrit]
+host = git.adacore.com
+port = 29418
+project = style_checker
+defaultbranch = master
+defaultremote = origin
