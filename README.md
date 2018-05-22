@@ -39,6 +39,46 @@ of
 
     $ style_checker --help
 
+Language-Specific Features
+==========================
+
+Java
+----
+
+Turning Style Checks Off
+........................
+
+Style checks can be disabled for any given file by writing the following
+comment in the first or second line of that Python file (the comment
+must be written exactly as is, with no changes in indentation and no
+trailing spaces at the end):
+
+    // No_Style_Check
+
+Python
+------
+
+Python Fragments
+................
+
+Files ending with a `.plan`, or `.frag.py` extension, or files where
+the first or second line starts with `# Style_Check:Python_Fragment`
+are considered Python fragments, meanning that these files contain python
+code, but this code is not necessarily complete or self-sufficient.
+
+For those files, the style-checking does not include running `pyflakes`.
+
+Turning Style Checks Off
+........................
+
+Style checks can be disabled for any given file by writing the following
+comment in the first or second line of that Python file (the comment
+must be written exactly as is, with no changes in indentation and no
+trailing spaces at the end):
+
+    # No_Style_Check
+
+
 The AdaCore Style Checker configuration files
 =============================================
 
