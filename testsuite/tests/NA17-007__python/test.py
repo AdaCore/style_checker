@@ -11,6 +11,7 @@ class TestRun(TestCase):
         self.assertNotEqual(p.status, 0, p.image)
         self.assertRunOutputEqual(p, """\
 src/test.py:2: 'from GPS_Support import *' used; unable to detect undefined names
+src/test.py:10: 'gps_assert' may be undefined, or defined from star imports: GPS_Support
 """)
 
     def test_test_py_ok(self):
