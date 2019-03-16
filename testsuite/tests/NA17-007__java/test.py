@@ -24,6 +24,7 @@ test1.java: Copyright notice missing, must occur before line 24
                                    'test1-start-import.java')
 	self.assertNotEqual(p.status, 0, p.image)
         self.assertRunOutputEqual(p, """\
+[warning] /usr/bin/checkstyle: JVM flavor 'sunmin5' not understood
 [ERROR] test1-start-import.java:1: Using the '.*' form of import should be avoided - java.io.*. [AvoidStarImport]
 Checkstyle ends with 1 errors.
 """)
