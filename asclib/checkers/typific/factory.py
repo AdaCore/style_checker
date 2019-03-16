@@ -61,6 +61,16 @@ def get_file_checker(filename, config):
         from asclib.checkers.typific.m import MFileChecker
         return MFileChecker(filename, config)
 
+    if ext == '.md':
+        # Markdown files. We do not perform any style checks on those files,
+        # but we still want to recognize those here and explicitly do
+        # nothing. If we don't do that, then we end up letting the "file"
+        # program determine the file's type, and sometimes its heuristics
+        # are fairly, erm, surprising. For instance, we have had a case
+        # in RA22-066 where the markdown file was recognized as a Python
+        # script, thus triggering the Python style checkers.
+        return None
+
     if filename.startswith('known-problems-'):
         # Known problems files. These are now handled by impactdb.
         # So no need for us to provide a style-checker anymore.
