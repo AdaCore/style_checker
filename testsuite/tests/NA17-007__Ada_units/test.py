@@ -79,6 +79,29 @@ ada12-no-first-line-comment.adb:1: First line must be comment markers only.
         self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 
+    def test_ada_gnat95_ok(self):
+        """Style check Ada unit with gnat95 without any violation.
+        """
+        p = self.run_style_checker(
+            '--system-config',
+            os.path.join(os.getcwd(), 'gnat95_config', 'alt_config.yaml'),
+            'examples', 'gnat95_config/pck.ads')
+        self.assertEqual(p.status, 0, p.image)
+        self.assertRunOutputEmpty(p)
+
+    def test_ada_gnat95_with_ada2005_violation(self):
+        """Style check with gnat95 of Ada unit using Ada 2005 construct
+        """
+        p = self.run_style_checker(
+            '--system-config',
+            os.path.join(os.getcwd(), 'gnat95_config', 'alt_config.yaml'),
+            'examples', 'gnat95_config/has_05.adb')
+        self.assertNotEqual(p.status, 0, p.image)
+        self.assertRunOutputEqual(p, """\
+has_05.adb:8:27: string expression in raise is Ada 2005 extension
+has_05.adb:8:27: unit must be compiled with -gnat05 switch
+""")
+
     def test_ada_gnat05(self):
         """Style check Ada unit with gnat05
         """
@@ -98,6 +121,14 @@ pck.ads:3:04: (style) space required
         """
         self.set_year(2017)
         p = self.run_style_checker('gnat', 'libgnarl/s-taprop__linux.adb')
+        self.assertEqual(p.status, 0, p.image)
+        self.assertRunOutputEmpty(p)
+
+    def test_ada_2005_ok_in_gnat_compiler_core(self):
+        """Verify that COMPILER_CORE files can use Ada 2005 constructs
+        """
+        self.set_year(2020)
+        p = self.run_style_checker('gnat', 'bindo.adb')
         self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 

@@ -1,0 +1,11 @@
+'*':
+    copyright_header_info:
+        holders:
+            - AdaCore
+        present_re: 'copyright.*[0-9][0-9][0-9][0-9]'
+
+'examples':
+    style_checks:
+        - gnat95
+        - -copyright
+
