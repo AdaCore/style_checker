@@ -83,24 +83,22 @@ class AdaFileChecker(TypificChecker):
                         '-gnatw.g',
                         '-gnatwe'])
 
-        if 'gnatx' in self.config.style_checks_options:
-            cmd.append('-gnatX')
-
         # Set language version: by default enable Ada 2012, except for
-        # compiler units (which must be Ada 95 for bootstrap). Can be
+        # compiler units (which must be Ada 2005 for bootstrap). Can be
         # overridden using flags gnat95 and gnat05. (Note that flag
         # "gnat12" has no effect since this is now the default).
 
         if file_type in (RT_SPEC, RT_BODY):
             # Language version already set by -gnatg for runtime units
             pass
+        elif file_type == COMPILER_CORE:
+            cmd.append('-gnat05')
+
         elif 'gnatx' in self.config.style_checks_options:
-            # Language version already set by -gnatX
-            pass
+            cmd.append('-gnatX')
         elif 'gnat95' in self.config.style_checks_options:
             cmd.append('-gnat95')
-        elif file_type == COMPILER_CORE or \
-                'gnat05' in self.config.style_checks_options:
+        elif 'gnat05' in self.config.style_checks_options:
             cmd.append('-gnat05')
         else:
             cmd.append('-gnat12')
