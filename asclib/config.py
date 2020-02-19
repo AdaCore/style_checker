@@ -70,12 +70,12 @@ class Config(object):
         :type module_config_filename: str
         """
         with open(system_config_filename) as f:
-            c = yaml.load(f)
+            c = yaml.safe_load(f)
 
         system_config = c[ANY_MODULE_NAME] if ANY_MODULE_NAME in c else None
         if module_config_filename is not None:
             with open(module_config_filename) as f:
-                module_config = yaml.load(f)
+                module_config = yaml.safe_load(f)
         else:
             module_config = (c[self.module_name] if self.module_name in c
                              else None)

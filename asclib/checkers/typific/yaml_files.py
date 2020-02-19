@@ -27,6 +27,6 @@ class YamlFileChecker(TypificChecker):
     def run_external_checker(self):
         try:
             with open(self.filename, 'rb') as fd:
-                yaml.load(fd)
+                yaml.safe_load(fd)
         except yaml.YAMLError as exc:
             return 'Error: %s: %s' % (self.filename, str(exc))
