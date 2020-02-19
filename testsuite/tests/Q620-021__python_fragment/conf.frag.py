@@ -23,8 +23,8 @@ DOCS = {
     'gnat_ugx': {
         'title': u'GNAT User\'s Guide Supplement for Cross Platforms'},
     'gnathie_ug': {
-        'title': u'GNAT User\'s Guide Supplement for GNAT Pro ' +
-        u'Safety-Critical and GNAT Pro High-Security'},
+        'title': u'GNAT User\'s Guide Supplement for GNAT Pro '
+        + u'Safety-Critical and GNAT Pro High-Security'},
     'gnat_ccg': {
         'title': u'GNAT Pro Common Code Generator User\'s Guide Supplement'}}
 
@@ -43,8 +43,8 @@ def get_copyright():
 
 
 def get_gnat_version():
-    m = re.search(r'Gnat_Static_Version_String : ' +
-                  r'constant String := "([^\(\)]+)\(.*\)?";',
+    m = re.search(r'Gnat_Static_Version_String : '
+                  + r'constant String := "([^\(\)]+)\(.*\)?";',
                   gnatvsn_content)
     if m:
         return m.group(1).strip()
@@ -130,13 +130,13 @@ copyright_macros = {
     'version': version}
 
 latex_elements = {
-    'preamble': '\\usepackage{gnat}\n' +
-    latex_elements.TOC_DEPTH +
-    latex_elements.PAGE_BLANK +
-    latex_elements.TOC_CMD +
-    latex_elements.LATEX_HYPHEN +
-    latex_elements.doc_settings(DOCS[doc_name]['title'],
-                                get_gnat_version()),
+    'preamble': '\\usepackage{gnat}\n'
+    + latex_elements.TOC_DEPTH
+    + latex_elements.PAGE_BLANK
+    + latex_elements.TOC_CMD
+    + latex_elements.LATEX_HYPHEN
+    + latex_elements.doc_settings(DOCS[doc_name]['title'],
+                                  get_gnat_version()),
     'tableofcontents': latex_elements.TOC % copyright_macros}
 
 latex_documents = [

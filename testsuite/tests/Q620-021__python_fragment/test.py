@@ -9,7 +9,7 @@ class TestRun(TestCase):
         p = self.run_style_checker('gnat', 'conf.py')
         self.assertNotEqual(p.status, 0, p.image)
         self.assertRunOutputEqual(p, """\
-conf.py:58:9: E722 do not use bare except'
+conf.py:58:9: E722 do not use bare 'except'
 """)
 
     def test_conf_frag_py(self):
@@ -33,7 +33,7 @@ conf.py:58:9: E722 do not use bare except'
         self.assertNotEqual(p.status, 0, p.image)
         self.assertRunOutputEqual(p, """\
 conf-bad-pep8.frag.py:10:16: E211 whitespace before '('
-conf-bad-pep8.frag.py:58:9: E722 do not use bare except'
+conf-bad-pep8.frag.py:58:9: E722 do not use bare 'except'
 """)
 
 
