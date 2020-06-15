@@ -132,6 +132,14 @@ pck.ads:3:04: (style) space required
         self.assertEqual(p.status, 0, p.image)
         self.assertRunOutputEmpty(p)
 
+    def test_ada_2012_ok_in_gnat_compiler_core(self):
+        """Verify that COMPILER_CORE files can use Ada 2012 constructs
+        """
+        self.set_year(2006)
+        p = self.run_style_checker('gnat', 'ada12.adb')
+        self.assertEqual(p.status, 0, p.image)
+        self.assertRunOutputEmpty(p)
+
 
 if __name__ == '__main__':
     runtests()
