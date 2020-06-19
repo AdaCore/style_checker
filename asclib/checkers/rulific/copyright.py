@@ -99,15 +99,15 @@ class CopyrightRuleChecker(AbstractRuleChecker):
                     ['%s:%d: Copyright notice is not correctly formatted'
                      % (self.filename, lineno),
                      'It must look like...',
-                     ''] +
-                    '\nor\n'.join(
+                     '']
+                    + '\nor\n'.join(
                         ['    %s<copyright holder>'
                          % (format_help % {'year': self.config.current_year})
-                         for format_help in self.format_help]).splitlines() +
-                    ['',
-                     '... where <copyright holder> can be any of:'] +
-                    ["    - `%s'" % holder
-                     for holder in self.copyright_holders])
+                         for format_help in self.format_help]).splitlines()
+                    + ['',
+                       '... where <copyright holder> can be any of:']
+                    + ["    - `%s'" % holder
+                       for holder in self.copyright_holders])
                 self.context_has_improperly_formatted = True
             return
 
@@ -137,9 +137,9 @@ class CopyrightRuleChecker(AbstractRuleChecker):
                 ['%s:%d: Copyright notice has unexpected copyright holder:'
                  % (self.filename, lineno),
                  "      `%s'" % actual_holder,
-                 'Expected either of:'] +
-                ["    - `%s'" % holder
-                 for holder in self.copyright_holders])
+                 'Expected either of:']
+                + ["    - `%s'" % holder
+                   for holder in self.copyright_holders])
             return
 
         copyright_year = m.group('year')

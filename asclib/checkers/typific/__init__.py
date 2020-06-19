@@ -41,9 +41,9 @@ class TypificChecker(object):
         self.my_rulific_checkers = [
             rulific_checker(self.filename, self.config, self.typific_info)
             for rulific_checker in ALL_RULIFIC_CHECKERS
-            if (self.rulific_decision_map[rulific_checker.RULE_CONFIG_NAME] and
-                '-' + rulific_checker.RULE_CONFIG_NAME not
-                in self.config.style_checks_options)]
+            if (self.rulific_decision_map[rulific_checker.RULE_CONFIG_NAME]
+                and '-' + rulific_checker.RULE_CONFIG_NAME
+                not in self.config.style_checks_options)]
 
         # Initialize the various rulific checkers we selected.
         for rulific_checker in self.my_rulific_checkers:
@@ -157,9 +157,9 @@ class TypificChecker(object):
             ('REV', RCSKeywordsRuleChecker))
 
         if print_header:
-            print(' ' * 11 +
-                  ' '.join(['{:^6}'.format(cvs_check_name[:6])
-                            for (cvs_check_name, _) in RULES_LIST]).rstrip())
+            print(' ' * 11
+                  + ' '.join(['{:^6}'.format(cvs_check_name[:6])
+                              for (cvs_check_name, _) in RULES_LIST]).rstrip())
 
         checks_status = []
         for cvs_check_name, rulific_checker in RULES_LIST:
@@ -193,8 +193,8 @@ class TypificChecker(object):
                                for checker in ALL_RULIFIC_CHECKERS
                                if checker not in [c for _, c in RULES_LIST]]
             assert not missed_checkers, (
-                'The following rules are missing from the dump above: ' +
-                ', '.join(missed_checkers))
+                'The following rules are missing from the dump above: '
+                + ', '.join(missed_checkers))
 
     ######################################################################
     #  Abstract methods/attributes/properties:

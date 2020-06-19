@@ -13,13 +13,13 @@ STD_ADA = 'regular Ada file'
 
 RT_SPEC_PATTERN = r'^[agis]-[a-z0-9-_]+\.ads$'
 RT_BODY_PATTERN = r'^[agis]-[a-z0-9-_]+\.adb$'
-ADA83_RT_SPEC_PATTERN = ('^(' +
-                         '|'.join(['unch(conv|deal)',
-                                   '(sequen|direct|text_)io',
-                                   'ioexcept',
-                                   'calendar',
-                                   'machcode']) +
-                         r')\.ads$')
+ADA83_RT_SPEC_PATTERN = ('^('
+                         + '|'.join(['unch(conv|deal)',
+                                     '(sequen|direct|text_)io',
+                                     'ioexcept',
+                                     'calendar',
+                                     'machcode'])
+                         + r')\.ads$')
 
 
 class AdaFileChecker(TypificChecker):
