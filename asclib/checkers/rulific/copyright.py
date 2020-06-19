@@ -122,7 +122,7 @@ class CopyrightRuleChecker(AbstractRuleChecker):
             # to strip that right edge of the box, as well as the
             # spaces before that.
             h_m = re.match(
-                '(.*)%s\s*' % self.typific_info.copyright_box_r_edge_re,
+                r'(.*)%s\s*' % self.typific_info.copyright_box_r_edge_re,
                 actual_holder)
             if h_m is not None:
                 # Right edge of box found. Only consider the text
