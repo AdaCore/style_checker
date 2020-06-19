@@ -17,7 +17,7 @@ class JavaFileChecker(TypificChecker):
         'no_rcs_keywords': True,
         'no_tab_indent': True,
         'no_trailing_space': True,
-        }
+    }
 
     typific_info = TypificCheckerInfo(comment_line_re=r'(/\*|//).*',
                                       ada_RM_spec_p=False,
@@ -37,7 +37,7 @@ class JavaFileChecker(TypificChecker):
             # allocates a value that causes a heap memory error on kwai.
             # For N909-043.
             'JAVA_ARGS': '-Xmx1024m'
-            }
+        }
 
         # Create a properties, file, as we as can't pass -D arguments to
         # checkstyle without modifying it.

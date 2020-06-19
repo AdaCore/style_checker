@@ -22,4 +22,4 @@ ALL_RULIFIC_CHECKERS = (
     FirstLineCommentRuleChecker,
     RCSKeywordsRuleChecker,
     CopyrightRuleChecker,
-    )
+)

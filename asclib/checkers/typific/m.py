@@ -12,7 +12,7 @@ class MFileChecker(TypificChecker):
         'no_rcs_keywords': False,
         'no_tab_indent': True,
         'no_trailing_space': True,
-        }
+    }
 
     typific_info = TypificCheckerInfo(comment_line_re=None,
                                       ada_RM_spec_p=False,

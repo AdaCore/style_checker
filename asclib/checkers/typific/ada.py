@@ -33,7 +33,7 @@ class AdaFileChecker(TypificChecker):
         'no_rcs_keywords': True,
         'no_tab_indent': False,
         'no_trailing_space': True,
-        }
+    }
 
     @property
     def typific_info(self):

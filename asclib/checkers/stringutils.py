@@ -10,7 +10,7 @@ DOS_EOL = '\r\n'
 PRINTABLE_EOL_MAP = {
     UNIX_EOL: 'lf [unix]',
     DOS_EOL: 'cr+lf [dos]',
-    }
+}
 
 
 def get_eol(line):
