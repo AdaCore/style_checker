@@ -10,7 +10,7 @@ class LineLengthRuleChecker(AbstractRuleChecker):
         'check that lines are not too long (%d characters)' % MAX_COL
 
     def check_rule(self, lineno, line, eol):
-        l = len(line)
-        if l > MAX_COL:
+        line_len = len(line)
+        if line_len > MAX_COL:
             return ('this line is too long (%d > %d characters)'
-                    % (l, MAX_COL))
+                    % (line_len, MAX_COL))
