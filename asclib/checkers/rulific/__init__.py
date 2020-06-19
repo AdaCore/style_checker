@@ -42,7 +42,7 @@ class AbstractRuleChecker(object):
     STOP_READING_FILE_AFTER_TOO_MANY_ERRORS = True
 
     def __init__(self, filename, config, typific_info):
-        """The constructor.
+        """Initialize self.
 
         :param filename: Same as the attribute.
         :type filename: str

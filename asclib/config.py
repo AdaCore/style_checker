@@ -35,7 +35,7 @@ class Config(object):
 
     def __init__(self, system_config_filename, module_name,
                  module_config_filename, current_year):
-        """The constructor.
+        """Initialize self.
 
         :param system_config_filename: The name of the system config file.
         :type system_config_filename: str

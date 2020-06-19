@@ -15,7 +15,7 @@ class TypificChecker(object):
     """
 
     def __init__(self, filename, config):
-        """The constructor.
+        """Initialize self.
 
         :param filename: Same as the attribute.
         :type filename: str
@@ -266,7 +266,7 @@ class TypificCheckerInfo(object):
 
     def __init__(self, comment_line_re, ada_RM_spec_p,
                  copyright_box_r_edge_re):
-        """The constructor.
+        """Initialize self.
 
         :param comment_line_re: Same as the attribute.
         :type comment_line_re: str | None
