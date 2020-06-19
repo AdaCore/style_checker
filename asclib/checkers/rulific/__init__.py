@@ -14,6 +14,7 @@ class AbstractRuleChecker(object):
         the new ones because we exceeded the number of such errors we wanted
         to report.
     """
+
     # The name of the rule, as identified in the style-checker
     # config file.  This is what the style-check can use to determine
     # whether a given checker should be applied or not.

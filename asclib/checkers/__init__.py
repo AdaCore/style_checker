@@ -5,4 +5,5 @@ class FileCheckerError(Exception):
     a list of strings, if the description of the error spans over
     multiple lines.
     """
+
     pass

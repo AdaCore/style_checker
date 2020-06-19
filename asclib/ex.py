@@ -82,6 +82,7 @@ class Run(object):
         created, its value gets set to the special value 127.
     :ivar out: process standard output and error.
     """
+
     def __init__(self, cmd, env=None, ignore_environ=True):
         """Spawn a process.
 

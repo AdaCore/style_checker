@@ -18,6 +18,7 @@ class DumpChecksAction(Action):
     want the switch to work even if some mandatory positional
     arguments or switches are missing.
     """
+
     def __call__(self, parser, namespace, values, option_string=None):
         dump_check_for_all_file_types()
         sys.exit(1)

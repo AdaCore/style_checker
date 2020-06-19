@@ -32,6 +32,7 @@ class Config(object):
     :ivar style_checks_options: A list of style_checks options obtained.
         They are mostly the result of parsing the config file.
     """
+
     def __init__(self, system_config_filename, module_name,
                  module_config_filename, current_year):
         """The constructor.

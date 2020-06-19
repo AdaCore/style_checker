@@ -13,6 +13,7 @@ class TypificChecker(object):
         typific checker will be using, in the same order as in
         ALL_RULIFIC_CHECKERS.
     """
+
     def __init__(self, filename, config):
         """The constructor.
 
@@ -262,6 +263,7 @@ class TypificCheckerInfo(object):
         be a regexp (string) matching the right edge of that box.
         None otherwise.
     """
+
     def __init__(self, comment_line_re, ada_RM_spec_p,
                  copyright_box_r_edge_re):
         """The constructor.
