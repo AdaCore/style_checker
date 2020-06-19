@@ -109,9 +109,9 @@ def get_file_checker(filename, config):
 
 
 def get_file_type(filename):
-    """Run `file' on filename and return its output.
+    """Run the "file" command on filename and return its output.
 
-    :param filename: The name of the file on which to run the `file'
+    :param filename: The name of the file on which to run the "file"
         command.
     :type filename: str
     """
