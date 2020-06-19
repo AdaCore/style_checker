@@ -1,4 +1,4 @@
-from gnatpython.internal.anod import spec
+from e3.anod.loader import spec
 
 class XZUtils(spec('gnu')):
     gnu_source = 'xz-5.2.2.tar.gz'
