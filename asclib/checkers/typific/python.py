@@ -70,8 +70,7 @@ class PythonFileChecker(TypificChecker):
                 return 'Failed to run pyflakes: %s' % e
 
     def __run_pyflakes(self):
-        """Return True iff we should run pyflakes to validate our file.
-        """
+        """Return True iff we should run pyflakes to validate our file."""
         # We want to run pyflakes on every file, except that there are
         # kinds of file that legitimately fail this checker. Exclude
         # those.

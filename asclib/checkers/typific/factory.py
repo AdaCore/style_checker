@@ -1,5 +1,4 @@
-"""The typific file checker factory...
-"""
+"""The typific file checker factory..."""
 import os
 
 from asclib.checkers import FileCheckerError

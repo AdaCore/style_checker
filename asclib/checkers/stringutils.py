@@ -1,5 +1,4 @@
-"""A module with some string-related features that are common in our context.
-"""
+"""Provide some string-related features that are common in our context."""
 
 # The end-of-line marker in Unix text files, and DOS text files.
 UNIX_EOL = '\n'

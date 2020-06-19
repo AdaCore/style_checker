@@ -1,5 +1,4 @@
-"""Simplistic level-based logging.
-"""
+"""Simplistic level-based logging."""
 import sys
 
 # By default, no logging (mostly used for debugging).

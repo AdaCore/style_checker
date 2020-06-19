@@ -1,5 +1,4 @@
-"""The main subprogram for our style checker.
-"""
+"""The main subprogram for our style checker."""
 import os
 import sys
 
