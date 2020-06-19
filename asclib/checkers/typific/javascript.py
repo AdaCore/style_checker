@@ -36,7 +36,7 @@ class JavascriptFileChecker(TypificChecker):
         # disabled if there is a "No_Style_Check" comment starting
         # either the first or the second line.
         with open(self.filename) as f:
-            for lineno in (1, 2):
+            for _unused_lineno in (1, 2):
                 line = f.readline()
                 if line and re.match('^// No_Style_Check$', line) is not None:
                     # ??? VERBOSE...

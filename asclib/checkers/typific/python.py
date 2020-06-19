@@ -42,7 +42,7 @@ class PythonFileChecker(TypificChecker):
         # this file.
         python_fragment_p = False
         with open(self.filename) as f:
-            for lineno in (1, 2):
+            for _unused_lineno in (1, 2):
                 line = f.readline()
                 if line and re.match('^# No_Style_Check$', line) is not None:
                     # ??? VERBOSE...
