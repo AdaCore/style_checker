@@ -24,7 +24,7 @@ class DumpChecksAction(Action):
 
 
 def parse_cmdline(argv=None):
-    """Parse the given command-line
+    """Parse the given command-line.
 
     :param argv: Same as argparse.ArgumentParser.parse_args.
     :type argv: list | None

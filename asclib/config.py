@@ -1,4 +1,4 @@
-"""The style_checker configuration
+"""The style_checker configuration.
 
 For the most part, the style_checker's behavior is configured via
 a configuration file, and optionally adjusted through the use of

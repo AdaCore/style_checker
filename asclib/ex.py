@@ -1,4 +1,4 @@
-"""A simplified clone of e3.os.process.Run
+"""A simplified clone of e3.os.process.Run.
 
 This is to avoid introducing a dependency on e3, in order to allow
 users to run these scripts without having to install e3.
