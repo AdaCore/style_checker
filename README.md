@@ -175,6 +175,8 @@ Below are the different configuration options that can be used:
 * **`gnatx`** (compile the code with `-gnatX`)
 * **`gnat95`** (compile the code with `-gnat95`; the default is `-gnat12`)
 * **`gnat05`** (compile the code with `-gnat05`; the default is `-gnat12`)
+* **`gnat12`** (compile the code with `-gnat12`; the default is `-gnat12`)
+* **`gnat2020`** (compile the code with `-gnat2020`; the default is `-gnat12`)
 
 ### Copyright Header Configuration
 

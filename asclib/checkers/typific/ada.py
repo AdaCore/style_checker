@@ -101,6 +101,10 @@ class AdaFileChecker(TypificChecker):
             cmd.append('-gnat95')
         elif 'gnat05' in self.config.style_checks_options:
             cmd.append('-gnat05')
+        elif 'gnat12' in self.config.style_checks_options:
+            cmd.append('-gnat12')
+        elif 'gnat2020' in self.config.style_checks_options:
+            cmd.append('-gnat2020')
         else:
             cmd.append('-gnat12')
 
