@@ -75,6 +75,12 @@ class AdaFileChecker(TypificChecker):
             # Set GNAT mode for runtime files only (changes legality and
             # semantics, and sets more restrictive style rules).
             # Note: This also enables language extensions.
+            #
+            # Note also that the compiler hardcodes the language version
+            # it uses when compiling the runtime units, so there is no point
+            # in trying to force a different version with a command-line
+            # switch, the compiler just ignores them (see T618-047 for
+            # confirmation of that).
             cmd.append('-gnatg')
         else:
             # Enable GNAT style checks, GNAT warnings, and treat warnings
