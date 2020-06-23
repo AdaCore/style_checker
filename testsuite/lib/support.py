@@ -6,11 +6,6 @@ import sys
 from tempfile import mkdtemp
 import unittest
 
-# The imports below are not necessarily used by this module.
-# They are just being re-exported here for the benefit of
-# the testcases, as they tend to be used often.
-from gnatpython.fileutils import *
-
 TEST_DIR = os.path.dirname(sys.modules['__main__'].__file__)
 TEST_DIR = os.path.abspath(TEST_DIR)
 
