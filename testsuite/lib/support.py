@@ -48,19 +48,51 @@ class TestCase(unittest.TestCase):
     def set_year(self, year):
         self.forced_year = year
 
-    def run_style_checker(self, *args, **run_kwargs):
+    def run_style_checker(self, *args, **kwargs):
         """Run style_checker with the given arguments.
 
         Run this repository's style checker (through the "Run" class
         below), and return the corresponding Run object.
 
+        Note: The reason why we use **kwargs to support named arguments
+            is that we'd like those named arguments to have a default
+            value, and those cannot be listed after the "*args" argument.
+            And we use the "*args" argument in order to make simpler to
+            call this method. In The vast majority of the cases, we just
+            call the style_checker with a couple of arguments, like so:
+
+                obj.run_style_checker('repo_name', 'filename')
+
+            The alternative is to change the "*args" parameter into
+            a parameter taking a list, similar to what e3.os.process.Run
+            does. But then, it makes the call to style_checker a little
+            more cumbersome:
+
+                obj.run_style_checker(['repo_name', 'filename'])
+
+            We document the list of arguments we support in the "ARGUMENTS"
+            section just below, and we also raise an exception when
+            an unexpected argument is used. So it seems worth slightly
+            obscuring the one location where the method is defined
+            in favor of the many locations where this method is called.
+
         ARGUMENTS
             args: The arguments passed to the style-checker.
-            run_kwargs: The keyword arguments passed to the Run class.
+            input: Same as in e3.os.process.Run.__init__.
 
         RETURN VALUE
             A Run object.
         """
+        run_kwargs = {}
+
+        for arg_name, arg_val in kwargs.items():
+            if arg_name in ('input', ):
+                run_kwargs[arg_name] = arg_val
+            else:
+                raise ValueError(
+                    'Invalid argument in call to run_style_checker: {}'
+                    .format(arg_name))
+
         cmd = [self.style_checker_exe]
         if self.forced_year is not None:
             cmd.append('--forced-year=%d' % self.forced_year)
