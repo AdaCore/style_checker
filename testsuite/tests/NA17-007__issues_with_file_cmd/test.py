@@ -30,7 +30,7 @@ Failed to run `file hello.sh': [Errno 2] No such file or directory
             os.environ['PATH'] = '%s:%s' % (
                 os.path.join(os.getcwd(), 'bin'),
                 os.environ['PATH'])
-            p = Run([self.style_checker_exe, 'none', 'hello.sh'])
+            p = self.run_style_checker('none', 'hello.sh')
             self.assertNotEqual(p.status, 0, p.image)
             self.assertRunOutputEqual(p, """\
 file hello.sh returned nonzero (1):
