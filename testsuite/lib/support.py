@@ -78,25 +78,42 @@ class TestCase(unittest.TestCase):
 
         ARGUMENTS
             args: The arguments passed to the style-checker.
+            use_sys_executable: If True, then call the style_checker via
+                the sys.executable Python interpreter. If False (the default),
+                the style_checker script is called directly.
+
+                This can be useful when the PATH has been manipulated
+                such that the Python interpreter is no longer in the PATH
+                (for instance).
             input: Same as in e3.os.process.Run.__init__.
 
         RETURN VALUE
             A Run object.
         """
+        use_sys_executable = False
         run_kwargs = {}
 
         for arg_name, arg_val in kwargs.items():
             if arg_name in ('input', ):
                 run_kwargs[arg_name] = arg_val
+            elif arg_name == 'use_sys_executable' and arg_val:
+                use_sys_executable = True
             else:
                 raise ValueError(
                     'Invalid argument in call to run_style_checker: {}'
                     .format(arg_name))
 
-        cmd = [self.style_checker_exe]
+        cmd = []
+
+        if use_sys_executable:
+            cmd.append(sys.executable)
+        cmd.append(self.style_checker_exe)
+
         if self.forced_year is not None:
             cmd.append('--forced-year=%d' % self.forced_year)
+
         cmd.extend(list(args))
+
         return Run(cmd, **run_kwargs)
 
     def enable_unit_test(self):

@@ -22,8 +22,8 @@ class TestRun(TestCase):
         saved_path = os.environ['PATH']
         try:
             os.environ['PATH'] = os.path.join(os.getcwd(), 'bin')
-            p = Run([sys.executable, self.style_checker_exe,
-                     'module', 'src/simple.py'])
+            p = self.run_style_checker('module', 'src/simple.py',
+                                       use_sys_executable=True)
             self.assertNotEqual(p.status, 0, p.image)
             self.assertRunOutputEqual(p, """\
 Failed to run pyflakes: [Errno 2] No such file or directory

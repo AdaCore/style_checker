@@ -16,8 +16,8 @@ class TestRun(TestCase):
         saved_path = os.environ['PATH']
         try:
             os.environ['PATH'] = '/non-existent-dir'
-            p = Run([sys.executable, self.style_checker_exe,
-                     '/trunk/module', 'src/simple.py'])
+            p = self.run_style_checker('/trunk/module', 'src/simple.py',
+                                       use_sys_executable=True)
             self.assertNotEqual(p.status, 0, p.image)
             self.assertRunOutputEqual(p, """\
 Failed to run pycodestyle: [Errno 2] No such file or directory
