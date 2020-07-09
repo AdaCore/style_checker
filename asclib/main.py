@@ -50,6 +50,6 @@ def style_checker(argv=None):
                 log_error("[other files with style violations were found]")
                 break
             else:
-                log_error(e)
+                log_error(e.args)
 
     return n_files_with_errors == 0
