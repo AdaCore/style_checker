@@ -119,7 +119,12 @@ class Config(object):
             # for lists (only dictionaries), so we provide an alternative
             # way to do so where keys whose name start with a '+' means
             # append the list to the list from the key without the '+'.
-            for key in self.copyright_header_info.keys():
+            #
+            # Note that the conversion of self.copyright_header_info.keys()
+            # into a list in the following loop is to force Python to make
+            # a copy of the list of keys, so as to be able to modify
+            # the dictionary while we iterate over its keys.
+            for key in list(self.copyright_header_info.keys()):
                 if key.startswith('+'):
                     self.copyright_header_info[key[1:]].extend(
                         self.copyright_header_info[key])
