@@ -119,6 +119,10 @@ class Run(object):
         self.out, _ = p.communicate()
         self.status = p.returncode
 
+        if not isinstance(self.out, str):
+            # Try to decode the contents assuming a UTF-8 encoding.
+            self.out = self.out.decode("utf-8", errors="replace")
+
     def command_line_image(self):
         """Get shell command line image of the spawned command.
 
