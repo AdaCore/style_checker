@@ -1,3 +1,4 @@
+from contextlib import closing
 import os
 import re
 from tempfile import mkstemp
@@ -44,10 +45,9 @@ class JavaFileChecker(TypificChecker):
         (prop_fd, prop_filename) = mkstemp('tmp-style_checker-')
 
         try:
-            os.write(prop_fd,
-                     'basedir=%s\n'
-                     % os.path.dirname(os.path.abspath(self.filename)))
-            os.close(prop_fd)
+            with closing(os.fdopen(prop_fd, 'w')) as f:
+                f.write('basedir=%s\n'
+                        % os.path.dirname(os.path.abspath(self.filename)))
 
             p = Run(['checkstyle',
                      '-p', prop_filename,
