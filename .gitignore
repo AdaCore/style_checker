@@ -1,2 +1,6 @@
 *.pyc
 *.swp
+# Artifact files generated during coverage analysis
+/.coverage*
+/htmlcov
+

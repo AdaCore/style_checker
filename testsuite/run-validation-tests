@@ -1,0 +1,159 @@
+#! /usr/bin/env python3
+
+from argparse import ArgumentParser
+from distutils.version import StrictVersion
+from e3.os.process import command_line_image, Run
+import importlib.util
+import os
+import shutil
+import sys
+
+# The minimum version of Python we need to run the validation testing.
+MINIMUM_PYTHON_VERSION = '3.8'
+
+# The root directory of this repository. By construction, it is
+# the parent directory of the directory containing this script.
+REPOSITORY_ROOT_DIR = \
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def run(cmds, **kwargs):
+    """Run a program from the root of the style_checker repository.
+
+    This function first prints on stdout the command being executed,
+    and then executes the given command using e3.os.process.Run.
+
+    The API is the same as e3.os.process.Run.__init__ with the following
+    exceptions:
+        - The default value for the "cwd" paramater is the root of
+          this repository (because this is where the Python tools are
+          expected to be run from in order to find the various pieces).
+        - The default value for "output" is None (no redirection).
+        - The default value for "error" is None (no redirection).
+
+    :return: The e3.os.process.Run object.
+    """
+    print("Running: {}".format(command_line_image(cmds)))
+    kwargs.setdefault("cwd", REPOSITORY_ROOT_DIR)
+    kwargs.setdefault("output", None)
+    kwargs.setdefault("error", None)
+
+    return Run(cmds, **kwargs)
+
+
+def check_dependencies(args):
+    """Check that all necessary dependencies for running the testsuite are met.
+
+    This includes dependencies coming from the style_checker itself,
+    as well as dependencies coming from the testsuite framework.
+
+    :param args: The object returned by ArgumentParser.parse_args.
+    """
+    missing_deps = []
+
+    # The list of modules we need to be available in the Python
+    # distribution.
+    required_modules = ["pytest", "e3"]
+    if args.verify_style_conformance:
+        required_modules.append("flake8")
+
+    # The list of programs we need to be installed and accessible
+    # through the PATH.
+    required_programs = [
+        ("coverage", "pytest-cov plugin for pytest"),
+        ("gnatls", "GNAT Pro in your PATH"),
+    ]
+
+    # First, check that the Python being used is recent enough.
+    python_version = StrictVersion(
+        "{v.major}.{v.minor}".format(v=sys.version_info))
+    if python_version < MINIMUM_PYTHON_VERSION:
+        print("ERROR: Your version of Python is too old: "
+              "({v.major}.{v.minor}.{v.micro}-{v.releaselevel})"
+              .format(v=sys.version_info))
+        print("       Minimum version required: {}"
+              .format(MINIMUM_PYTHON_VERSION))
+        print("Aborting.")
+        sys.exit(1)
+
+    # Next, check that all required dependencies are there.
+    for module_name in required_modules:
+        if importlib.util.find_spec(module_name) is None:
+            missing_deps.append(f"Python module: {module_name}")
+
+    for exe, description in required_programs:
+        if shutil.which(exe) is None:
+            missing_deps.append(description)
+
+    # If anything was missing, report it and abort.
+    if missing_deps:
+        print("ERROR: The testing environment is missing the following:")
+        for dep in missing_deps:
+            print(f" - {dep}")
+        sys.exit(1)
+
+
+def run_testsuite(args):
+    """Run the testsuite part of the testing.
+
+    :param args: The object returned by ArgumentParser.parse_args.
+    """
+    testsuite_cmd = ["pytest", "-v"]
+    if args.include_coverage:
+        testsuite_cmd.extend(["--cov", REPOSITORY_ROOT_DIR,
+                              "--cov-report=html"])
+    if args.testsuite_filter is not None:
+        testsuite_cmd.extend(["-k", args.testsuite_filter])
+
+    run(testsuite_cmd)
+    if args.include_coverage:
+        # FIXME: For some reason that I couldn't figure out nor prevent,
+        # coverage complains about NA17-007__Ada_unwanted_env's gcc script
+        # during the report generation, and says that this script has no
+        # source for the code. I'm not sure why this is happening, since
+        # the entire testsuite should be excluded via the .coveragerc file,
+        # but I couldn't prevent it from happening. So, as a last resort,
+        # we're calling coverage report with the -i option, which directs it
+        # to ignore errors. Not ideal for sure, but the best I could do.
+        run(["coverage", "report", "-i"])
+
+
+def run_style_conformance_checks(args):
+    """Perform style-conformance testing.
+
+    :param args: The object returned by ArgumentParser.parse_args.
+    """
+    run(['flake8'])
+
+
+def main():
+    """Implement the main subprogram for this script."""
+    parser = ArgumentParser(description="Run the style_checker testsuite")
+    parser.add_argument("--no-testsuite", dest="run_testsuite",
+                        default=True, action="store_false",
+                        help="Skip running the testsuite (useful when"
+                        " only trying to perform coding style conformance"
+                        " checks")
+    parser.add_argument("--no-coverage", dest="include_coverage",
+                        default=True, action="store_false",
+                        help="Run the testsuite with coverage analysis")
+    parser.add_argument("--no-style-checking", dest="verify_style_conformance",
+                        default=True, action="store_false",
+                        help="Skip the coding style conformance checks")
+    parser.add_argument("testsuite_filter", metavar="EXPRESSION", nargs="?",
+                        help="Ask pytest to restring the testing to the tests"
+                        " matching the given substring expression (passed"
+                        " to pytest -via -k)")
+    args = parser.parse_args()
+
+    check_dependencies(args)
+
+    print(f"Repository root dir: {REPOSITORY_ROOT_DIR}")
+    if args.run_testsuite:
+        run_testsuite(args)
+    if args.verify_style_conformance:
+        run_style_conformance_checks(args)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,13 @@
+[run]
+omit =
+    # Ignore everything in the testsuite for the purpose of coverage
+    # measurement.
+    testsuite/*
+
+# We want to measure branch coverage as well, but we will need to add
+# more testing for that, which we will do as a separate step. So,
+# keep this feature commented out for now.
+# branch = True
+
+[html]
+directory = htmlcov
