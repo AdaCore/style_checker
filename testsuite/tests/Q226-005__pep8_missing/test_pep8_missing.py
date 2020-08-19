@@ -1,26 +1,43 @@
 import os
+import sys
 
 
 def test_no_pep8(style_checker):
     """Check behavior when pep8 is missing
     """
     # This is really tricky, because we want to test a situation
-    # where pep8 is missing, except we use gnatpython to run
-    # our testsuite and gnatpython actually provides pep8! And
-    # we also need python to run our style_checker_exe as well.
+    # where pycodestyle is missing, except the testsuite uses a version
+    # of Python which we expect to provide pycodestyle.
     #
-    # So, the way we do this is by changing the PATH to something
-    # that does not exist, thus leaving us with no effective PATH,
-    # and then call the style_checker_exe through the current
-    # python executable.
-    saved_path = os.environ['PATH']
+    # In the past, we worked around this by setting up the PATH
+    # so as to make not a single executable can be found from there,
+    # and then called the style_checker somewhat artificially
+    # via sys.executable. This trick doesn't work anymore for
+    # Python anymore, because the checker for Python files now
+    # calls pycodestyle via self.executable.
+    #
+    # So, instead, what we do create a temporary copy of the Python
+    # install in our testsuite directory where the pycodestyle module
+    # was manually removed.
+
+    local_python_dir = os.path.join(os.getcwd(), "local-python")
+    style_checker.make_minimal_copy_of_python_install(
+        target_dir=local_python_dir, exclude_modules=("pycodestyle",),
+    )
+    local_python_exe = os.path.join(
+        local_python_dir, "bin", os.path.basename(sys.executable)
+    )
+
+    saved_path = os.environ["PATH"]
     try:
-        os.environ['PATH'] = '/non-existent-dir'
-        p = style_checker.run_style_checker('/trunk/module', 'src/simple.py',
-                                            use_sys_executable=True)
+        os.environ["PATH"] = os.path.join(local_python_dir, "bin")
+        p = style_checker.run_style_checker("/trunk/module", "src/simple.py")
         style_checker.assertNotEqual(p.status, 0, p.image)
-        style_checker.assertRunOutputEqual(p, """\
-Failed to run pycodestyle: [Errno 2] No such file or directory: 'pycodestyle'
-""")
+        style_checker.assertRunOutputEqual(
+            p,
+            f"""\
+{local_python_exe}: No module named pycodestyle
+""",
+        )
     finally:
-        os.environ['PATH'] = saved_path
+        os.environ["PATH"] = saved_path

@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 
 from asclib import get_prefix_dir
 from asclib.checkers.typific import TypificChecker, TypificCheckerInfo
@@ -51,23 +52,17 @@ class PythonFileChecker(TypificChecker):
                                        line, re.I) is not None:
                     python_fragment_p = True
 
-        try:
-            p = Run(['pycodestyle',
-                     '--config=' + os.path.join(get_prefix_dir(),
-                                                'etc', 'pycodestyle.cfg'),
-                     self.filename])
-            if p.status != 0 or p.out:
-                return p.out
-        except OSError as e:
-            return 'Failed to run pycodestyle: %s' % e
+        p = Run([sys.executable, '-m', 'pycodestyle',
+                 '--config=' + os.path.join(get_prefix_dir(),
+                                            'etc', 'pycodestyle.cfg'),
+                 self.filename])
+        if p.status != 0 or p.out:
+            return p.out
 
         if not python_fragment_p and self.__run_pyflakes():
-            try:
-                p = Run(['pyflakes', self.filename])
-                if p.status != 0 or p.out:
-                    return p.out
-            except OSError as e:
-                return 'Failed to run pyflakes: %s' % e
+            p = Run([sys.executable, '-m', 'pyflakes', self.filename])
+            if p.status != 0 or p.out:
+                return p.out
 
     def __run_pyflakes(self):
         """Return True iff we should run pyflakes to validate our file."""

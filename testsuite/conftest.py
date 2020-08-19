@@ -6,6 +6,8 @@ import shutil
 import sys
 import tempfile
 
+from e3.fs import ls, sync_tree
+
 
 @pytest.fixture(autouse=True, scope="function")
 def env_setup(request):
@@ -166,6 +168,59 @@ class StyleCheckerFixture:
     def enable_unit_test(self):
         """Set the environment up to allow us to perform unit tests."""
         sys.path.insert(0, self.src_prefix_dir)
+
+    def make_minimal_copy_of_python_install(
+        self, target_dir, exclude_modules=None
+    ):
+        """Create a minimal copy of Python in target_dir.
+
+        The goal of this method is to provide a minimal install that
+        testcases can then tweak to their testing needs (e.g. manually
+        remove some modules).
+
+        PARAMETERS
+            target_dir: The directory where the python install should
+                be made. If the directory does not exist, it is
+                automatically created.
+            exclude_modules: If not None, an interable of module names
+                that should be excluded from the install.
+        """
+        src_root_dir = os.path.dirname(os.path.dirname(sys.executable))
+
+        # Only copy the bare minimum of the Python install corresponding
+        # to the current interpreter...
+        file_list = []
+        # ... all bin/python* files...
+        file_list.extend(
+            os.path.relpath(p, src_root_dir)
+            for p in ls(os.path.join(src_root_dir, "bin", "python*"))
+        )
+        # ... all lib/*python* files and directories (e.g.
+        # lib/libpythonX.Y.a or the lib/pythonX.Y/ directory).
+        file_list.extend(
+            os.path.relpath(p, src_root_dir)
+            for p in ls(os.path.join(src_root_dir, "lib", "*python*"))
+        )
+
+        if exclude_modules is None:
+            ignore = None
+        else:
+            ignore = []
+            site_pkg_dir = os.path.join(
+                src_root_dir, "lib", "python*", "site-packages"
+            )
+            for module_name in exclude_modules:
+                ignore.extend(
+                    os.path.relpath(p, src_root_dir)
+                    for p in ls(os.path.join(site_pkg_dir, f"{module_name}*"))
+                )
+
+        sync_tree(
+            source=src_root_dir,
+            target=target_dir,
+            ignore=ignore,
+            file_list=file_list,
+        )
 
     def assertEqual(self, lhs, rhs, msg_if_fails):
         """Verify that lhs is equal to rhs or else raise a failed assertion.
