@@ -207,7 +207,7 @@ class StyleCheckerFixture:
             expected: The expected value for our string.
             actual: The actual value.
         """
-        assert expected == actual
+        assert actual == expected
 
     def assertRunOutputEqual(self, r, expected_out):
         """Verify that the output from the given Run object is as expected.
@@ -226,7 +226,7 @@ class StyleCheckerFixture:
             r: A Run object.
             expected_out: The expected output.
         """
-        assert expected_out == r.cmd_out
+        assert r.cmd_out == expected_out
 
     def assertRunOutputEmpty(self, r):
         """Verify that the output from the given Run object is empty.
