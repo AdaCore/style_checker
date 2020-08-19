@@ -98,7 +98,7 @@ def run_testsuite(args):
 
     :param args: The object returned by ArgumentParser.parse_args.
     """
-    testsuite_cmd = ["pytest", "-v"]
+    testsuite_cmd = ["python3", "-m", "pytest", "-v"]
     if args.include_coverage:
         testsuite_cmd.extend(["--cov", REPOSITORY_ROOT_DIR,
                               "--cov-report=html"])
@@ -115,7 +115,7 @@ def run_testsuite(args):
         # but I couldn't prevent it from happening. So, as a last resort,
         # we're calling coverage report with the -i option, which directs it
         # to ignore errors. Not ideal for sure, but the best I could do.
-        run(["coverage", "report", "-i"])
+        run(["python3", "-m", "coverage", "report", "-i"])
 
 
 def run_style_conformance_checks(args):
@@ -123,7 +123,7 @@ def run_style_conformance_checks(args):
 
     :param args: The object returned by ArgumentParser.parse_args.
     """
-    run(['flake8'])
+    run(["python3", "-m", "flake8"])
 
 
 def main():
