@@ -107,15 +107,7 @@ def run_testsuite(args):
 
     run(testsuite_cmd)
     if args.include_coverage:
-        # FIXME: For some reason that I couldn't figure out nor prevent,
-        # coverage complains about NA17-007__Ada_unwanted_env's gcc script
-        # during the report generation, and says that this script has no
-        # source for the code. I'm not sure why this is happening, since
-        # the entire testsuite should be excluded via the .coveragerc file,
-        # but I couldn't prevent it from happening. So, as a last resort,
-        # we're calling coverage report with the -i option, which directs it
-        # to ignore errors. Not ideal for sure, but the best I could do.
-        run(["python3", "-m", "coverage", "report", "-i"])
+        run(["python3", "-m", "coverage", "report"])
 
 
 def run_style_conformance_checks(args):
