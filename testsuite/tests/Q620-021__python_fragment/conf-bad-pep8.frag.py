@@ -17,16 +17,16 @@ import latex_elements
 
 DOCS = {
     'gnat_rm': {
-        'title': u'GNAT Reference Manual'},
+        'title': 'GNAT Reference Manual'},
     'gnat_ugn': {
-        'title': u'GNAT User\'s Guide for Native Platforms'},
+        'title': 'GNAT User\'s Guide for Native Platforms'},
     'gnat_ugx': {
-        'title': u'GNAT User\'s Guide Supplement for Cross Platforms'},
+        'title': 'GNAT User\'s Guide Supplement for Cross Platforms'},
     'gnathie_ug': {
-        'title': u'GNAT User\'s Guide Supplement for GNAT Pro '
-        + u'Safety-Critical and GNAT Pro High-Security'},
+        'title': 'GNAT User\'s Guide Supplement for GNAT Pro '
+        + 'Safety-Critical and GNAT Pro High-Security'},
     'gnat_ccg': {
-        'title': u'GNAT Pro Common Code Generator User\'s Guide Supplement'}}
+        'title': 'GNAT Pro Common Code Generator User\'s Guide Supplement'}}
 
 # Then retrieve the source directory
 root_source_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -39,7 +39,7 @@ with open(gnatvsn_spec, 'rb') as fd:
 
 
 def get_copyright():
-    return u'2008-%s, Free Software Foundation' % time.strftime('%Y')
+    return '2008-%s, Free Software Foundation' % time.strftime('%Y')
 
 
 def get_gnat_version():
@@ -58,7 +58,7 @@ def get_gnat_version():
         except:
             pass
 
-    print 'cannot find GNAT version in gnatvsn.ads or in ' + basever
+    print('cannot find GNAT version in gnatvsn.ads or in ' + basever)
     sys.exit(1)
 
 
@@ -70,18 +70,18 @@ def get_gnat_build_type():
                 'FSF': 'FSF',
                 'GPL': 'GPL'}[m.group(1).strip()]
     else:
-        print 'cannot compute GNAT build type'
+        print('cannot compute GNAT build type')
         sys.exit(1)
 
 
 # First retrieve the name of the documentation we are building
 doc_name = os.environ.get('DOC_NAME', None)
 if doc_name is None:
-    print 'DOC_NAME environment variable should be set'
+    print('DOC_NAME environment variable should be set')
     sys.exit(1)
 
 if doc_name not in DOCS:
-    print '%s is not a valid documentation name' % doc_name
+    print('%s is not a valid documentation name' % doc_name)
     sys.exit(1)
 
 
@@ -90,11 +90,11 @@ exclude_patterns = []
 for d in os.listdir(root_source_dir):
     if d not in ('share', doc_name, doc_name + '.rst'):
         exclude_patterns.append(d)
-        print 'ignoring %s' % d
+        print('ignoring %s' % d)
 
 if doc_name == 'gnat_rm':
     exclude_patterns.append('share/gnat_project_manager.rst')
-    print 'ignoring share/gnat_project_manager.rst'
+    print('ignoring share/gnat_project_manager.rst')
 
 extensions = []
 templates_path = ['_templates']
@@ -125,8 +125,8 @@ copyright_macros = {
     'date': time.strftime("%b %d, %Y"),
     'edition': 'GNAT %s Edition' % 'Pro' if get_gnat_build_type() == 'PRO'
                else 'GPL',
-    'name': u'GNU Ada',
-    'tool': u'GNAT',
+    'name': 'GNU Ada',
+    'tool': 'GNAT',
     'version': version}
 
 latex_elements = {
@@ -140,11 +140,11 @@ latex_elements = {
     'tableofcontents': latex_elements.TOC % copyright_macros}
 
 latex_documents = [
-    (master_doc, '%s.tex' % doc_name, project, u'AdaCore', 'manual')]
+    (master_doc, '%s.tex' % doc_name, project, 'AdaCore', 'manual')]
 
 texinfo_documents = [
     (master_doc, doc_name, project,
-     u'AdaCore', doc_name, doc_name, '')]
+     'AdaCore', doc_name, doc_name, '')]
 
 
 def setup(app):
