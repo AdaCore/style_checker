@@ -115,7 +115,7 @@ def run_style_conformance_checks(args):
 
     :param args: The object returned by ArgumentParser.parse_args.
     """
-    run(["python3", "-m", "flake8"])
+    run(["python3", "-m", "flake8", "--max-line-length=88"])
 
 
 def main():

@@ -20,7 +20,7 @@ def get_system_config_default_filename():
         specified via the command-line.
     :rtype: str
     """
-    return os.path.join(get_prefix_dir(), 'etc', 'asc_config.yaml')
+    return os.path.join(get_prefix_dir(), "etc", "asc_config.yaml")
 
 
 def get_ada_preprocessing_filename():
@@ -31,4 +31,4 @@ def get_ada_preprocessing_filename():
     :return: The fullpath of the "gprep" file.
     :rtype: str
     """
-    return os.path.join(get_prefix_dir(), 'etc', 'cvs_check.gprep')
+    return os.path.join(get_prefix_dir(), "etc", "cvs_check.gprep")

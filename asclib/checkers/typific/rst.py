@@ -5,24 +5,24 @@ from asclib.checkers.typific import TypificChecker, TypificCheckerInfo
 
 class RstFileChecker(TypificChecker):
     rulific_decision_map = {
-        'copyright': False,
-        'eol': True,
-        'first_line_comment': False,
-        'max_line_length': False,
-        'no_dos_eol': True,
-        'no_last_eol': True,
-        'no_rcs_keywords': False,
-        'no_tab_indent': False,
-        'no_trailing_space': False,
+        "copyright": False,
+        "eol": True,
+        "first_line_comment": False,
+        "max_line_length": False,
+        "no_dos_eol": True,
+        "no_last_eol": True,
+        "no_rcs_keywords": False,
+        "no_tab_indent": False,
+        "no_trailing_space": False,
     }
 
-    typific_info = TypificCheckerInfo(comment_line_re=None,
-                                      ada_RM_spec_p=False,
-                                      copyright_box_r_edge_re=None)
+    typific_info = TypificCheckerInfo(
+        comment_line_re=None, ada_RM_spec_p=False, copyright_box_r_edge_re=None
+    )
 
     @property
     def file_type(self):
-        return 'ReST file'
+        return "ReST file"
 
     def run_external_checker(self):
 
@@ -53,8 +53,7 @@ class RstFileChecker(TypificChecker):
         # the directive type, and the user properly used two colons,
         # so all good. If we don't find any occurence of '::', then
         # the user likely made a typo.
-        directive_matcher = re.compile(
-            r'^\.\.\s+([-_+:.a-zA-Z0-9]+:)', re.IGNORECASE)
+        directive_matcher = re.compile(r"^\.\.\s+([-_+:.a-zA-Z0-9]+:)", re.IGNORECASE)
 
         errors = []
         with open(self.filename) as f:
@@ -63,20 +62,22 @@ class RstFileChecker(TypificChecker):
                 if m is None:
                     # This line does not have a directive
                     continue
-                if m.group(1).startswith('_'):
+                if m.group(1).startswith("_"):
                     # This is a hyperlink target, not a directive.
                     continue
-                if '::' in m.group(1):
+                if "::" in m.group(1):
                     # This line has a directive, and the syntax looks correct.
                     continue
                 # It looks like this line has a directive, and that
                 # the user may have made a typo.
                 loc = "%s:%d" % (self.filename, line_no)
-                errors.extend([
-                    "%s: invalid directive syntax (':' should be '::')" % loc,
-                    "%s  %s" % (' ' * len(loc), line.rstrip()),
-                    "%s  %s" % (' ' * len(loc),
-                                ' ' * len(m.group(0)[:-1]) + '^')])
+                errors.extend(
+                    [
+                        "%s: invalid directive syntax (':' should be '::')" % loc,
+                        "%s  %s" % (" " * len(loc), line.rstrip()),
+                        "%s  %s" % (" " * len(loc), " " * len(m.group(0)[:-1]) + "^"),
+                    ]
+                )
 
         if errors:
-            return '\n'.join(errors)
+            return "\n".join(errors)

@@ -22,12 +22,13 @@ def style_checker(argv=None):
     if not args.filenames:
         # No filename provided, which means the user wants us to
         # read the list of filesnames from standard input.
-        args.filenames = [filename
-                          for filename in sys.stdin.read().splitlines()
-                          if filename]
+        args.filenames = [
+            filename for filename in sys.stdin.read().splitlines() if filename
+        ]
 
-    config = Config(args.system_config, args.module_name,
-                    args.module_config, args.forced_year)
+    config = Config(
+        args.system_config, args.module_name, args.module_config, args.forced_year
+    )
 
     n_files_with_errors = 0
     for filename in args.filenames:
@@ -36,8 +37,9 @@ def style_checker(argv=None):
             # that the file exists, and if it doesn't then report the error,
             # and look at the next file to check...
             if not os.path.isfile(filename):
-                raise FileCheckerError("Error: `%s' is not a valid filename."
-                                       % filename)
+                raise FileCheckerError(
+                    "Error: `%s' is not a valid filename." % filename
+                )
 
             checker = get_file_checker(filename, config)
             if checker is None:

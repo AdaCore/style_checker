@@ -30,10 +30,12 @@ class TypificChecker(object):
         # The purpose of this change is to make sure child class
         # insn't missing an entry for one of the checkers.
         for rulific_checker in ALL_RULIFIC_CHECKERS:
-            assert (rulific_checker.RULE_CONFIG_NAME in
-                    self.rulific_decision_map), \
-                '%s checker missing config about %s rule' % (
-                    self.file_type, rulific_checker.RULE_CONFIG_NAME)
+            assert (
+                rulific_checker.RULE_CONFIG_NAME in self.rulific_decision_map
+            ), "%s checker missing config about %s rule" % (
+                self.file_type,
+                rulific_checker.RULE_CONFIG_NAME,
+            )
 
         # Build the list of checkers we actually want to run
         # for this file using rulific_decision_map
@@ -41,9 +43,12 @@ class TypificChecker(object):
         self.my_rulific_checkers = [
             rulific_checker(self.filename, self.config, self.typific_info)
             for rulific_checker in ALL_RULIFIC_CHECKERS
-            if (self.rulific_decision_map[rulific_checker.RULE_CONFIG_NAME]
-                and '-' + rulific_checker.RULE_CONFIG_NAME
-                not in self.config.style_checks_options)]
+            if (
+                self.rulific_decision_map[rulific_checker.RULE_CONFIG_NAME]
+                and "-" + rulific_checker.RULE_CONFIG_NAME
+                not in self.config.style_checks_options
+            )
+        ]
 
         # Initialize the various rulific checkers we selected.
         for rulific_checker in self.my_rulific_checkers:
@@ -51,9 +56,9 @@ class TypificChecker(object):
 
         # Verify the child class did not forget to override
         # the typific_info class attribute.
-        assert self.typific_info is not None, \
-            '%s checker not defined properly (no typific_info)' % \
-            self.file_type
+        assert self.typific_info is not None, (
+            "%s checker not defined properly (no typific_info)" % self.file_type
+        )
 
     def check_file(self):
         """Perform all necessary checks on our file (including rulific ones).
@@ -63,8 +68,7 @@ class TypificChecker(object):
         :return: None.
         :rtype: None
         """
-        log_info("Checking style of `%s' (%s)"
-                 % (self.filename, self.file_type))
+        log_info("Checking style of `%s' (%s)" % (self.filename, self.file_type))
 
         # Build the error message into a list. And then, at the end of
         # this function, if it turns out we got at least one issue,
@@ -83,11 +87,11 @@ class TypificChecker(object):
 
         # First, feed line-by-line the contents of the file to each
         # rulific checker.
-        with open(self.filename, 'rb') as f:
+        with open(self.filename, "rb") as f:
             for lineno, line in enumerate(f, 1):
                 line = line.decode()
                 eol = get_eol(line)
-                line = line[:-len(eol or '')]
+                line = line[: -len(eol or "")]
                 for rulific_checker in self.my_rulific_checkers:
                     rulific_checker.process_line(lineno, line, eol)
 
@@ -96,14 +100,20 @@ class TypificChecker(object):
         # where keys are still line numbers, but the value is a list
         # of error messages applying to that line number.
         all_linenos = sorted(
-            set().union(*(rulific_checker.errors_found.keys()
-                          for rulific_checker in self.my_rulific_checkers)))
+            set().union(
+                *(
+                    rulific_checker.errors_found.keys()
+                    for rulific_checker in self.my_rulific_checkers
+                )
+            )
+        )
         for lineno in all_linenos:
             for rulific_checker in self.my_rulific_checkers:
                 if lineno in rulific_checker.errors_found:
-                    err_msgs.append('%s:%d: %s'
-                                    % (self.filename, lineno,
-                                       rulific_checker.errors_found[lineno]))
+                    err_msgs.append(
+                        "%s:%d: %s"
+                        % (self.filename, lineno, rulific_checker.errors_found[lineno])
+                    )
 
         for rulific_checker in self.my_rulific_checkers:
             global_check_err_msg = rulific_checker.global_check()
@@ -113,8 +123,7 @@ class TypificChecker(object):
         if err_msgs:
             raise FileCheckerError(*err_msgs)
 
-    def dump_checks(self, cvs_check_file_type, print_header=False,
-                    print_footer=False):
+    def dump_checks(self, cvs_check_file_type, print_header=False, print_footer=False):
         """Dump to stdout the rulific_decision_map for our type of file.
 
         The purpose is to be able to compare the rulific_decision_map
@@ -133,69 +142,76 @@ class TypificChecker(object):
         from asclib.checkers.rulific.copyright import CopyrightRuleChecker
         from asclib.checkers.rulific.rcs_keywords import RCSKeywordsRuleChecker
         from asclib.checkers.rulific.dos_eol import DosEolRuleChecker
-        from asclib.checkers.rulific.eol_consistency \
-            import EolConsistencyRuleChecker
-        from asclib.checkers.rulific.first_line_comment \
-            import FirstLineCommentRuleChecker
-        from asclib.checkers.rulific.last_line_eol \
-            import LastLineEOLRuleChecker
+        from asclib.checkers.rulific.eol_consistency import EolConsistencyRuleChecker
+        from asclib.checkers.rulific.first_line_comment import (
+            FirstLineCommentRuleChecker,
+        )
+        from asclib.checkers.rulific.last_line_eol import LastLineEOLRuleChecker
         from asclib.checkers.rulific.line_length import LineLengthRuleChecker
-        from asclib.checkers.rulific.no_tab_indentation \
-            import NoTabIndentationRuleChecker
-        from asclib.checkers.rulific.trailing_spaces \
-            import TrailingSpaceRuleChecker
+        from asclib.checkers.rulific.no_tab_indentation import (
+            NoTabIndentationRuleChecker,
+        )
+        from asclib.checkers.rulific.trailing_spaces import TrailingSpaceRuleChecker
 
         RULES_LIST = (
-            ('START_COMMENT', FirstLineCommentRuleChecker),
-            ('COPYRIGHT', CopyrightRuleChecker),
-            ('ADA_RM_SPEC', None),
-            ('NO_TAB_IDENT', NoTabIndentationRuleChecker),
-            ('EOL', EolConsistencyRuleChecker),
-            ('NO_DOS_EOL', DosEolRuleChecker),
-            ('NO_LAST_EOL', LastLineEOLRuleChecker),
-            ('LENGTH', LineLengthRuleChecker),
-            ('TRAILING', TrailingSpaceRuleChecker),
-            ('REV', RCSKeywordsRuleChecker))
+            ("START_COMMENT", FirstLineCommentRuleChecker),
+            ("COPYRIGHT", CopyrightRuleChecker),
+            ("ADA_RM_SPEC", None),
+            ("NO_TAB_IDENT", NoTabIndentationRuleChecker),
+            ("EOL", EolConsistencyRuleChecker),
+            ("NO_DOS_EOL", DosEolRuleChecker),
+            ("NO_LAST_EOL", LastLineEOLRuleChecker),
+            ("LENGTH", LineLengthRuleChecker),
+            ("TRAILING", TrailingSpaceRuleChecker),
+            ("REV", RCSKeywordsRuleChecker),
+        )
 
         if print_header:
-            print(' ' * 11
-                  + ' '.join(['{:^6}'.format(cvs_check_name[:6])
-                              for (cvs_check_name, _) in RULES_LIST]).rstrip())
+            print(
+                " " * 11
+                + " ".join(
+                    [
+                        "{:^6}".format(cvs_check_name[:6])
+                        for (cvs_check_name, _) in RULES_LIST
+                    ]
+                ).rstrip()
+            )
 
         checks_status = []
         for cvs_check_name, rulific_checker in RULES_LIST:
-            if cvs_check_name == 'ADA_RM_SPEC':
+            if cvs_check_name == "ADA_RM_SPEC":
                 # Special case, where we have to to dig into
                 # the typific_info rather than the rulific_decision_map.
-                checks_status.append('X' if self.typific_info.ada_RM_spec_p
-                                     else '-')
+                checks_status.append("X" if self.typific_info.ada_RM_spec_p else "-")
             else:
                 rulific_name = rulific_checker.RULE_CONFIG_NAME
                 checks_status.append(
-                    'X' if self.rulific_decision_map[rulific_name]
-                    else '-')
-        print('{:10.10}   {}'.format(cvs_check_file_type,
-                                     '      '.join(checks_status)))
+                    "X" if self.rulific_decision_map[rulific_name] else "-"
+                )
+        print("{:10.10}   {}".format(cvs_check_file_type, "      ".join(checks_status)))
 
         if print_footer:
-            print('\nLegend:')
-            print('-------')
+            print("\nLegend:")
+            print("-------")
             for cvs_check_name, rulific_checker in RULES_LIST:
                 if rulific_checker is None:
                     continue
-                print('  %s: %s' % (cvs_check_name,
-                                    rulific_checker.RULE_DESCRIPTION))
+                print("  %s: %s" % (cvs_check_name, rulific_checker.RULE_DESCRIPTION))
 
             # Sanity-check: Make sure we haven't forgotten any rulific checker
             # in our RULES_LIST.  Do it only when printing the footer,
             # as it allows us to dump the information we already have,
             # which can be useful already.
-            missed_checkers = [checker.RULE_CONFIG_NAME
-                               for checker in ALL_RULIFIC_CHECKERS
-                               if checker not in [c for _, c in RULES_LIST]]
-            assert not missed_checkers, (
-                'The following rules are missing from the dump above: '
-                + ', '.join(missed_checkers))
+            missed_checkers = [
+                checker.RULE_CONFIG_NAME
+                for checker in ALL_RULIFIC_CHECKERS
+                if checker not in [c for _, c in RULES_LIST]
+            ]
+            assert (
+                not missed_checkers
+            ), "The following rules are missing from the dump above: " + ", ".join(
+                missed_checkers
+            )
 
     ######################################################################
     #  Abstract methods/attributes/properties:
@@ -232,7 +248,8 @@ class TypificChecker(object):
         :rtype: str
         """
         raise FileCheckerError(
-            'abstract TypificChecker.file_type property unexpectedly called.')
+            "abstract TypificChecker.file_type property unexpectedly called."
+        )
 
     def run_external_checker(self):
         """Run an external program to check the contents of the file.
@@ -246,8 +263,9 @@ class TypificChecker(object):
         :rtype: str | None
         """
         raise FileCheckerError(
-            'abstract TypificChecker.run_external_checker method'
-            ' unexpectedly called.')
+            "abstract TypificChecker.run_external_checker method"
+            " unexpectedly called."
+        )
 
 
 class TypificCheckerInfo(object):
@@ -265,8 +283,7 @@ class TypificCheckerInfo(object):
         None otherwise.
     """
 
-    def __init__(self, comment_line_re, ada_RM_spec_p,
-                 copyright_box_r_edge_re):
+    def __init__(self, comment_line_re, ada_RM_spec_p, copyright_box_r_edge_re):
         """Initialize self.
 
         :param comment_line_re: Same as the attribute.

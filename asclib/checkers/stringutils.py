@@ -1,15 +1,15 @@
 """Provide some string-related features that are common in our context."""
 
 # The end-of-line marker in Unix text files, and DOS text files.
-UNIX_EOL = '\n'
-DOS_EOL = '\r\n'
+UNIX_EOL = "\n"
+DOS_EOL = "\r\n"
 
 # A dict whose key is one of the end-of-line strings above, and
 # where the value is a human-readable description of that end-of-line
 # marker.
 PRINTABLE_EOL_MAP = {
-    UNIX_EOL: 'lf [unix]',
-    DOS_EOL: 'cr+lf [dos]',
+    UNIX_EOL: "lf [unix]",
+    DOS_EOL: "cr+lf [dos]",
 }
 
 

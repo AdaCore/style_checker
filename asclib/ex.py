@@ -19,20 +19,39 @@ def quote_arg(arg):
     # The empty argument is a bit of a special case, as it does not
     # contain any character that might need quoting, and yet still
     # needs to be quoted.
-    if arg == '':
+    if arg == "":
         return "''"
 
-    need_quoting = ('|', '&', ';', '<', '>', '(', ')', '$',
-                    '`', '\\', '"', "'", ' ', '\t', '\n',
-                    # The POSIX spec says that the following
-                    # characters might need some extra quoting
-                    # depending on the circumstances.  We just
-                    # always quote them, to be safe (and to avoid
-                    # things like file globbing which are sometimes
-                    # performed by the shell). We do leave '%' and
-                    # '=' alone, as I don't see how they could
-                    # cause problems.
-                    '*', '?', '[', '#', '~')
+    need_quoting = (
+        "|",
+        "&",
+        ";",
+        "<",
+        ">",
+        "(",
+        ")",
+        "$",
+        "`",
+        "\\",
+        '"',
+        "'",
+        " ",
+        "\t",
+        "\n",
+        # The POSIX spec says that the following
+        # characters might need some extra quoting
+        # depending on the circumstances.  We just
+        # always quote them, to be safe (and to avoid
+        # things like file globbing which are sometimes
+        # performed by the shell). We do leave '%' and
+        # '=' alone, as I don't see how they could
+        # cause problems.
+        "*",
+        "?",
+        "[",
+        "#",
+        "~",
+    )
     for char in need_quoting:
         if char in arg:
             # The way we do this is by simply enclosing the argument
@@ -43,7 +62,7 @@ def quote_arg(arg):
             arg = arg.replace("'", r"'\''")
             # Also, it seems to be nicer to print new-line characters
             # as '\n' rather than as a new-line...
-            arg = arg.replace('\n', r"'\n'")
+            arg = arg.replace("\n", r"'\n'")
             return "'%s'" % arg
     # No quoting needed.  Return the argument as is.
     return arg
@@ -67,7 +86,7 @@ def command_line_image(cmd):
     The result is expected to be a string that can be sent verbatim
     to a shell for execution.
     """
-    return ' '.join((quote_arg(arg) for arg in cmd))
+    return " ".join((quote_arg(arg) for arg in cmd))
 
 
 class Run(object):
@@ -105,7 +124,7 @@ class Run(object):
         """
         self.cmd = cmd
         self.status = None
-        self.out = ''
+        self.out = ""
 
         if env is not None and not ignore_environ:
             # ignore_environ is False, so get a copy of the current

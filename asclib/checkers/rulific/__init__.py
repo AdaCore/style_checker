@@ -88,8 +88,7 @@ class AbstractRuleChecker(object):
             in the file being checked, or None if there wasn't any.
         :type eol: str | None
         """
-        if self.STOP_READING_FILE_AFTER_TOO_MANY_ERRORS and \
-                self.more_errors_found:
+        if self.STOP_READING_FILE_AFTER_TOO_MANY_ERRORS and self.more_errors_found:
             # No need to look for more errors; we would not be reporting
             # those additional errors anyway.
             return
@@ -106,8 +105,9 @@ class AbstractRuleChecker(object):
                 # were detected, but are no longer reported (for brevity).
                 self.more_errors_found = True
                 last_err_lineno = sorted(self.errors_found.keys())[-1]
-                self.errors_found[last_err_lineno] += \
-                    ' [similar errors no longer shown]'
+                self.errors_found[
+                    last_err_lineno
+                ] += " [similar errors no longer shown]"
 
     def check_rule(self, lineno, line, eol):
         """Report an error the given line contains a style violation.
@@ -126,8 +126,7 @@ class AbstractRuleChecker(object):
             None otherwise.
         :rtype: str | None
         """
-        raise FileCheckerError(
-            'abstract RuleChecker.check_rule method called')
+        raise FileCheckerError("abstract RuleChecker.check_rule method called")
 
     def global_check(self):
         """Report errors only detectable after having read the entire file.

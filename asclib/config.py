@@ -13,11 +13,11 @@ from asclib import get_ada_preprocessing_filename
 
 # The name of the section in the config file which applies to any
 # and all module.
-ANY_MODULE_NAME = '*'
+ANY_MODULE_NAME = "*"
 
 # The name of the section specifying the list of checks that should be
 # enabled/disabled.
-STYLE_CHECKS_SECTION_NAME = 'style_checks'
+STYLE_CHECKS_SECTION_NAME = "style_checks"
 
 
 class Config(object):
@@ -33,8 +33,9 @@ class Config(object):
         They are mostly the result of parsing the config file.
     """
 
-    def __init__(self, system_config_filename, module_name,
-                 module_config_filename, current_year):
+    def __init__(
+        self, system_config_filename, module_name, module_config_filename, current_year
+    ):
         """Initialize self.
 
         :param system_config_filename: The name of the system config file.
@@ -55,11 +56,9 @@ class Config(object):
         self.copyright_header_info = {}
         self.style_checks_options = []
 
-        self.__read_config_file(system_config_filename,
-                                module_config_filename)
+        self.__read_config_file(system_config_filename, module_config_filename)
 
-    def __read_config_file(self, system_config_filename,
-                           module_config_filename):
+    def __read_config_file(self, system_config_filename, module_config_filename):
         """Read the config file and update our config accordingly.
 
         See the config file itself for more info on how the file
@@ -78,8 +77,7 @@ class Config(object):
             with open(module_config_filename) as f:
                 module_config = yaml.safe_load(f)
         else:
-            module_config = (c[self.module_name] if self.module_name in c
-                             else None)
+            module_config = c[self.module_name] if self.module_name in c else None
 
         # Process all known options from the config file we just
         # loaded.
@@ -89,9 +87,7 @@ class Config(object):
         #   a. The name of the configuration option (a string);
         #   b. The list where the contents of the option should be
         #      stored.
-        OPTIONS_LOADING_MAP = (
-            (STYLE_CHECKS_SECTION_NAME, self.style_checks_options),
-        )
+        OPTIONS_LOADING_MAP = ((STYLE_CHECKS_SECTION_NAME, self.style_checks_options),)
 
         for (opt_name, opt_list) in OPTIONS_LOADING_MAP:
             # Get the option value, giving priority to the module-specific
@@ -104,17 +100,14 @@ class Config(object):
             # See if there an entry in the module-specific section whose
             # name is opt_name with a '+' ahead of it. Those are requests
             # to append to the config, rather than to override it.
-            if module_config is not None and '+' + opt_name in module_config:
-                opt_list.extend(module_config['+' + opt_name])
+            if module_config is not None and "+" + opt_name in module_config:
+                opt_list.extend(module_config["+" + opt_name])
 
-        self.copyright_header_info = \
-            system_config['copyright_header_info']
-        if module_config is not None and \
-                'copyright_header_info' in module_config:
+        self.copyright_header_info = system_config["copyright_header_info"]
+        if module_config is not None and "copyright_header_info" in module_config:
             # Override part or all of the default configuration with
             # the repository-specific config.
-            self.copyright_header_info.update(
-                module_config['copyright_header_info'])
+            self.copyright_header_info.update(module_config["copyright_header_info"])
             # Also, because yaml does not provide automatic merging
             # for lists (only dictionaries), so we provide an alternative
             # way to do so where keys whose name start with a '+' means
@@ -125,7 +118,8 @@ class Config(object):
             # a copy of the list of keys, so as to be able to modify
             # the dictionary while we iterate over its keys.
             for key in list(self.copyright_header_info.keys()):
-                if key.startswith('+'):
+                if key.startswith("+"):
                     self.copyright_header_info[key[1:]].extend(
-                        self.copyright_header_info[key])
+                        self.copyright_header_info[key]
+                    )
                     del self.copyright_header_info[key]

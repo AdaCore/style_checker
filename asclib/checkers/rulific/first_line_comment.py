@@ -3,8 +3,8 @@ import re
 
 
 class FirstLineCommentRuleChecker(AbstractRuleChecker):
-    RULE_CONFIG_NAME = 'first_line_comment'
-    RULE_DESCRIPTION = 'check that the first line is a comment'
+    RULE_CONFIG_NAME = "first_line_comment"
+    RULE_DESCRIPTION = "check that the first line is a comment"
 
     def init_context_data(self):
         # This checker shouldn't even be enabled if the typific_info
@@ -13,16 +13,19 @@ class FirstLineCommentRuleChecker(AbstractRuleChecker):
         # even though technically it's not actually initializing any
         # context data. But it allows us to perform the check only
         # once for the entire lifetime of the checker.
-        assert self.typific_info.comment_line_re, \
-            'comment_line_re info missing in first_line_comment rule checker'
+        assert (
+            self.typific_info.comment_line_re
+        ), "comment_line_re info missing in first_line_comment rule checker"
 
     def check_rule(self, lineno, line, eol):
         if lineno > 1:
             # We only need to check the first line...
             return
         if not re.match(self.typific_info.comment_line_re, line):
-            if self.typific_info.comment_line_re.endswith('$'):
-                return 'First line must be comment markers only.'
+            if self.typific_info.comment_line_re.endswith("$"):
+                return "First line must be comment markers only."
             else:
-                return 'First line must start with a comment (regexp: %s)' % \
-                    self.typific_info.comment_line_re
+                return (
+                    "First line must start with a comment (regexp: %s)"
+                    % self.typific_info.comment_line_re
+                )
