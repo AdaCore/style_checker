@@ -60,6 +60,7 @@ def check_dependencies(args):
     # The list of programs we need to be installed and accessible
     # through the PATH.
     required_programs = [
+        ("checkstyle", "Java style checker (checkstyle)"),
         ("coverage", "pytest-cov plugin for pytest"),
         ("gnatls", "GNAT Pro in your PATH"),
     ]
