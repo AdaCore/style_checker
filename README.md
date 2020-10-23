@@ -66,7 +66,9 @@ the first or second line starts with `# Style_Check:Python_Fragment`
 are considered Python fragments, meanning that these files contain python
 code, but this code is not necessarily complete or self-sufficient.
 
-For those files, the style-checking does not include running `pyflakes`.
+For those files, the violations which can legitimately occur because
+they are fragments (e.g. undefined name) are excluded from the list
+of errors being reported.
 
 Turning Style Checks Off
 ........................

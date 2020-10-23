@@ -8,8 +8,8 @@ def test_test_py(style_checker):
     p = style_checker.run_style_checker('/paris.a/cvs/Dev/gps', 'src/test.py')
     style_checker.assertNotEqual(p.status, 0, p.image)
     style_checker.assertRunOutputEqual(p, """\
-src/test.py:2:1 'from GPS_Support import *' used; unable to detect undefined names
-src/test.py:10:1 'gps_assert' may be undefined, or defined from star imports: GPS_Support
+src/test.py:2:1: F403 'from GPS_Support import *' used; unable to detect undefined names
+src/test.py:10:1: F405 'gps_assert' may be undefined, or defined from star imports: GPS_Support
 """)
 
 

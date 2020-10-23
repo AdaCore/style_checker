@@ -31,6 +31,7 @@ def test_line_3(style_checker):
     p = style_checker.run_style_checker('/trunk/module', 'src/line_3.py')
     style_checker.assertNotEqual(p.status, 0, p.image)
     style_checker.assertRunOutputEqual(p, """\
+src/line_3.py:9:1: F821 undefined name 'space_before_paren'
 src/line_3.py:9:19: E211 whitespace before '('
 """)
 
@@ -47,6 +48,7 @@ def test_space_after(style_checker):
     style_checker.assertNotEqual(p.status, 0, p.image)
     style_checker.assertRunOutputEqual(p, """\
 src/space_after.py:1:17: W291 trailing whitespace
+src/space_after.py:7:1: F821 undefined name 'space_before_paren'
 src/space_after.py:7:19: E211 whitespace before '('
 """)
 
@@ -62,6 +64,8 @@ def test_space_before(style_checker):
     p = style_checker.run_style_checker('/trunk/module', 'src/space_before.py')
     style_checker.assertNotEqual(p.status, 0, p.image)
     style_checker.assertRunOutputEqual(p, """\
+src/space_before.py:1:4: F821 undefined name 'cond'
+src/space_before.py:5:1: F821 undefined name 'space_before_paren'
 src/space_before.py:5:19: E211 whitespace before '('
 """)
 
@@ -77,5 +81,6 @@ def test_space_inside(style_checker):
     p = style_checker.run_style_checker('/trunk/module', 'src/space_inside.py')
     style_checker.assertNotEqual(p.status, 0, p.image)
     style_checker.assertRunOutputEqual(p, """\
+src/space_inside.py:3:1: F821 undefined name 'space_before_paren'
 src/space_inside.py:3:19: E211 whitespace before '('
 """)

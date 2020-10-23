@@ -22,5 +22,5 @@ def test_xzutils_ko_pyflakes_anod(style_checker):
     p = style_checker.run_style_checker('anod', 'xzutils-ko-pyflakes.anod')
     style_checker.assertNotEqual(p.status, 0, p.image)
     style_checker.assertRunOutputEqual(p, """\
-xzutils-ko-pyflakes.anod:1:15 undefined name 'spec'
+xzutils-ko-pyflakes.anod:1:15: F821 undefined name 'spec'
 """)

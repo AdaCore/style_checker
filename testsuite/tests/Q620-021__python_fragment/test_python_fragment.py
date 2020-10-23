@@ -5,6 +5,7 @@ def test_conf_py(style_checker):
     style_checker.assertNotEqual(p.status, 0, p.image)
     style_checker.assertRunOutputEqual(p, """\
 conf.py:58:9: E722 do not use bare 'except'
+conf.py:113:1: F821 undefined name 'tags'
 """)
 
 

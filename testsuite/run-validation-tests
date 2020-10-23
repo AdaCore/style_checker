@@ -55,7 +55,7 @@ def check_dependencies(args):
     # distribution.
     required_modules = ["pytest", "e3"]
     if args.verify_style_conformance:
-        required_modules.extend(["flake8", "pycodestyle", "pyflakes"])
+        required_modules.append("flake8")
 
     # The list of programs we need to be installed and accessible
     # through the PATH.

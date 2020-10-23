@@ -1,8 +1,6 @@
-import os
 import re
 import sys
 
-from asclib import get_prefix_dir
 from asclib.checkers.typific import TypificChecker, TypificCheckerInfo
 from asclib.ex import Run
 
@@ -10,15 +8,26 @@ PYTHON_FILE_TYPE = "Python script"
 PYTHON_FRAGMENT_FILE_TYPE = "Python fragment"
 PLAN_FILE_TYPE = "Electrolyt plan"
 
-# The list errors that we want flake8 to ignore (in addition to
-# the errors that flake8 already ignores by default).
-EXTEND_IGNORE_LIST = (
-    # Pycodestyle: E402: module level import not at top of file
+# The list of errors that we want flake8 to ignore (in addition to
+# the errors that flake8 already ignores by default), for all
+# types of Python files.
+EXTEND_IGNORE_LIST_ALL = (
+    # flake8: E402: module level import not at top of file
     #
     # Rationale: See Q721-011: We sometimes need to import sys,
     # and then update sys.path before we can start importing
     # some other modules.
     "E402",
+)
+
+# When checking Python files that might be incomplete (e.g "Python fragment"
+# files, or Electrolyt Plan files, the additional list of errors we want
+# to ignore (this is in addition to the errors listed in EXTEND_IGNORE_LIST_ALL).
+EXTEND_IGNORE_LIST_INCOMPLETE_PYTHON = (
+    # flake8: F821: undefined name "<name_of_entity>"
+    #
+    # Rationale: See Q620-021: That entity can legitimately be declared elsewhere.
+    "F821",
 )
 
 # The maximum line length. We change the default length to match
@@ -70,26 +79,31 @@ class PythonFileChecker(TypificChecker):
                 ):
                     python_fragment_p = True
 
+        extend_ignore = list(EXTEND_IGNORE_LIST_ALL)
+        if python_fragment_p or self.__incomplete_python_file_p():
+            extend_ignore.extend(EXTEND_IGNORE_LIST_INCOMPLETE_PYTHON)
+
         p = Run(
             [
                 sys.executable,
                 "-m",
-                "pycodestyle",
-                "--config=" + os.path.join(get_prefix_dir(), "etc", "pycodestyle.cfg"),
+                "flake8",
+                f"--max-line-length={MAX_LINE_LENGTH}",
+                "--extend-ignore={}".format(",".join(extend_ignore)),
                 self.filename,
             ]
         )
         if p.status != 0 or p.out:
             return p.out
 
-        if not python_fragment_p and self.__run_pyflakes():
-            p = Run([sys.executable, "-m", "pyflakes", self.filename])
-            if p.status != 0 or p.out:
-                return p.out
+    def __incomplete_python_file_p(self):
+        """Return True if checking a Python file which may not be self-sufficient.
 
-    def __run_pyflakes(self):
-        """Return True iff we should run pyflakes to validate our file."""
-        # We want to run pyflakes on every file, except that there are
-        # kinds of file that legitimately fail this checker. Exclude
-        # those.
-        return self.file_type not in (PYTHON_FRAGMENT_FILE_TYPE, PLAN_FILE_TYPE)
+        This method checks our file_type attributes, to determine whether
+        we expect the file to be checked to be complete and self-sufficient.
+        If not, return True. Otherwise, return False.
+
+        See EXTEND_IGNORE_LIST_INCOMPLETE_PYTHON for more information about
+        the intent behind identifying such files.
+        """
+        return self.file_type in (PYTHON_FRAGMENT_FILE_TYPE, PLAN_FILE_TYPE)
