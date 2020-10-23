@@ -1,5 +1,5 @@
 procedure All_Source_Text is
-beGin
+begin
    Some_Code;
 
    --  Both branches of the #if have a style violation (extra space before
