@@ -26,6 +26,7 @@ def test_gprep_check_ko_adb(style_checker):
     p = style_checker.run_style_checker('gnat', 'gprep_check-ko.adb')
     style_checker.assertNotEqual(p.status, 0, p.image)
     style_checker.assertRunOutputEqual(p, """\
+gprep_check-ko.adb:2:01: (style) reserved words must be all lower case
 gprep_check-ko.adb:9:16: (style) space not allowed
 gprep_check-ko.adb:11:21: (style) space not allowed
 """)
