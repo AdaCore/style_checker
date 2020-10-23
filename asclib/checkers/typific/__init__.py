@@ -87,9 +87,8 @@ class TypificChecker(object):
 
         # First, feed line-by-line the contents of the file to each
         # rulific checker.
-        with open(self.filename, "rb") as f:
+        with open(self.filename, newline="") as f:
             for lineno, line in enumerate(f, 1):
-                line = line.decode()
                 eol = get_eol(line)
                 line = line[: -len(eol or "")]
                 for rulific_checker in self.my_rulific_checkers:
