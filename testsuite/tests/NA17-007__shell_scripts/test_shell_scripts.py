@@ -49,7 +49,7 @@ def test_build_sh_ko(style_checker):
     p = style_checker.run_style_checker('gnat', 'build-sh-ko')
     style_checker.assertNotEqual(p.status, 0, p.image)
     style_checker.assertRunOutputEqual(p, """\
-build-sh-ko: 184: build-sh-ko: Syntax error: "fi" unexpected
+build-sh-ko: 184: Syntax error: "fi" unexpected
 """)
 
 
@@ -60,7 +60,7 @@ def test_make_bin_5(style_checker):
                                'make-bin-5')
     style_checker.assertNotEqual(p.status, 0, p.image)
     style_checker.assertRunOutputEqual(p, """\
-make-bin-5: 230: make-bin-5: Syntax error: "fi" unexpected
+make-bin-5: 230: Syntax error: "fi" unexpected
 """)
 
 
