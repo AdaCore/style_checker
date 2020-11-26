@@ -44,11 +44,6 @@ def get_file_checker(filename, config):
 
         return PythonFileChecker(filename, config)
 
-    if ext == ".js":
-        from asclib.checkers.typific.javascript import JavascriptFileChecker
-
-        return JavascriptFileChecker(filename, config)
-
     if ext == ".yaml":
         from asclib.checkers.typific.yaml_files import YamlFileChecker
 
@@ -189,10 +184,6 @@ def dump_check_for_all_file_types():
     from asclib.checkers.typific.perl import PerlFileChecker
 
     PerlFileChecker("p.pl", config).dump_checks("PERL")
-
-    from asclib.checkers.typific.javascript import JavascriptFileChecker
-
-    JavascriptFileChecker("j.js", config).dump_checks("JAVASCRIPT")
 
     from asclib.checkers.typific.acceleo import AcceleoFileChecker
 
