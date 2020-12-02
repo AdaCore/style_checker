@@ -1,0 +1,4 @@
+- id: adacore-style-checker
+  name: AdaCore Style Checker
+  entry: style_checker
+  language: python

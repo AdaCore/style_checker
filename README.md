@@ -39,6 +39,45 @@ of
 
     $ style_checker --help
 
+Usage With Pre-Commit
+=====================
+
+The AdaCore Style Checker provides a configuration for use with
+[pre-commit](https://pre-commit.com/) to enable automatic style checking
+locally as a pre-commit check before a commit is created.
+
+To configure ASC for your repository, create a file called
+`.pre-commit-config.yaml` at the root of your repository with the following
+content (or append to a pre-existing yaml file):
+
+    repos:
+      - repo: https://github.com/AdaCore/style_checker.git
+        rev: master
+        hooks:
+          - id: adacore-style-checker
+            alias: asc
+            args:
+              - "<your module name>"
+
+To activate ASC in a local checkout of a repository pre-configured as above,
+install pre-commit (alternate installation methods exist at the pre-commit
+website):
+
+    $ pip install pre-commit
+
+And run this at the root of the checkout:
+
+    $ pre-commit install
+
+Pre-commit will now run ASC at each `git commit` invocation. You can also run it
+manually with:
+
+    $ pre-commit run --all-files
+    $ pre-commit run --files ...
+
+More information on pre-commit is available at
+[https://pre-commit.com/](https://pre-commit.com/).
+
 Language-Specific Features
 ==========================
 
