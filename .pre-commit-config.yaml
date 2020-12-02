@@ -1,0 +1,7 @@
+repos:
+  - repo: https://github.com/AdaCore/style_checker.git
+    rev: master
+    hooks:
+      - id: adacore-style-checker
+        args: ["*"]
+        exclude: "^testsuite/.*"
