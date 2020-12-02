@@ -1,0 +1,7 @@
+Code-Review+1: Olivier Ramonat <ramonat@adacore.com>
+Code-Review+2: Joel Brobecker <brobecker@adacore.com>
+Submitted-by: Joel Brobecker <brobecker@adacore.com>
+Submitted-at: Wed, 02 Dec 2020 05:35:40 +0100
+Reviewed-on: https://git.adacore.com/82890
+Project: style_checker
+Branch: refs/heads/master
