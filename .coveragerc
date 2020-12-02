@@ -9,5 +9,23 @@ omit =
 # keep this feature commented out for now.
 # branch = True
 
+[report]
+# Normally, we would want to list the files to be omitted from coverage
+# analysis in the "[run]" section above. However, it does not seem
+# to work for all files. As a WORKAROUND when that's the case, we omit
+# those files during the report creation phase (here), rather than
+# during the execution phase.
+omit =
+    # For some reason, excluding the setup.py file only works when
+    # using the full path to that file, something which is not
+    # practical because the full path depends on where the sources
+    # are cloned. For the record, we tried the following options
+    # in the "omit" parameter in the "[run]" section...
+    #     setup.py
+    #     ./setup.py
+    #     setup
+    # ... and none worked, unfortunately.
+    setup.py
+
 [html]
 directory = htmlcov

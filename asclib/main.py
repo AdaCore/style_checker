@@ -55,3 +55,9 @@ def style_checker(argv=None):
                 log_error(e.args)
 
     return n_files_with_errors == 0
+
+
+def main():
+    success = style_checker(sys.argv[1:])
+    if not success:
+        sys.exit(1)
