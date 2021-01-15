@@ -186,6 +186,9 @@ class StyleCheckerFixture:
                 that should be excluded from the install.
         """
         src_root_dir = os.path.dirname(os.path.dirname(sys.executable))
+        # Make sure src_root_dir is not a symbolic link. Otherwise,
+        # sync_tree fails.
+        src_root_dir = os.path.realpath(src_root_dir)
 
         # Only copy the bare minimum of the Python install corresponding
         # to the current interpreter...
