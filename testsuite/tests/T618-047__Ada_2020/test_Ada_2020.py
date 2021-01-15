@@ -4,7 +4,8 @@ def test_f2020_adb(style_checker):
     p = style_checker.run_style_checker('repo_name', 'f2020.adb')
     style_checker.assertNotEqual(p.status, 0, p.image)
     style_checker.assertRunOutputEqual(p, """\
-f2020.adb:13:22: target_name is an Ada 202x feature
+f2020.adb:13:22: target name is an Ada 2020 feature
+f2020.adb:13:22: unit must be compiled with -gnat2020 switch
 """)
 
     # Do the same test as above, but saying that the file is
@@ -15,7 +16,8 @@ f2020.adb:13:22: target_name is an Ada 202x feature
     p = style_checker.run_style_checker('gnat', 'f2020.adb')
     style_checker.assertNotEqual(p.status, 0, p.image)
     style_checker.assertRunOutputEqual(p, """\
-f2020.adb:13:22: target_name is an Ada 202x feature
+f2020.adb:13:22: target name is an Ada 2020 feature
+f2020.adb:13:22: unit must be compiled with -gnat2020 switch
 """)
 
 
@@ -37,5 +39,6 @@ def test_f2020_adb_with_gnat2020_config(style_checker):
         '--config', 'gnat2020_config.yaml', 'gnat', 'f2020.adb')
     style_checker.assertNotEqual(p.status, 0, p.image)
     style_checker.assertRunOutputEqual(p, """\
-f2020.adb:13:22: target_name is an Ada 202x feature
+f2020.adb:13:22: target name is an Ada 2020 feature
+f2020.adb:13:22: unit must be compiled with -gnat2020 switch
 """)

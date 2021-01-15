@@ -109,7 +109,7 @@ def test_ada_gnat95_with_ada2005_violation(style_checker):
         'examples', 'gnat95_config/has_05.adb')
     style_checker.assertNotEqual(p.status, 0, p.image)
     style_checker.assertRunOutputEqual(p, """\
-has_05.adb:8:27: string expression in raise is Ada 2005 extension
+has_05.adb:8:27: string expression in raise is an Ada 2005 extension
 has_05.adb:8:27: unit must be compiled with -gnat05 switch
 """)
 
