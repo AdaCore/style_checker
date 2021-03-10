@@ -12,6 +12,35 @@ PLAN_FILE_TYPE = "Electrolyt plan"
 # the errors that flake8 already ignores by default), for all
 # types of Python files.
 EXTEND_IGNORE_LIST_ALL = (
+    # E203: whitespace before ':'
+    #
+    # The purpose of this rule is to warn against situations such as...
+    #
+    #      with open(filename) as f :
+    #                              ^
+    #                              +--- Unexpected whitespace here.
+    #
+    # ... but unfortunately, this rule triggers a false positive
+    # for array slices when formatted by black. E.g:
+    #
+    #      buf[match.end(0) :]
+    #                      ^
+    #                      +--- Space here, inserted by black.
+    #
+    # More and more repositories are trying to adopt black, and combine
+    # this with the use of pre-commit scripts that ensure files are
+    # always properly formatted. To help teams active that without
+    # disabling the server-side precommit checks entirely, we disable
+    # this specific rule.
+    #
+    # Note also that it appears that this E203 warning in this case
+    # appears to be considered a pycodestyle bug. But unfortunately
+    # it's been a fairly longstanding one, and it's unclear to me
+    # whether there is any chance of this bug being solved anytime soon.
+    # For more details, see:
+    # https://github.com/PyCQA/pycodestyle/issues/373
+    "E203",
+
     # flake8: E402: module level import not at top of file
     #
     # Rationale: See Q721-011: We sometimes need to import sys,
