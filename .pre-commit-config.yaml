@@ -4,4 +4,4 @@ repos:
     hooks:
       - id: adacore-style-checker
         args: ["*"]
-        exclude: "^testsuite/.*"
+        exclude: "^testsuite/tests/.*"
