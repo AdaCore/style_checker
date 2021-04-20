@@ -63,7 +63,7 @@ def check_dependencies(args):
 
     # The list of packages we need to be available in the Python
     # distribution.
-    required_packages = ["pytest", "pytest-xdist", "e3-core"]
+    required_packages = ["e3-core", "pytest", "pytest-xdist"]
     if args.verify_style_conformance:
         required_packages.append("flake8")
 
