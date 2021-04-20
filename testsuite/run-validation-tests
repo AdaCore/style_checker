@@ -155,7 +155,7 @@ def run_style_conformance_checks(args):
 
     :param args: The object returned by ArgumentParser.parse_args.
     """
-    run(["pre-commit", "run", "--all-files"])
+    return run(["pre-commit", "run", "--all-files"])
 
 
 def main():
@@ -206,10 +206,15 @@ def main():
     check_dependencies(args)
 
     print(f"Repository root dir: {REPOSITORY_ROOT_DIR}")
+    if args.verify_style_conformance:
+        p = run_style_conformance_checks(args)
+        if p.status != 0:
+            print(f"ERROR: style violations detected (status: {p.status}).")
+            print("       Aborting")
+            sys.exit(p.status)
+
     if args.run_testsuite:
         run_testsuite(args)
-    if args.verify_style_conformance:
-        run_style_conformance_checks(args)
 
 
 if __name__ == "__main__":
