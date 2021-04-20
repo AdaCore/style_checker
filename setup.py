@@ -20,14 +20,7 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(where="."),
     package_dir={"": "."},
-    package_data={
-        "asclib.checkers.typific": ["*.xml"],
-        "etc": ["*"],
-    },
+    package_data={"asclib.checkers.typific": ["*.xml"], "etc": ["*"]},
     install_requires=install_requires,
-    entry_points={
-        "console_scripts": [
-            "style_checker = asclib.main:main"
-        ],
-    },
+    entry_points={"console_scripts": ["style_checker = asclib.main:main"]},
 )

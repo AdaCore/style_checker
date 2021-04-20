@@ -40,7 +40,6 @@ EXTEND_IGNORE_LIST_ALL = (
     # For more details, see:
     # https://github.com/PyCQA/pycodestyle/issues/373
     "E203",
-
     # flake8: E402: module level import not at top of file
     #
     # Rationale: See Q721-011: We sometimes need to import sys,

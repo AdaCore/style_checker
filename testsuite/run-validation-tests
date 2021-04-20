@@ -9,12 +9,11 @@ import shutil
 import sys
 
 # The minimum version of Python we need to run the validation testing.
-MINIMUM_PYTHON_VERSION = '3.8'
+MINIMUM_PYTHON_VERSION = "3.8"
 
 # The root directory of this repository. By construction, it is
 # the parent directory of the directory containing this script.
-REPOSITORY_ROOT_DIR = \
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+REPOSITORY_ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def run(cmds, **kwargs):
@@ -67,14 +66,15 @@ def check_dependencies(args):
         required_packages.append("flake8")
 
     # First, check that the Python being used is recent enough.
-    python_version = StrictVersion(
-        "{v.major}.{v.minor}".format(v=sys.version_info))
+    python_version = StrictVersion("{v.major}.{v.minor}".format(v=sys.version_info))
     if python_version < MINIMUM_PYTHON_VERSION:
-        print("ERROR: Your version of Python is too old: "
-              "({v.major}.{v.minor}.{v.micro}-{v.releaselevel})"
-              .format(v=sys.version_info))
-        print("       Minimum version required: {}"
-              .format(MINIMUM_PYTHON_VERSION))
+        print(
+            "ERROR: Your version of Python is too old: "
+            "({v.major}.{v.minor}.{v.micro}-{v.releaselevel})".format(
+                v=sys.version_info
+            )
+        )
+        print("       Minimum version required: {}".format(MINIMUM_PYTHON_VERSION))
         print("Aborting.")
         sys.exit(1)
 
@@ -133,8 +133,7 @@ def run_testsuite(args):
         # activated.
         testsuite_cmd.extend(["-n", args.jobs])
     if args.include_coverage:
-        testsuite_cmd.extend(["--cov", REPOSITORY_ROOT_DIR,
-                              "--cov-report=html"])
+        testsuite_cmd.extend(["--cov", REPOSITORY_ROOT_DIR, "--cov-report=html"])
     if args.testsuite_filter is not None:
         testsuite_cmd.extend(["-k", args.testsuite_filter])
 
@@ -154,25 +153,46 @@ def run_style_conformance_checks(args):
 def main():
     """Implement the main subprogram for this script."""
     parser = ArgumentParser(description="Run the style_checker testsuite")
-    parser.add_argument("--jobs", "-j", metavar="N", default="auto",
-                        help="Run the testsuite with N jobs in parallel."
-                        " If not provided, the system determines the number"
-                        " of jobs based on the number of CPU cores available.")
-    parser.add_argument("--no-testsuite", dest="run_testsuite",
-                        default=True, action="store_false",
-                        help="Skip running the testsuite (useful when"
-                        " only trying to perform coding style conformance"
-                        " checks")
-    parser.add_argument("--no-coverage", dest="include_coverage",
-                        default=True, action="store_false",
-                        help="Run the testsuite with coverage analysis")
-    parser.add_argument("--no-style-checking", dest="verify_style_conformance",
-                        default=True, action="store_false",
-                        help="Skip the coding style conformance checks")
-    parser.add_argument("testsuite_filter", metavar="EXPRESSION", nargs="?",
-                        help="Ask pytest to restring the testing to the tests"
-                        " matching the given substring expression (passed"
-                        " to pytest -via -k)")
+    parser.add_argument(
+        "--jobs",
+        "-j",
+        metavar="N",
+        default="auto",
+        help="Run the testsuite with N jobs in parallel."
+        " If not provided, the system determines the number"
+        " of jobs based on the number of CPU cores available.",
+    )
+    parser.add_argument(
+        "--no-testsuite",
+        dest="run_testsuite",
+        default=True,
+        action="store_false",
+        help="Skip running the testsuite (useful when"
+        " only trying to perform coding style conformance"
+        " checks",
+    )
+    parser.add_argument(
+        "--no-coverage",
+        dest="include_coverage",
+        default=True,
+        action="store_false",
+        help="Run the testsuite with coverage analysis",
+    )
+    parser.add_argument(
+        "--no-style-checking",
+        dest="verify_style_conformance",
+        default=True,
+        action="store_false",
+        help="Skip the coding style conformance checks",
+    )
+    parser.add_argument(
+        "testsuite_filter",
+        metavar="EXPRESSION",
+        nargs="?",
+        help="Ask pytest to restring the testing to the tests"
+        " matching the given substring expression (passed"
+        " to pytest -via -k)",
+    )
     args = parser.parse_args()
 
     check_dependencies(args)

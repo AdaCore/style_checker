@@ -30,9 +30,9 @@ def env_setup(request):
     # file or directory it might be creating, by verifying at the end
     # of the test that this temporary directory is empty.
     style_checker_tmp_dir = tempfile.mkdtemp("", "style_checker-")
-    style_checker_tmp_dir = os.path.join(tmp_dir, 'tmp')
+    style_checker_tmp_dir = os.path.join(tmp_dir, "tmp")
     os.mkdir(style_checker_tmp_dir)
-    for var_name in ('TMPDIR', 'TEMP', 'TMP'):
+    for var_name in ("TMPDIR", "TEMP", "TMP"):
         os.environ[var_name] = style_checker_tmp_dir
 
     def env_teardown():
@@ -40,8 +40,7 @@ def env_setup(request):
         os.environ.update(saved_environ)
 
         style_checker_tmp_dir_contents = os.listdir(style_checker_tmp_dir)
-        assert not style_checker_tmp_dir_contents, \
-            style_checker_tmp_dir_contents
+        assert not style_checker_tmp_dir_contents, style_checker_tmp_dir_contents
 
         os.chdir(saved_cwd)
         shutil.rmtree(tmp_dir)
@@ -63,6 +62,7 @@ class StyleCheckerFixture:
             to be performed as if this was the current year (an int).
             See the set_year method for additional information.
     """
+
     def __init__(self, src_prefix_dir, testcase_src_dir, testcase_work_dir):
         """Initialize self.
 
@@ -74,8 +74,7 @@ class StyleCheckerFixture:
         self.src_prefix_dir = src_prefix_dir
         self.src_dir = testcase_src_dir
         self.work_dir = testcase_work_dir
-        self.style_checker_exe = os.path.join(self.src_prefix_dir,
-                                              'style_checker')
+        self.style_checker_exe = os.path.join(self.src_prefix_dir, "style_checker")
         self.forced_year = None
 
         # Set the testcase up, by copying everything from the testcase's
@@ -139,18 +138,17 @@ class StyleCheckerFixture:
         """
         use_sys_executable = False
         # The named parameters to use when calling subprocess.run
-        run_kwargs = {'cwd': self.work_dir,
-                      'timeout': 60}
+        run_kwargs = {"cwd": self.work_dir, "timeout": 60}
 
         for arg_name, arg_val in kwargs.items():
-            if arg_name in ('input', ):
+            if arg_name in ("input",):
                 run_kwargs[arg_name] = arg_val
-            elif arg_name == 'use_sys_executable' and arg_val:
+            elif arg_name == "use_sys_executable" and arg_val:
                 use_sys_executable = True
             else:
                 raise ValueError(
-                    'Invalid argument in call to run_style_checker: {}'
-                    .format(arg_name))
+                    "Invalid argument in call to run_style_checker: {}".format(arg_name)
+                )
 
         cmd = []
 
@@ -159,7 +157,7 @@ class StyleCheckerFixture:
         cmd.append(self.style_checker_exe)
 
         if self.forced_year is not None:
-            cmd.append('--forced-year=%d' % self.forced_year)
+            cmd.append("--forced-year=%d" % self.forced_year)
 
         cmd.extend(list(args))
 
@@ -169,9 +167,7 @@ class StyleCheckerFixture:
         """Set the environment up to allow us to perform unit tests."""
         sys.path.insert(0, self.src_prefix_dir)
 
-    def make_minimal_copy_of_python_install(
-        self, target_dir, exclude_modules=None
-    ):
+    def make_minimal_copy_of_python_install(self, target_dir, exclude_modules=None):
         """Create a minimal copy of Python in target_dir.
 
         The goal of this method is to provide a minimal install that
@@ -209,9 +205,7 @@ class StyleCheckerFixture:
             ignore = None
         else:
             ignore = []
-            site_pkg_dir = os.path.join(
-                src_root_dir, "lib", "python*", "site-packages"
-            )
+            site_pkg_dir = os.path.join(src_root_dir, "lib", "python*", "site-packages")
             for module_name in exclude_modules:
                 ignore.extend(
                     os.path.relpath(p, src_root_dir)
@@ -219,10 +213,7 @@ class StyleCheckerFixture:
                 )
 
         sync_tree(
-            source=src_root_dir,
-            target=target_dir,
-            ignore=ignore,
-            file_list=file_list,
+            source=src_root_dir, target=target_dir, ignore=ignore, file_list=file_list,
         )
 
     def assertEqual(self, lhs, rhs, msg_if_fails):
@@ -302,7 +293,7 @@ class StyleCheckerFixture:
         PARAMETERS
             r: A Run object.
         """
-        self.assertRunOutputEqual(r, '')
+        self.assertRunOutputEqual(r, "")
 
 
 @pytest.fixture(scope="function")
@@ -310,13 +301,16 @@ def style_checker(pytestconfig, request):
     """Return a StyleCheckerFixture."""
     testcase_script_filename = request.fspath.strpath
     testcase_src_dir = os.path.dirname(testcase_script_filename)
-    return StyleCheckerFixture(src_prefix_dir=pytestconfig.rootdir.strpath,
-                               testcase_src_dir=testcase_src_dir,
-                               testcase_work_dir=os.getcwd())
+    return StyleCheckerFixture(
+        src_prefix_dir=pytestconfig.rootdir.strpath,
+        testcase_src_dir=testcase_src_dir,
+        testcase_work_dir=os.getcwd(),
+    )
 
 
 class Run(e3.os.process.Run):
     """An e3.os.process.Run subclass with a few extra bells and whistles..."""
+
     @property
     def cmd_out(self):
         """Same as self.out, except that the output is sanitized.
@@ -334,6 +328,8 @@ class Run(e3.os.process.Run):
         REMARKS
             This assumes that this command has run to completion.
         """
-        return '%% %s -> %s\n%s' % (self.command_line_image(),
-                                    self.status,
-                                    self.cmd_out)
+        return "%% %s -> %s\n%s" % (
+            self.command_line_image(),
+            self.status,
+            self.cmd_out,
+        )
