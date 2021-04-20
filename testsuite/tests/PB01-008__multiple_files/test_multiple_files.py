@@ -113,7 +113,7 @@ def test_bad_bad_good_bad(style_checker):
     style_checker.assertRunOutputEqual(p, """\
 gprep_check-ko.adb:9:16: (style) space not allowed
 gprep_check-ko.adb:11:21: (style) space not allowed
-empty.adb:1:01: warning: file contains no compilation units
+empty.adb:1:01: warning: file contains no compilation units [enabled by default]
 ada12-no-first-line-comment.adb:1: First line must be comment markers only.
 """)
 
@@ -132,7 +132,7 @@ def test_stdin_bad_bad_good_bad(style_checker):
     style_checker.assertRunOutputEqual(p, """\
 gprep_check-ko.adb:9:16: (style) space not allowed
 gprep_check-ko.adb:11:21: (style) space not allowed
-empty.adb:1:01: warning: file contains no compilation units
+empty.adb:1:01: warning: file contains no compilation units [enabled by default]
 ada12-no-first-line-comment.adb:1: First line must be comment markers only.
 """)
 
@@ -152,7 +152,7 @@ def test_bad_bad_good_bad_good_bad(style_checker):
     style_checker.assertRunOutputEqual(p, """\
 gprep_check-ko.adb:9:16: (style) space not allowed
 gprep_check-ko.adb:11:21: (style) space not allowed
-empty.adb:1:01: warning: file contains no compilation units
+empty.adb:1:01: warning: file contains no compilation units [enabled by default]
 ada12-no-first-line-comment.adb:1: First line must be comment markers only.
 [other files with style violations were found]
 """)
@@ -194,7 +194,7 @@ def test_bad_bad_good_bad_good_noexistant(style_checker):
     style_checker.assertRunOutputEqual(p, """\
 gprep_check-ko.adb:9:16: (style) space not allowed
 gprep_check-ko.adb:11:21: (style) space not allowed
-empty.adb:1:01: warning: file contains no compilation units
+empty.adb:1:01: warning: file contains no compilation units [enabled by default]
 ada12-no-first-line-comment.adb:1: First line must be comment markers only.
 [other files with style violations were found]
 """)

@@ -53,8 +53,8 @@ def test_doseol_ko_5_adb(style_checker):
     p = style_checker.run_style_checker('gnat', 'doseol-ko-5.adb')
     style_checker.assertNotEqual(p.status, 0, p.image)
     style_checker.assertRunOutputEqual(p, """\
-doseol-ko-5.adb:1612:37: missing string quote
-doseol-ko-5.adb:1613:02: missing string quote
+doseol-ko-5.adb:1612:37: error: missing string quote
+doseol-ko-5.adb:1613:02: error: missing string quote
 """)
 
 def test_doseol_ok_1_sh(style_checker):
