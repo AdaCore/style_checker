@@ -135,6 +135,16 @@ def run_testsuite(args):
     :param args: The object returned by ArgumentParser.parse_args.
     """
     testsuite_cmd = ["python3", "-m", "pytest", "-v"]
+
+    # Run the testsuite with --import-mode=importlib (new in pytest-6.0):
+    # This is an enhancement which, for our purposes, allows each testcase,
+    # which is implemented as one directory with one test module, to have
+    # the same name for that module...
+    #
+    # Note that, according to the pytest documentation, the pytest project's
+    # intent is to make this the default at some point.
+    testsuite_cmd.append("--import-mode=importlib")
+
     if args.jobs != "1":
         # We only pass the number of jobs when parallelism is actually
         # requested. It avoids the pytest-xdist plugin being unnecessarily
