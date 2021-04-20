@@ -63,7 +63,7 @@ def check_dependencies(args):
 
     # The list of packages we need to be available in the Python
     # distribution.
-    required_packages = ["pytest", "e3-core"]
+    required_packages = ["pytest", "pytest-xdist", "e3-core"]
     if args.verify_style_conformance:
         required_packages.append("flake8")
 
@@ -128,6 +128,11 @@ def run_testsuite(args):
     :param args: The object returned by ArgumentParser.parse_args.
     """
     testsuite_cmd = ["python3", "-m", "pytest", "-v"]
+    if args.jobs != "1":
+        # We only pass the number of jobs when parallelism is actually
+        # requested. It avoids the pytest-xdist plugin being unnecessarily
+        # activated.
+        testsuite_cmd.extend(["-n", args.jobs])
     if args.include_coverage:
         testsuite_cmd.extend(["--cov", REPOSITORY_ROOT_DIR,
                               "--cov-report=html"])
@@ -150,6 +155,10 @@ def run_style_conformance_checks(args):
 def main():
     """Implement the main subprogram for this script."""
     parser = ArgumentParser(description="Run the style_checker testsuite")
+    parser.add_argument("--jobs", "-j", metavar="N", default="auto",
+                        help="Run the testsuite with N jobs in parallel."
+                        " If not provided, the system determines the number"
+                        " of jobs based on the number of CPU cores available.")
     parser.add_argument("--no-testsuite", dest="run_testsuite",
                         default=True, action="store_false",
                         help="Skip running the testsuite (useful when"
