@@ -2,8 +2,8 @@
 
 from argparse import ArgumentParser
 from distutils.version import StrictVersion
-from e3.os.process import command_line_image, Run
-import importlib.util
+from e3.os.process import command_line_image, PIPE, Run
+import json
 import os
 import shutil
 import sys
@@ -51,12 +51,6 @@ def check_dependencies(args):
     """
     missing_deps = []
 
-    # The list of modules we need to be available in the Python
-    # distribution.
-    required_modules = ["pytest", "e3"]
-    if args.verify_style_conformance:
-        required_modules.append("flake8")
-
     # The list of programs we need to be installed and accessible
     # through the PATH.
     required_programs = [
@@ -64,7 +58,14 @@ def check_dependencies(args):
         ("checkstyle", "Java style checker (checkstyle)"),
         ("coverage", "pytest-cov plugin for pytest"),
         ("gnatls", "GNAT Pro in your PATH"),
+        ("pip3", "pip3"),
     ]
+
+    # The list of packages we need to be available in the Python
+    # distribution.
+    required_packages = ["pytest", "e3-core"]
+    if args.verify_style_conformance:
+        required_packages.append("flake8")
 
     # First, check that the Python being used is recent enough.
     python_version = StrictVersion(
@@ -79,13 +80,39 @@ def check_dependencies(args):
         sys.exit(1)
 
     # Next, check that all required dependencies are there.
-    for module_name in required_modules:
-        if importlib.util.find_spec(module_name) is None:
-            missing_deps.append(f"Python module: {module_name}")
+    #
+    # Check the required programs are there first, as one of
+    # those programs (pip3) is used to check that all required
+    # packages have been installed.
 
     for exe, description in required_programs:
         if shutil.which(exe) is None:
             missing_deps.append(description)
+
+    # If pip3 is available, use it to get the list of packages installed,
+    # and compare it against our list of required_packages.
+
+    if "pip3" not in missing_deps:
+        p = Run(["pip3", "list", "--format=json"], error=PIPE)
+        if p.status != 0:
+            print(f"ERROR: pip3 command returned nonzero: {p.status}")
+            print("$ " + p.command_line_image())
+            print(f"{p.out}")
+            print(f"{p.err}")
+            sys.exit(1)
+
+        # Load the JSON data returned by pip3, and post process it
+        # a little to make it more convenient to search it: pip3
+        # returns a list where each item is a dict representing
+        # a package (with "name", and "version" info provided).
+        #
+        # For our purposes, we only need the name...
+        package_list_from_pip3 = json.loads(p.out)
+        all_packages = [pkg_info["name"] for pkg_info in package_list_from_pip3]
+
+        for package_name in required_packages:
+            if package_name not in all_packages:
+                missing_deps.append(f"Python package: {package_name}")
 
     # If anything was missing, report it and abort.
     if missing_deps:
