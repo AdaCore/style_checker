@@ -17,12 +17,12 @@ def env_setup(request):
 
     # Create a temporary directory inside which we will be working from.
     tmp_dir = tempfile.mkdtemp("", "style_checker-")
-    os.chdir(tmp_dir)
 
     # Create a directory inside our tmp_dir that we'll use for running
     # our testcase.
     work_dir = os.path.join(tmp_dir, "src")
     os.mkdir(work_dir)
+    os.chdir(work_dir)
 
     # Create a directory inside our tmp_dir that we'll tell the tempfile
     # module to use by default (via the appropriate environment variable).
