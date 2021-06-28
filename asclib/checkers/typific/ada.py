@@ -119,7 +119,7 @@ class AdaFileChecker(TypificChecker):
         elif "gnat2020" in self.config.style_checks_options:
             cmd.append("-gnat2020")
         else:
-            cmd.append("-gnat12")
+            cmd.append("-gnat2020")
 
         # Set preprocessing data file.
         cmd.append("-gnatep=" + self.config.ada_preprocessing_filename)
