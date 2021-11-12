@@ -84,14 +84,22 @@ class AdaFileChecker(TypificChecker):
         if file_type in (RT_SPEC, RT_BODY):
             # Set GNAT mode for runtime files only (changes legality and
             # semantics, and sets more restrictive style rules).
-            # Note: This also enables language extensions.
+            #
+            # Note: -gnatg normally also enables language extensions
+            # (i.e. -gnatX), but it only does so when it recognizes
+            # the unit's filename. Since we also store implementation
+            # variations of the same runtime unit inside files whose name
+            # do not always match the normal filename naming scheme
+            # (e.g. "a-except__zfp.adb"), we force -gnatX to ensure
+            # extensions are consistently used across all GNAT runtime
+            # sources.
             #
             # Note also that the compiler hardcodes the language version
             # it uses when compiling the runtime units, so there is no point
             # in trying to force a different version with a command-line
             # switch, the compiler just ignores them (see T618-047 for
             # confirmation of that).
-            cmd.append("-gnatg")
+            cmd.extend(["-gnatg", "-gnatX"])
         else:
             # Enable GNAT style checks, GNAT warnings, and treat warnings
             # and style messages as errors.
