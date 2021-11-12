@@ -23,7 +23,7 @@ def test_test1_star_import(style_checker):
     style_checker.assertNotEqual(p.status, 0, p.image)
     style_checker.assertRunOutputEqual(p, """\
 [warning] /usr/bin/checkstyle: Unable to locate commons-cli in /usr/share/java
-[ERROR] test1-start-import.java:1: Using the '.*' form of import should be avoided - java.io.*. [AvoidStarImport]
+[ERROR] test1-start-import.java:1:15: Using the '.*' form of import should be avoided - java.io.*. [AvoidStarImport]
 Checkstyle ends with 1 errors.
 """)
 
