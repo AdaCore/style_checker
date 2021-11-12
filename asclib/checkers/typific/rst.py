@@ -5,6 +5,7 @@ from asclib.checkers.typific import TypificChecker, TypificCheckerInfo
 
 class RstFileChecker(TypificChecker):
     rulific_decision_map = {
+        "bidi": False,
         "copyright": False,
         "eol": True,
         "first_line_comment": False,

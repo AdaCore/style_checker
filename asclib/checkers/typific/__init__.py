@@ -136,6 +136,7 @@ class TypificChecker(object):
             the name of each rulific checker.
         :type print_header: bool
         """
+        from asclib.checkers.rulific.bidi import BidiRuleChecker
         from asclib.checkers.rulific.copyright import CopyrightRuleChecker
         from asclib.checkers.rulific.rcs_keywords import RCSKeywordsRuleChecker
         from asclib.checkers.rulific.dos_eol import DosEolRuleChecker
@@ -151,6 +152,7 @@ class TypificChecker(object):
         from asclib.checkers.rulific.trailing_spaces import TrailingSpaceRuleChecker
 
         RULES_LIST = (
+            ("BIDI", BidiRuleChecker),
             ("START_COMMENT", FirstLineCommentRuleChecker),
             ("COPYRIGHT", CopyrightRuleChecker),
             ("ADA_RM_SPEC", None),

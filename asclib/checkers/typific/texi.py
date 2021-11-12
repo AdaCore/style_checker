@@ -3,6 +3,7 @@ from asclib.checkers.typific import TypificChecker, TypificCheckerInfo
 
 class TexiFileChecker(TypificChecker):
     rulific_decision_map = {
+        "bidi": False,
         "copyright": True,
         "eol": True,
         "first_line_comment": False,

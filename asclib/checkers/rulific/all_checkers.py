@@ -1,3 +1,4 @@
+from asclib.checkers.rulific.bidi import BidiRuleChecker
 from asclib.checkers.rulific.copyright import CopyrightRuleChecker
 from asclib.checkers.rulific.rcs_keywords import RCSKeywordsRuleChecker
 from asclib.checkers.rulific.dos_eol import DosEolRuleChecker
@@ -11,6 +12,7 @@ from asclib.checkers.rulific.trailing_spaces import TrailingSpaceRuleChecker
 # The list (as a tuple) of all possible rulific checkers, in the order
 # the checkers are going to be executed.
 ALL_RULIFIC_CHECKERS = (
+    BidiRuleChecker,
     NoTabIndentationRuleChecker,
     LineLengthRuleChecker,
     DosEolRuleChecker,

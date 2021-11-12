@@ -3,6 +3,7 @@ from asclib.checkers.typific import TypificChecker, TypificCheckerInfo
 
 class AcceleoFileChecker(TypificChecker):
     rulific_decision_map = {
+        "bidi": True,
         "copyright": True,
         "eol": True,
         "first_line_comment": False,

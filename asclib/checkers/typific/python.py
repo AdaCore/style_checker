@@ -65,6 +65,7 @@ MAX_LINE_LENGTH = 88
 
 class PythonFileChecker(TypificChecker):
     rulific_decision_map = {
+        "bidi": True,
         "copyright": False,
         "eol": True,
         "first_line_comment": False,

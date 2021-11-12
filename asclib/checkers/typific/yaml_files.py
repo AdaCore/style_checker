@@ -5,6 +5,7 @@ from asclib.checkers.typific import TypificChecker, TypificCheckerInfo
 
 class YamlFileChecker(TypificChecker):
     rulific_decision_map = {
+        "bidi": True,
         "copyright": False,
         "eol": False,
         "first_line_comment": False,

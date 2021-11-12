@@ -9,6 +9,7 @@ from asclib.ex import Run
 
 class JavaFileChecker(TypificChecker):
     rulific_decision_map = {
+        "bidi": True,
         "copyright": True,
         "eol": True,
         "first_line_comment": True,

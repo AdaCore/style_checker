@@ -1,0 +1,8 @@
+#! /bin/csh
+
+# The following will only pass the csh syntax check. bash or sh
+# shouldn't accept the following. That way, we at least know
+# that we didn't called the wrong checker...
+# |⁧| The text on this line is actually '|' plus U+2067 plus '|' plusthis text
+
+if ($#argv == 0) echo There are no arguments

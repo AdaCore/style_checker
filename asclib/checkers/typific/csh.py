@@ -4,6 +4,7 @@ from asclib.ex import Run
 
 class CshFileChecker(TypificChecker):
     rulific_decision_map = {
+        "bidi": True,
         "copyright": False,
         "eol": True,
         "first_line_comment": False,

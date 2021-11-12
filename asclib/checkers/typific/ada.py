@@ -30,6 +30,7 @@ ADA83_RT_SPEC_PATTERN = (
 
 class AdaFileChecker(TypificChecker):
     rulific_decision_map = {
+        "bidi": True,
         "copyright": True,
         "eol": True,
         "first_line_comment": True,
