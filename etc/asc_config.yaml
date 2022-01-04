@@ -41,6 +41,10 @@
             - AdaCore, Altran UK Limited
             - AdaCore and Altran UK
             - AdaCore, Altran UK
+            # Altran UK has changed their name to Capgemini Engineering,
+            # so add them as valid copyright holders as well (V103-009).
+            - Capgemini Engineering
+            - AdaCore, Capgemini Engineering
 
         # The maximum number of lines the tool will be scanning until
         # it finds a copyright line.
