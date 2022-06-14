@@ -28,6 +28,8 @@ It must look like...
     - `AdaCore, Altran UK Limited'
     - `AdaCore and Altran UK'
     - `AdaCore, Altran UK'
+    - `Capgemini Engineering'
+    - `AdaCore, Capgemini Engineering'
 """)
 
 
@@ -61,6 +63,8 @@ It must look like...
     - `AdaCore, Altran UK Limited'
     - `AdaCore and Altran UK'
     - `AdaCore, Altran UK'
+    - `Capgemini Engineering'
+    - `AdaCore, Capgemini Engineering'
 """)
 
 
