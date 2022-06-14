@@ -213,7 +213,10 @@ class StyleCheckerFixture:
                 )
 
         sync_tree(
-            source=src_root_dir, target=target_dir, ignore=ignore, file_list=file_list,
+            source=src_root_dir,
+            target=target_dir,
+            ignore=ignore,
+            file_list=file_list,
         )
 
     def assertEqual(self, lhs, rhs, msg_if_fails):

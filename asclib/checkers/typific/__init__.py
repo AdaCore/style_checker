@@ -30,9 +30,11 @@ class TypificChecker(object):
         # The purpose of this change is to make sure child class
         # insn't missing an entry for one of the checkers.
         for rulific_checker in ALL_RULIFIC_CHECKERS:
-            assert rulific_checker.RULE_CONFIG_NAME in self.rulific_decision_map, (
-                "%s checker missing config about %s rule"
-                % (self.file_type, rulific_checker.RULE_CONFIG_NAME,)
+            assert (
+                rulific_checker.RULE_CONFIG_NAME in self.rulific_decision_map
+            ), "%s checker missing config about %s rule" % (
+                self.file_type,
+                rulific_checker.RULE_CONFIG_NAME,
             )
 
         # Build the list of checkers we actually want to run
@@ -206,9 +208,10 @@ class TypificChecker(object):
                 for checker in ALL_RULIFIC_CHECKERS
                 if checker not in [c for _, c in RULES_LIST]
             ]
-            assert not missed_checkers, (
-                "The following rules are missing from the dump above: "
-                + ", ".join(missed_checkers)
+            assert (
+                not missed_checkers
+            ), "The following rules are missing from the dump above: " + ", ".join(
+                missed_checkers
             )
 
     ######################################################################
