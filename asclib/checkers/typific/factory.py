@@ -64,14 +64,16 @@ def get_file_checker(filename, config):
 
         return MFileChecker(filename, config)
 
-    if ext == ".md":
-        # Markdown files. We do not perform any style checks on those files,
-        # but we still want to recognize those here and explicitly do
-        # nothing. If we don't do that, then we end up letting the "file"
-        # program determine the file's type, and sometimes its heuristics
-        # are fairly, erm, surprising. For instance, we have had a case
-        # in RA22-066 where the markdown file was recognized as a Python
-        # script, thus triggering the Python style checkers.
+    if ext in (".md", ".txt"):
+        # We do not perform any style checks on those files, but we still
+        # want to recognize those here and explicitly do nothing.
+        #
+        # If we don't do that, then we end up letting the "file" program
+        # determine the file's type, and sometimes its heuristics can be
+        # fairly, erm, surprising. For instance, we have had a case
+        # in RA22-066 where a markdown file was recognized as a Python
+        # script, thus triggering the Python style checkers. Same thing
+        # for a .txt file also recognized as Python (V614-013).
         return None
 
     if filename.startswith("known-problems-"):
