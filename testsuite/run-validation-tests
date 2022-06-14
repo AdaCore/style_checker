@@ -134,7 +134,7 @@ def run_testsuite(args):
 
     :param args: The object returned by ArgumentParser.parse_args.
     """
-    testsuite_cmd = ["python3", "-m", "pytest", "-v"]
+    testsuite_cmd = ["python3", "-m", "pytest", "-vv"]
 
     # Run the testsuite with --import-mode=importlib (new in pytest-6.0):
     # This is an enhancement which, for our purposes, allows each testcase,
