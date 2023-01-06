@@ -21,7 +21,7 @@ class CFileChecker(TypificChecker):
 
     @property
     def file_type(self):
-        return "C"
+        return "C/C++"
 
     def run_external_checker(self):
         # Nothing to do.

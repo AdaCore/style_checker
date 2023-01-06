@@ -20,7 +20,23 @@ def get_file_checker(filename, config):
 
         return AdaFileChecker(filename, config)
 
-    if ext in (".c", ".h"):
+    if ext in (
+        # C file extensions:
+        ".c",
+        ".h",
+        # C++ file extensions recognized by GCC:
+        ".C",
+        ".cc",
+        ".cpp",
+        ".CPP",
+        ".c++",
+        ".cp",
+        ".cxx",
+        ".hh",
+        ".hpp",
+        ".H",
+        ".tcc",
+    ):
         from asclib.checkers.typific.c import CFileChecker
 
         return CFileChecker(filename, config)
@@ -157,7 +173,7 @@ def dump_check_for_all_file_types():
 
     from asclib.checkers.typific.c import CFileChecker
 
-    CFileChecker("c.h", config).dump_checks("C")
+    CFileChecker("c.h", config).dump_checks("C/C++")
 
     from asclib.checkers.typific.java import JavaFileChecker
 

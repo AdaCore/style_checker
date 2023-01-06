@@ -9,7 +9,7 @@ STD_ADA      X      X      X      -      -      X      X      X      -      X   
 RT_SPEC      X      X      X      X      -      X      X      X      -      X      X
 RT_BODY      X      X      X      -      -      X      X      X      -      X      X
 COMPILER_C   X      X      X      -      -      X      X      X      -      X      X
-C            X      -      X      -      -      X      X      X      -      X      X
+C/C++        X      -      X      -      -      X      X      X      -      X      X
 JAVA         X      X      X      -      X      X      X      X      -      X      X
 TEXI         -      -      X      -      -      X      X      X      -      X      -
 SH           X      -      -      -      -      X      X      X      -      X      -
