@@ -100,7 +100,10 @@ def check_dependencies(args):
     # and compare it against our list of required_packages.
 
     if "pip3" not in missing_deps:
-        p = Run(["pip3", "list", "--format=json"], error=PIPE)
+        p = Run(
+            ["pip3", "list", "--format=json", "--disable-pip-version-check"],
+            error=PIPE,
+        )
         if p.status != 0:
             print(f"ERROR: pip3 command returned nonzero: {p.status}")
             print("$ " + p.command_line_image())
